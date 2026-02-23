@@ -84,7 +84,7 @@ public class PullRequestStatusCheckController : ControllerBase
 
 		using var client = _clientFactory.CreateClient("Proxied");
 		client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("Testably",
-			Assembly.GetExecutingAssembly().GetName().Version.ToString()));
+			Assembly.GetExecutingAssembly().GetName().Version?.ToString()));
 		client.DefaultRequestHeaders.Authorization =
 			new AuthenticationHeaderValue("Bearer", bearerToken);
 
