@@ -1,0 +1,45 @@
+"use strict";(self.webpackChunkpages=self.webpackChunkpages||[]).push([["452"],{7250(e,t,r){r.d(t,{A:()=>i});var a=r(4848);r(6540);var s=r(4164),n=r(7663);function l({children:e,className:t,hidden:r}){return(0,a.jsx)("div",{role:"tabpanel",className:(0,s.A)("tabItem_Ymn6",t),hidden:r,children:e})}function i({children:e,className:t,value:r}){let{selectedValue:s,lazy:o}=(0,n.uc)(),c=r===s;return!c&&o?null:(0,a.jsx)(l,{className:t,hidden:!c,children:e})}},773(e,t,r){r.d(t,{A:()=>m});var a=r(4848);r(6540);var s=r(4164),n=r(8287),l=r(7663),i=r(8584),o=r(9863);function c({className:e}){let{selectedValue:t,selectValue:r,tabValues:n,block:o}=(0,l.uc)(),u=[],{blockElementScrollPositionUntilNextRender:d}=(0,i.a_)(),m=e=>{let a=e.currentTarget,s=n[u.indexOf(a)].value;s!==t&&(d(a),r(s))},h=e=>{let t=null;switch(e.key){case"Enter":m(e);break;case"ArrowRight":{let r=u.indexOf(e.currentTarget)+1;t=u[r]??u[0];break}case"ArrowLeft":{let r=u.indexOf(e.currentTarget)-1;t=u[r]??u[u.length-1]}}t?.focus()};return(0,a.jsx)("ul",{role:"tablist","aria-orientation":"horizontal",className:(0,s.A)("tabs",{"tabs--block":o},e),children:n.map(({value:e,label:r,attributes:n})=>(0,a.jsx)("li",{role:"tab",tabIndex:t===e?0:-1,"aria-selected":t===e,ref:e=>{u.push(e)},onKeyDown:h,onClick:m,...n,className:(0,s.A)("tabs__item","tabItem_LNqP",n?.className,{"tabs__item--active":t===e}),children:r??e},e))})}function u({children:e}){return(0,a.jsx)("div",{className:"margin-top--md",children:e})}function d({className:e,children:t}){return(0,a.jsxs)("div",{className:(0,s.A)(n.G.tabs.container,"tabs-container","tabList__CuJ"),children:[(0,a.jsx)(c,{className:e}),(0,a.jsx)(u,{children:t})]})}function m(e){let t=(0,o.A)(),r=(0,l.OC)(e);return(0,a.jsx)(l.O_,{value:r,children:(0,a.jsx)(d,{className:e.className,children:(0,l.vT)(e.children)})},String(t))}},7663(e,t,r){r.d(t,{OC:()=>m,O_:()=>f,uc:()=>p,vT:()=>u});var a=r(4848),s=r(6540),n=r(6347),l=r(9989),i=r(6629),o=r(618),c=r(1367);function u(e){return s.Children.toArray(e).filter(e=>"\n"!==e)}function d({value:e,tabValues:t}){return t.some(t=>t.value===e)}function m(e){let t,{defaultValue:r,queryString:a=!1,groupId:u}=e,m=function(e){let{values:t,children:r}=e;return(0,s.useMemo)(()=>{let e=t??s.Children.toArray(r).flatMap(e=>{if(!e)return[];if((0,s.isValidElement)(e)&&function(e){let{props:t}=e;return!!t&&"object"==typeof t&&"value"in t}(e))return[e];let t="string"==typeof e.type?e.type:e.type.name;throw Error(`Docusaurus error: Bad <Tabs> child <${t}>: all children of the <Tabs> component should be <TabItem>, and every <TabItem> should have a unique "value" prop.
+If you do not want to pass on a "value" prop to the direct children of <Tabs>, you can also pass an explicit <Tabs values={...}> prop.`)}).map(({props:{value:e,label:t,attributes:r,default:a}})=>({value:e,label:t,attributes:r,default:a})),a=(0,o.XI)(e,(e,t)=>e.value===t.value);if(a.length>0)throw Error(`Docusaurus error: Duplicate values "${a.map(e=>`'${e.value}'`).join(", ")}" found in <Tabs>. Every value needs to be unique.`);return e},[t,r])}(e),[h,p]=(0,s.useState)(()=>(function({defaultValue:e,tabValues:t}){if(0===t.length)throw Error("Docusaurus error: the <Tabs> component requires at least one <TabItem> children component");if(e){if(!d({value:e,tabValues:t}))throw Error(`Docusaurus error: The <Tabs> has a defaultValue "${e}" but none of its children has the corresponding value. Available values are: ${t.map(e=>e.value).join(", ")}. If you intend to show no default tab, use defaultValue={null} instead.`);return e}let r=t.find(e=>e.default)??t[0];if(!r)throw Error("Unexpected error: 0 tabValues");return r.value})({defaultValue:r,tabValues:m})),[f,v]=function({queryString:e=!1,groupId:t}){let r=(0,n.W6)(),a=function({queryString:e=!1,groupId:t}){if("string"==typeof e)return e;if(!1===e)return null;if(!0===e&&!t)throw Error('Docusaurus error: The <Tabs> component groupId prop is required if queryString=true, because this value is used as the search param name. You can also provide an explicit value such as queryString="my-search-param".');return t??null}({queryString:e,groupId:t});return[(0,i.aZ)(a),(0,s.useCallback)(e=>{if(!a)return;let t=new URLSearchParams(r.location.search);t.set(a,e),r.replace({...r.location,search:t.toString()})},[a,r])]}({queryString:a,groupId:u}),[b,x]=function({groupId:e}){let t=e?`docusaurus.tab.${e}`:null,[r,a]=(0,c.Dv)(t);return[r,(0,s.useCallback)(e=>{t&&a.set(e)},[t,a])]}({groupId:u}),y=d({value:t=f??b,tabValues:m})?t:null;return(0,l.A)(()=>{y&&p(y)},[y]),{selectedValue:h,selectValue:(0,s.useCallback)(e=>{if(!d({value:e,tabValues:m}))throw Error(`Can't select invalid tab value=${e}`);p(e),v(e),x(e)},[v,x,m]),tabValues:m,lazy:e.lazy??!1,block:e.block??!1}}let h=(0,s.createContext)(null);function p(){let e=s.useContext(h);if(!e)throw Error("useTabsContext() must be used within a Tabs component");return e}function f(e){return(0,a.jsx)(h.Provider,{value:e.value,children:e.children})}},5741(e,t,r){r.r(t),r.d(t,{default:()=>S});var a=r(4848),s=r(4164),n=r(5310),l=r(898),i=r(1085),o=r(773),c=r(7250),u=r(1113),d=r(2072);let m="codeSampleStack_KddR",h=`public class ReportService(IFileSystem fileSystem)
+{
+    public void Save(string content)
+    {
+        fileSystem.Directory.CreateDirectory("reports");
+        fileSystem.File.WriteAllText("reports/latest.xml", content);
+    }
+}`,p=`[Fact]
+public async Task Save_WritesReportToReportsFolder()
+{
+    var fileSystem = new MockFileSystem();
+    var sut = new ReportService(fileSystem);
+
+    sut.Save("<report />");
+
+    await Expect.That(fileSystem.File.ReadAllText("reports/latest.xml"))
+        .IsEqualTo("<report />");
+}`,f=`public class CacheEntry(ITimeSystem timeSystem, TimeSpan ttl)
+{
+    private readonly DateTime _expiresAt = timeSystem.DateTime.UtcNow + ttl;
+
+    public bool IsExpired => timeSystem.DateTime.UtcNow >= _expiresAt;
+}`,v=`[Fact]
+public async Task IsExpired_ReturnsTrue_AfterTtlPasses()
+{
+    MockTimeSystem timeSystem = new(new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+    var entry = new CacheEntry(timeSystem, TimeSpan.FromMinutes(5));
+
+    await timeSystem.Task.Delay(TimeSpan.FromMinutes(6));
+
+    await Expect.That(entry.IsExpired).IsTrue();
+}`,b=`public class CorrelationIdProvider(IRandomSystem randomSystem)
+{
+    public string Next() => randomSystem.Guid.NewGuid().ToString();
+}`,x=`[Fact]
+public async Task Next_ReturnsConfiguredGuid_ForDeterministicTests()
+{
+    MockRandomSystem randomSystem = new(RandomProvider.Generate(
+        guidGenerator: () => Guid.Parse("11111111-1111-1111-1111-111111111111")));
+    var sut = new CorrelationIdProvider(randomSystem);
+
+    await Expect.That(sut.Next())
+        .IsEqualTo("11111111-1111-1111-1111-111111111111");
+}`;function y(){let{siteConfig:e}=(0,l.A)();return(0,a.jsx)("header",{className:(0,s.A)("hero hero--primary","heroBanner_qdFl"),children:(0,a.jsxs)("div",{className:"container",children:[(0,a.jsx)(d.A,{as:"h1",className:"hero__title",children:e.title}),(0,a.jsx)("p",{className:"hero__subtitle",children:e.tagline}),(0,a.jsx)("div",{className:"buttons_AeoN",children:(0,a.jsx)(n.A,{className:"button button--secondary button--lg",to:"/docs/abstractions/",children:"Get started"})})]})})}function T(){return(0,a.jsx)("section",{className:"codeSample_OMlE",children:(0,a.jsxs)("div",{className:"container",children:[(0,a.jsx)(d.A,{as:"h2",className:"text--center",children:"Inject. Mock. Test."}),(0,a.jsxs)("p",{className:(0,s.A)("text--center","codeSampleSubtitle_dtzZ"),children:["Depend on ",(0,a.jsx)("code",{children:"IFileSystem"}),", ",(0,a.jsx)("code",{children:"ITimeSystem"})," and"," ",(0,a.jsx)("code",{children:"IRandomSystem"})," in production. Swap in the in-memory mocks for tests - deterministic, cross-platform, no temp folders or"," ",(0,a.jsx)("code",{children:"Thread.Sleep"}),"."]}),(0,a.jsx)("div",{className:"codeSampleContainer_IM6t",children:(0,a.jsxs)(o.A,{groupId:"codeSample",className:"codeSampleTabs_NCUj",children:[(0,a.jsx)(c.A,{value:"file",label:"File system",default:!0,children:(0,a.jsxs)("div",{className:m,children:[(0,a.jsx)(u.A,{language:"csharp",title:"ReportService.cs",children:h}),(0,a.jsx)(u.A,{language:"csharp",title:"ReportServiceTests.cs",children:p})]})}),(0,a.jsx)(c.A,{value:"time",label:"Time system",children:(0,a.jsxs)("div",{className:m,children:[(0,a.jsx)(u.A,{language:"csharp",title:"CacheEntry.cs",children:f}),(0,a.jsx)(u.A,{language:"csharp",title:"CacheEntryTests.cs",children:v})]})}),(0,a.jsx)(c.A,{value:"random",label:"Random system",children:(0,a.jsxs)("div",{className:m,children:[(0,a.jsx)(u.A,{language:"csharp",title:"CorrelationIdProvider.cs",children:b}),(0,a.jsx)(u.A,{language:"csharp",title:"CorrelationIdProviderTests.cs",children:x})]})})]})})]})})}function S(){let{siteConfig:e}=(0,l.A)();return(0,a.jsxs)(i.A,{title:e.title,description:"Testably.Abstractions provides IFileSystem, ITimeSystem and IRandomSystem interfaces with a feature-complete in-memory MockFileSystem for unit tests.",children:[(0,a.jsx)(y,{}),(0,a.jsx)("main",{children:(0,a.jsx)(T,{})})]})}}}]);
