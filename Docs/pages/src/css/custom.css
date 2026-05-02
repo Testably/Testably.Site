@@ -29,10 +29,30 @@
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
 
-/* Right-align the last footer column on wider viewports. */
-@media (min-width: 997px) {
-  .footer__links .footer__col:last-child {
-    margin-left: auto;
-    text-align: right;
-  }
+/* Footer: each library is its own column with the project name on top
+   (linking to GitHub) and the NuGet badge below (linking to NuGet).
+   Both rows are centered horizontally within the column. */
+.footer {
+  padding-top: 1rem;
+}
+.footer__col {
+  text-align: center;
+}
+.footer__items {
+  margin-top: 0;
+}
+.footer__library-name {
+  display: inline-block;
+  color: var(--ifm-footer-title-color);
+  font-size: var(--ifm-h4-font-size);
+  font-weight: var(--ifm-heading-font-weight);
+  margin-bottom: 0.25rem;
+}
+.footer__library-name:hover {
+  color: var(--ifm-link-hover-color);
+  text-decoration: underline;
+}
+.footer__nuget-badge img {
+  display: inline-block;
+  vertical-align: middle;
 }

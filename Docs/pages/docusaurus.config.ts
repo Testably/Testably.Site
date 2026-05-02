@@ -50,12 +50,15 @@ const config: Config = {
       title: 'Testably.Abstractions',
       logo: {
         alt: 'Testably.Abstractions logo',
-        src: 'img/logo.png',
+        src: 'img/testably-abstractions-light.svg',
+        srcDark: 'img/testably-abstractions-dark.svg',
+        width: 32,
+        height: 32,
       },
       items: [
         {
           type: 'docSidebar',
-          sidebarId: 'docsSidebar',
+          sidebarId: 'abstractionsSidebar',
           position: 'left',
           label: 'Docs',
         },
@@ -65,23 +68,12 @@ const config: Config = {
       style: 'dark',
       links: [
         {
-          title: 'Docs',
-          items: [
-            {label: 'File system', to: '/docs/file-system/'},
-            {label: 'Time system', to: '/docs/time-system/'},
-            {label: 'Random system', to: '/docs/random-system/'},
-          ],
-        },
-        {
-          title: 'More',
           items: [
             {
-              label: 'GitHub',
-              href: 'https://github.com/Testably/Testably.Abstractions',
+              html: `<a href="https://github.com/Testably/Testably.Abstractions" class="footer__library-name">Testably.Abstractions</a>`,
             },
             {
-              label: 'NuGet',
-              href: 'https://www.nuget.org/packages/Testably.Abstractions',
+              html: `<a href="https://www.nuget.org/packages/Testably.Abstractions" class="footer__nuget-badge"><img src="https://img.shields.io/nuget/v/Testably.Abstractions?label=NuGet&logo=nuget" alt="Testably.Abstractions on NuGet"/></a>`,
             },
           ],
         },

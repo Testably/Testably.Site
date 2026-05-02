@@ -26,7 +26,7 @@ partial class Build
 	/// </summary>
 	static readonly Dictionary<string, string> AggregatedProjects = new()
 	{
-		{ "Testably.Abstractions", "" },
+		{ "Testably.Abstractions", "abstractions" },
 	};
 
 	Target Pages => _ => _
