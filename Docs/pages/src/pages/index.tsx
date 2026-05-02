@@ -1,68 +1,51 @@
 import type {ReactNode} from 'react';
 import clsx from 'clsx';
 import Link from '@docusaurus/Link';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-import CodeBlock from '@theme/CodeBlock';
 import Heading from '@theme/Heading';
+import ThemedImage from '@theme/ThemedImage';
 import styles from './index.module.css';
 
-const fileSystemProd =`public class ReportService(IFileSystem fileSystem)
-{
-    public void Save(string content)
-    {
-        fileSystem.Directory.CreateDirectory("reports");
-        fileSystem.File.WriteAllText("reports/latest.xml", content);
-    }
-}`;
+type Library = {
+  label: string;
+  href: string;
+  tagline: string;
+  description: string;
+  iconLight: string;
+  iconDark: string;
+};
 
-const fileSystemTest = `[Fact]
-public async Task Save_WritesReportToReportsFolder()
-{
-    var fileSystem = new MockFileSystem();
-    var sut = new ReportService(fileSystem);
-
-    sut.Save("<report />");
-
-    await Expect.That(fileSystem.File.ReadAllText("reports/latest.xml"))
-        .IsEqualTo("<report />");
-}`;
-
-const timeSystemProd = `public class CacheEntry(ITimeSystem timeSystem, TimeSpan ttl)
-{
-    private readonly DateTime _expiresAt = timeSystem.DateTime.UtcNow + ttl;
-
-    public bool IsExpired => timeSystem.DateTime.UtcNow >= _expiresAt;
-}`;
-
-const timeSystemTest = `[Fact]
-public async Task IsExpired_ReturnsTrue_AfterTtlPasses()
-{
-    MockTimeSystem timeSystem = new(new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc));
-    var entry = new CacheEntry(timeSystem, TimeSpan.FromMinutes(5));
-
-    await timeSystem.Task.Delay(TimeSpan.FromMinutes(6));
-
-    await Expect.That(entry.IsExpired).IsTrue();
-}`;
-
-const randomSystemProd = `public class CorrelationIdProvider(IRandomSystem randomSystem)
-{
-    public string Next() => randomSystem.Guid.NewGuid().ToString();
-}`;
-
-const randomSystemTest = `[Fact]
-public async Task Next_ReturnsConfiguredGuid_ForDeterministicTests()
-{
-    MockRandomSystem randomSystem = new(RandomProvider.Generate(
-        guidGenerator: () => Guid.Parse("11111111-1111-1111-1111-111111111111")));
-    var sut = new CorrelationIdProvider(randomSystem);
-
-    await Expect.That(sut.Next())
-        .IsEqualTo("11111111-1111-1111-1111-111111111111");
-}`;
+const libraries: Library[] = [
+  {
+    label: 'Testably.Abstractions',
+    href: '/docs/abstractions/',
+    tagline: 'Mock the unmockable.',
+    description:
+      'IFileSystem, ITimeSystem and IRandomSystem abstractions with feature-complete in-memory mocks for deterministic, cross-platform unit tests.',
+    iconLight: 'img/testably-abstractions-light.svg',
+    iconDark: 'img/testably-abstractions-dark.svg',
+  },
+  {
+    label: 'aweXpect',
+    href: '/docs/awexpect/',
+    tagline: 'Fluent expectations for .NET.',
+    description:
+      'A modern, async-first assertion library with a natural-language API. Plays well with xUnit, NUnit, MSTest and TUnit.',
+    iconLight: 'img/awexpect-light.svg',
+    iconDark: 'img/awexpect-dark.svg',
+  },
+  {
+    label: 'Mockolate',
+    href: '/docs/mockolate/',
+    tagline: 'AOT-friendly mocking via source generators.',
+    description:
+      'Strongly-typed, source-generator-based mocking for .NET. No runtime proxies, no reflection, native-AOT compatible.',
+    iconLight: 'img/mockolate-light.svg',
+    iconDark: 'img/mockolate-dark.svg',
+  },
+];
 
 function HomepageHeader() {
   const {siteConfig} = useDocusaurusContext();
@@ -73,64 +56,62 @@ function HomepageHeader() {
           {siteConfig.title}
         </Heading>
         <p className="hero__subtitle">{siteConfig.tagline}</p>
-        <div className={styles.buttons}>
-          <Link
-            className="button button--secondary button--lg"
-            to="/docs/abstractions/">
-            Get started
-          </Link>
-        </div>
       </div>
     </header>
   );
 }
 
-function HomepageCodeSample() {
+function LibraryCard({library}: {library: Library}) {
+  const lightSrc = useBaseUrl(library.iconLight);
+  const darkSrc = useBaseUrl(library.iconDark);
+  return (
+    <div className="col col--4" style={{marginBottom: '1.5rem'}}>
+      <div
+        style={{
+          padding: '1.5rem',
+          border: '1px solid var(--ifm-color-emphasis-200)',
+          borderRadius: 'var(--ifm-card-border-radius)',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          textAlign: 'center',
+        }}
+      >
+        <ThemedImage
+          sources={{light: lightSrc, dark: darkSrc}}
+          alt={`${library.label} logo`}
+          width={96}
+          height={96}
+          style={{marginBottom: '0.75rem'}}
+        />
+        <Heading as="h3">{library.label}</Heading>
+        <p style={{fontStyle: 'italic', color: 'var(--ifm-color-emphasis-700)'}}>
+          {library.tagline}
+        </p>
+        <p style={{flexGrow: 1}}>{library.description}</p>
+        <Link className="button button--primary" to={library.href}>
+          Read the docs
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+function LibraryCards() {
   return (
     <section className={styles.codeSample}>
       <div className="container">
-        <Heading as="h2" className="text--center">
-          Inject. Mock. Test.
-        </Heading>
-        <p className={clsx('text--center', styles.codeSampleSubtitle)}>
-          Depend on <code>IFileSystem</code>, <code>ITimeSystem</code> and{' '}
-          <code>IRandomSystem</code> in production. Swap in the in-memory mocks for
-          tests - deterministic, cross-platform, no temp folders or{' '}
-          <code>Thread.Sleep</code>.
-        </p>
-        <div className={styles.codeSampleContainer}>
-          <Tabs groupId="codeSample" className={styles.codeSampleTabs}>
-            <TabItem value="file" label="File system" default>
-              <div className={styles.codeSampleStack}>
-                <CodeBlock language="csharp" title="ReportService.cs">
-                  {fileSystemProd}
-                </CodeBlock>
-                <CodeBlock language="csharp" title="ReportServiceTests.cs">
-                  {fileSystemTest}
-                </CodeBlock>
-              </div>
-            </TabItem>
-            <TabItem value="time" label="Time system">
-              <div className={styles.codeSampleStack}>
-                <CodeBlock language="csharp" title="CacheEntry.cs">
-                  {timeSystemProd}
-                </CodeBlock>
-                <CodeBlock language="csharp" title="CacheEntryTests.cs">
-                  {timeSystemTest}
-                </CodeBlock>
-              </div>
-            </TabItem>
-            <TabItem value="random" label="Random system">
-              <div className={styles.codeSampleStack}>
-                <CodeBlock language="csharp" title="CorrelationIdProvider.cs">
-                  {randomSystemProd}
-                </CodeBlock>
-                <CodeBlock language="csharp" title="CorrelationIdProviderTests.cs">
-                  {randomSystemTest}
-                </CodeBlock>
-              </div>
-            </TabItem>
-          </Tabs>
+        <div className="row">
+          {libraries.map((library) => (
+            <LibraryCard key={library.label} library={library} />
+          ))}
+        </div>
+        <div className="text--center" style={{marginTop: '2rem'}}>
+          <p>
+            Looking for add-ons? See the{' '}
+            <Link to="/docs/extensions/">Extensions</Link> section.
+          </p>
         </div>
       </div>
     </section>
@@ -142,10 +123,11 @@ export default function Home(): ReactNode {
   return (
     <Layout
       title={siteConfig.title}
-      description="Testably.Abstractions provides IFileSystem, ITimeSystem and IRandomSystem interfaces with a feature-complete in-memory MockFileSystem for unit tests.">
+      description="Documentation for the Testably family of testing libraries: Testably.Abstractions, aweXpect and Mockolate."
+    >
       <HomepageHeader />
       <main>
-        <HomepageCodeSample />
+        <LibraryCards />
       </main>
     </Layout>
   );

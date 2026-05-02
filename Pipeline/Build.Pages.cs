@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -16,18 +15,45 @@ namespace Build;
 
 partial class Build
 {
-	const string GithubOrganization = "Testably";
-	const string SourceDocsPath = "Docs/pages/docs";
+	/// <summary>
+	///     A documentation slice contributed by a sibling repository.
+	/// </summary>
+	/// <param name="Organization">GitHub organization that owns the source repo.</param>
+	/// <param name="Repository">Source repository name.</param>
+	/// <param name="SourcePath">Path inside the source repo whose contents should be aggregated (e.g. <c>Docs/pages/docs</c>).</param>
+	/// <param name="TargetSubDirectory">Sub-directory under this site's <c>Docs/pages/docs/</c> where the slice lands.</param>
+	/// <param name="InlineReadme">
+	///     When true, fetch <c>README.md</c> from the source repo, drop everything before the first
+	///     <c>##</c> heading, and substitute the result into any <c>{README}</c> placeholder found in
+	///     a <c>00-*</c> file. Lets extension repos keep their public README and their first docs page
+	///     in sync without duplicating content.
+	/// </param>
+	record DocsSource(
+		string Organization,
+		string Repository,
+		string SourcePath,
+		string TargetSubDirectory,
+		bool InlineReadme = false);
 
 	/// <summary>
-	///     Source repositories whose <c>Docs/pages/docs/</c> content is aggregated into this site.
-	///     The key is the GitHub repository name, the value the subdirectory under
-	///     <c>Docs/pages/docs/</c> in this repo (empty string places content at the root of <c>docs/</c>).
+	///     The slices that compose the testably.org documentation portal. Order matters:
+	///     later sources may overlay files written by earlier ones (e.g. each extension
+	///     overwrites the placeholder <c>00-index.md</c> seeded by the bundled
+	///     <c>aweXpect/extensions</c> slice).
 	/// </summary>
-	static readonly Dictionary<string, string> AggregatedProjects = new()
-	{
-		{ "Testably.Abstractions", "abstractions" },
-	};
+	static readonly DocsSource[] AggregatedSources =
+	[
+		new("Testably", "Testably.Abstractions", "Docs/pages/docs",              "abstractions"),
+		new("Testably", "aweXpect",              "Docs/pages/docs/expectations", "awexpect"),
+		new("Testably", "aweXpect",              "Docs/pages/docs/extensions",   "extensions"),
+		new("Testably", "aweXpect.Json",         "Docs/pages",                   "extensions/project/Json",       InlineReadme: true),
+		new("Testably", "aweXpect.Mockolate",    "Docs/pages",                   "extensions/project/Mockolate",  InlineReadme: true),
+		new("Testably", "aweXpect.Reflection",   "Docs/pages",                   "extensions/project/Reflection", InlineReadme: true),
+		new("Testably", "aweXpect.T6e",          "Docs/pages",                   "extensions/project/T6e",        InlineReadme: true),
+		new("Testably", "aweXpect.Testably",     "Docs/pages",                   "extensions/project/Testably",   InlineReadme: true),
+		new("Testably", "aweXpect.Web",          "Docs/pages",                   "extensions/project/Web",        InlineReadme: true),
+		new("Testably", "Mockolate",             "Docs/pages",                   "mockolate"),
+	];
 
 	Target Pages => _ => _
 		.Executes(async () =>
@@ -35,36 +61,57 @@ partial class Build
 			AbsolutePath docsRoot = RootDirectory / "Docs" / "pages" / "docs";
 			docsRoot.CreateOrCleanDirectory();
 
-			foreach ((string project, string subDirectory) in AggregatedProjects)
+			foreach (DocsSource source in AggregatedSources)
 			{
-				AbsolutePath targetDirectory = string.IsNullOrEmpty(subDirectory)
+				AbsolutePath targetDirectory = string.IsNullOrEmpty(source.TargetSubDirectory)
 					? docsRoot
-					: docsRoot / subDirectory;
+					: docsRoot / source.TargetSubDirectory;
 				targetDirectory.CreateDirectory();
-				await DownloadDocsContent(project, targetDirectory);
+				await DownloadDocsContent(source, targetDirectory);
 			}
 		});
 
-	async Task DownloadDocsContent(string projectName, AbsolutePath baseDirectory)
+	async Task DownloadDocsContent(DocsSource source, AbsolutePath baseDirectory)
 	{
-		Log.Information($"Aggregate documentation from {projectName} into {baseDirectory}:");
+		Log.Information($"Aggregate {source.Organization}/{source.Repository}/{source.SourcePath} into {baseDirectory}:");
 
 		using HttpClient client = new();
-		client.DefaultRequestHeaders.UserAgent.ParseAdd(GithubOrganization);
+		client.DefaultRequestHeaders.UserAgent.ParseAdd("Testably.Site");
 		if (!string.IsNullOrEmpty(GithubToken))
 		{
 			client.DefaultRequestHeaders.Authorization =
 				new AuthenticationHeaderValue("Bearer", GithubToken);
 		}
 
+		// README inlining: fetch once, then a stateful transformer substitutes the
+		// stripped README content into the first 00-* file containing {README}.
+		string readmeContent = source.InlineReadme
+			? await FetchReadmeIntro(client, source)
+			: string.Empty;
+
+		Func<string, string, string>? transformer = source.InlineReadme
+			? (name, content) =>
+			{
+				if (name.StartsWith("00-", StringComparison.Ordinal) &&
+				    content.Contains("{README}", StringComparison.Ordinal))
+				{
+					string substitution = readmeContent.Replace("Docs/pages/", "./", StringComparison.Ordinal);
+					content = content.Replace("{README}", substitution, StringComparison.Ordinal);
+					readmeContent = string.Empty; // substitute into the first match only
+					Log.Information($"  Inlined README.md into {name}");
+				}
+				return content;
+			}
+			: null;
+
 		HttpResponseMessage response = await client.GetAsync(
-			$"https://api.github.com/repos/{GithubOrganization}/{projectName}/contents/{SourceDocsPath}");
+			$"https://api.github.com/repos/{source.Organization}/{source.Repository}/contents/{source.SourcePath}");
 
 		string responseContent = await response.Content.ReadAsStringAsync();
 		if (!response.IsSuccessStatusCode)
 		{
 			throw new InvalidOperationException(
-				$"Could not list '{SourceDocsPath}' contents of {GithubOrganization}/{projectName}: {responseContent}");
+				$"Could not list '{source.SourcePath}' contents of {source.Organization}/{source.Repository}: {responseContent}");
 		}
 
 		try
@@ -72,7 +119,7 @@ partial class Build
 			JsonDocument jsonDocument = JsonDocument.Parse(responseContent);
 			foreach (JsonElement file in jsonDocument.RootElement.EnumerateArray())
 			{
-				await DownloadFileOrDirectory(client, projectName, "/", file, baseDirectory);
+				await DownloadFileOrDirectory(client, source, "/", file, baseDirectory, transformer);
 			}
 		}
 		catch (JsonException e)
@@ -81,14 +128,31 @@ partial class Build
 		}
 	}
 
-	async Task DownloadFileOrDirectory(HttpClient client, string projectName, string subPath,
-		JsonElement fileOrDirectory, AbsolutePath targetDirectory)
+	async Task<string> FetchReadmeIntro(HttpClient client, DocsSource source)
+	{
+		HttpResponseMessage response = await client.GetAsync(
+			$"https://api.github.com/repos/{source.Organization}/{source.Repository}/contents/README.md");
+		string responseContent = await response.Content.ReadAsStringAsync();
+		if (!response.IsSuccessStatusCode)
+		{
+			Log.Warning($"Could not fetch README.md from {source.Organization}/{source.Repository}: {response.StatusCode}");
+			return string.Empty;
+		}
+
+		using JsonDocument document = JsonDocument.Parse(responseContent);
+		string readme = Base64Decode(document.RootElement.GetProperty("content").GetString()!);
+		int indexOfFirstH2 = readme.IndexOf("\n##", StringComparison.Ordinal);
+		return indexOfFirstH2 > 0 ? readme.Substring(indexOfFirstH2) : string.Empty;
+	}
+
+	async Task DownloadFileOrDirectory(HttpClient client, DocsSource source, string subPath,
+		JsonElement fileOrDirectory, AbsolutePath targetDirectory, Func<string, string, string>? transformer = null)
 	{
 		string name = fileOrDirectory.GetProperty("name").GetString()!;
 		string filePath = targetDirectory / name;
 		HttpResponseMessage fileResponse =
 			await client.GetAsync(
-				$"https://api.github.com/repos/{GithubOrganization}/{projectName}/contents/{SourceDocsPath}{subPath}{name}");
+				$"https://api.github.com/repos/{source.Organization}/{source.Repository}/contents/{source.SourcePath}{subPath}{name}");
 		string fileResponseContent = await fileResponse.Content.ReadAsStringAsync();
 		using JsonDocument document = JsonDocument.Parse(fileResponseContent);
 		if (document.RootElement.ValueKind == JsonValueKind.Array)
@@ -97,12 +161,16 @@ partial class Build
 			subDirectory.CreateDirectory();
 			foreach (JsonElement subFileOrDirectory in document.RootElement.EnumerateArray())
 			{
-				await DownloadFileOrDirectory(client, projectName, subPath + name + "/", subFileOrDirectory, subDirectory);
+				await DownloadFileOrDirectory(client, source, subPath + name + "/", subFileOrDirectory, subDirectory, transformer);
 			}
 		}
 		else
 		{
 			string content = Base64Decode(document.RootElement.GetProperty("content").GetString()!);
+			if (transformer != null)
+			{
+				content = transformer(name, content);
+			}
 			await File.WriteAllTextAsync(filePath, content);
 			Log.Information($"  {name} under {filePath}");
 		}
