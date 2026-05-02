@@ -1,0 +1,58 @@
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* Light mode - Material Pink 700 (#c2185b) base. */
+:root {
+  --ifm-color-primary: #c2185b;
+  --ifm-color-primary-dark: #af1652;
+  --ifm-color-primary-darker: #a5154d;
+  --ifm-color-primary-darkest: #88113f;
+  --ifm-color-primary-light: #d51865;
+  --ifm-color-primary-lighter: #db256d;
+  --ifm-color-primary-lightest: #e34782;
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+}
+
+/* Dark mode - lighter, more vibrant variant of the same hue for contrast on dark backgrounds. */
+[data-theme='dark'] {
+  --ifm-color-primary: #eb6098;
+  --ifm-color-primary-dark: #e84789;
+  --ifm-color-primary-darker: #e63a82;
+  --ifm-color-primary-darkest: #c8246e;
+  --ifm-color-primary-light: #ed75a4;
+  --ifm-color-primary-lighter: #f084ad;
+  --ifm-color-primary-lightest: #f4a8c2;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+}
+
+/* Footer: each library is its own column with the project name on top
+   (linking to GitHub) and the NuGet badge below (linking to NuGet).
+   Both rows are centered horizontally within the column. */
+.footer {
+  padding-top: 1rem;
+}
+.footer__col {
+  text-align: center;
+}
+.footer__items {
+  margin-top: 0;
+}
+.footer__library-name {
+  display: inline-block;
+  color: var(--ifm-footer-title-color);
+  font-size: var(--ifm-h4-font-size);
+  font-weight: var(--ifm-heading-font-weight);
+  margin-bottom: 0.25rem;
+}
+.footer__library-name:hover {
+  color: var(--ifm-link-hover-color);
+  text-decoration: underline;
+}
+.footer__nuget-badge img {
+  display: inline-block;
+  vertical-align: middle;
+}

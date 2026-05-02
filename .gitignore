@@ -396,3 +396,13 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Nuke build
+.nuke/temp/
+
+# Docusaurus
+Docs/pages/.docusaurus/
+Docs/pages/build/
+
+# Aggregated content (fetched at build time by ./build.sh Pages from sibling repositories)
+Docs/pages/docs/
