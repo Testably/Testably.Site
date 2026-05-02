@@ -23,7 +23,7 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Publish
-      run: dotnet publish -c Release --output /home/runner/work/Testably.Server/Testably.Server/publish/ Source/Testably.Server/Testably.Server.csproj
+      run: dotnet publish -c Release --output ${{ github.workspace }}/publish/ Source/Testably.Server/Testably.Server.csproj
     - name: Shutdown webpage
       shell: pwsh
       continue-on-error: true
@@ -41,5 +41,5 @@ jobs:
         host: ftps://access938340810.webspace-data.io:990
         user: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        localDir: /home/runner/work/Testably.Server/Testably.Server/publish/
+        localDir: ${{ github.workspace }}/publish/
         remoteDir: "."
