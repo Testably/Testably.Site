@@ -30,10 +30,10 @@ partial class Build
 	/// </summary>
 	static readonly DocsSource[] AggregatedSources =
 	[
-		new("Testably",  "Testably.Abstractions", "Docs/pages/docs",              "abstractions"),
-		new("aweXpect",  "aweXpect",              "Docs/pages/docs/expectations", "awexpect"),
-		new("aweXpect",  "aweXpect",              "Docs/pages/docs/extensions",   "extensions"),
-		new("aweXpect",  "Mockolate",             "Docs/pages",                   "mockolate"),
+		new("Testably", "Testably.Abstractions", "Docs/pages/docs",              "abstractions"),
+		new("Testably", "aweXpect",              "Docs/pages/docs/expectations", "awexpect"),
+		new("Testably", "aweXpect",              "Docs/pages/docs/extensions",   "extensions"),
+		new("Testably", "Mockolate",             "Docs/pages",                   "mockolate"),
 	];
 
 	Target Pages => _ => _
