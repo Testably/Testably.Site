@@ -20,7 +20,7 @@ type Library = {
 const libraries: Library[] = [
   {
     label: 'Testably.Abstractions',
-    href: '/docs/abstractions/',
+    href: '/abstractions/',
     tagline: 'Mock the unmockable.',
     description:
       'IFileSystem, ITimeSystem and IRandomSystem abstractions with feature-complete in-memory mocks for deterministic, cross-platform unit tests.',
@@ -29,7 +29,7 @@ const libraries: Library[] = [
   },
   {
     label: 'aweXpect',
-    href: '/docs/awexpect/',
+    href: '/awexpect/',
     tagline: 'Fluent expectations for .NET.',
     description:
       'A modern, async-first assertion library with a natural-language API. Plays well with xUnit, NUnit, MSTest and TUnit.',
@@ -38,7 +38,7 @@ const libraries: Library[] = [
   },
   {
     label: 'Mockolate',
-    href: '/docs/mockolate/',
+    href: '/mockolate/',
     tagline: 'AOT-friendly mocking via source generators.',
     description:
       'Strongly-typed, source-generator-based mocking for .NET. No runtime proxies, no reflection, native-AOT compatible.',
@@ -110,7 +110,7 @@ function LibraryCards() {
         <div className="text--center" style={{marginTop: '2rem'}}>
           <p>
             Looking for add-ons? See the{' '}
-            <Link to="/docs/extensions/">Extensions</Link> section.
+            <Link to="/extensions/">Extensions</Link> section.
           </p>
         </div>
       </div>

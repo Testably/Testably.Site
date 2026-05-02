@@ -9,7 +9,7 @@
  * the bracket beige defined in `:root`.
  */
 
-const SECTION_PATTERN = /^\/docs\/(abstractions|awexpect|mockolate|extensions)/;
+const SECTION_PATTERN = /^\/(abstractions|awexpect|mockolate|extensions)(?:\/|$)/;
 
 function getSection(pathname: string): string | null {
   const match = pathname.match(SECTION_PATTERN);
