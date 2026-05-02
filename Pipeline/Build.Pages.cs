@@ -49,7 +49,6 @@ partial class Build
 		new("Testably", "aweXpect.Json",         "Docs/pages",                   "extensions/project/Json",       InlineReadme: true),
 		new("Testably", "aweXpect.Mockolate",    "Docs/pages",                   "extensions/project/Mockolate",  InlineReadme: true),
 		new("Testably", "aweXpect.Reflection",   "Docs/pages",                   "extensions/project/Reflection", InlineReadme: true),
-		new("Testably", "aweXpect.T6e",          "Docs/pages",                   "extensions/project/T6e",        InlineReadme: true),
 		new("Testably", "aweXpect.Testably",     "Docs/pages",                   "extensions/project/Testably",   InlineReadme: true),
 		new("Testably", "aweXpect.Web",          "Docs/pages",                   "extensions/project/Web",        InlineReadme: true),
 		new("Testably", "Mockolate",             "Docs/pages",                   "mockolate"),
@@ -110,8 +109,9 @@ partial class Build
 		string responseContent = await response.Content.ReadAsStringAsync();
 		if (!response.IsSuccessStatusCode)
 		{
-			throw new InvalidOperationException(
-				$"Could not list '{source.SourcePath}' contents of {source.Organization}/{source.Repository}: {responseContent}");
+			Log.Warning(
+				$"Skipping {source.Organization}/{source.Repository}: could not list '{source.SourcePath}' ({(int)response.StatusCode} {response.StatusCode}): {responseContent}");
+			return;
 		}
 
 		try
