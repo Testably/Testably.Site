@@ -13,7 +13,7 @@ into the local `Docs/pages/docs/` directory, builds the site, and deploys to Git
 [docs.testably.org](https://docs.testably.org).
 
 The list of aggregated source repositories lives in `Pipeline/Build.Pages.cs`
-(`AggregatedProjects` dictionary).
+(`AggregatedSources` array — one entry per docs slice; a single repo can contribute multiple slices).
 
 ## Layout
 

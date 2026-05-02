@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -16,18 +15,26 @@ namespace Build;
 
 partial class Build
 {
-	const string GithubOrganization = "Testably";
-	const string SourceDocsPath = "Docs/pages/docs";
+	/// <summary>
+	///     A documentation slice contributed by a sibling repository.
+	/// </summary>
+	/// <param name="Organization">GitHub organization that owns the source repo.</param>
+	/// <param name="Repository">Source repository name.</param>
+	/// <param name="SourcePath">Path inside the source repo whose contents should be aggregated (e.g. <c>Docs/pages/docs</c>).</param>
+	/// <param name="TargetSubDirectory">Sub-directory under this site's <c>Docs/pages/docs/</c> where the slice lands.</param>
+	record DocsSource(string Organization, string Repository, string SourcePath, string TargetSubDirectory);
 
 	/// <summary>
-	///     Source repositories whose <c>Docs/pages/docs/</c> content is aggregated into this site.
-	///     The key is the GitHub repository name, the value the subdirectory under
-	///     <c>Docs/pages/docs/</c> in this repo (empty string places content at the root of <c>docs/</c>).
+	///     The slices that compose the testably.org documentation portal. One repository can
+	///     contribute multiple slices (e.g. aweXpect contributes both its own docs and its extensions).
 	/// </summary>
-	static readonly Dictionary<string, string> AggregatedProjects = new()
-	{
-		{ "Testably.Abstractions", "abstractions" },
-	};
+	static readonly DocsSource[] AggregatedSources =
+	[
+		new("Testably",  "Testably.Abstractions", "Docs/pages/docs",              "abstractions"),
+		new("aweXpect",  "aweXpect",              "Docs/pages/docs/expectations", "awexpect"),
+		new("aweXpect",  "aweXpect",              "Docs/pages/docs/extensions",   "extensions"),
+		new("aweXpect",  "Mockolate",             "Docs/pages",                   "mockolate"),
+	];
 
 	Target Pages => _ => _
 		.Executes(async () =>
@@ -35,22 +42,22 @@ partial class Build
 			AbsolutePath docsRoot = RootDirectory / "Docs" / "pages" / "docs";
 			docsRoot.CreateOrCleanDirectory();
 
-			foreach ((string project, string subDirectory) in AggregatedProjects)
+			foreach (DocsSource source in AggregatedSources)
 			{
-				AbsolutePath targetDirectory = string.IsNullOrEmpty(subDirectory)
+				AbsolutePath targetDirectory = string.IsNullOrEmpty(source.TargetSubDirectory)
 					? docsRoot
-					: docsRoot / subDirectory;
+					: docsRoot / source.TargetSubDirectory;
 				targetDirectory.CreateDirectory();
-				await DownloadDocsContent(project, targetDirectory);
+				await DownloadDocsContent(source, targetDirectory);
 			}
 		});
 
-	async Task DownloadDocsContent(string projectName, AbsolutePath baseDirectory)
+	async Task DownloadDocsContent(DocsSource source, AbsolutePath baseDirectory)
 	{
-		Log.Information($"Aggregate documentation from {projectName} into {baseDirectory}:");
+		Log.Information($"Aggregate {source.Organization}/{source.Repository}/{source.SourcePath} into {baseDirectory}:");
 
 		using HttpClient client = new();
-		client.DefaultRequestHeaders.UserAgent.ParseAdd(GithubOrganization);
+		client.DefaultRequestHeaders.UserAgent.ParseAdd("Testably.Site");
 		if (!string.IsNullOrEmpty(GithubToken))
 		{
 			client.DefaultRequestHeaders.Authorization =
@@ -58,13 +65,13 @@ partial class Build
 		}
 
 		HttpResponseMessage response = await client.GetAsync(
-			$"https://api.github.com/repos/{GithubOrganization}/{projectName}/contents/{SourceDocsPath}");
+			$"https://api.github.com/repos/{source.Organization}/{source.Repository}/contents/{source.SourcePath}");
 
 		string responseContent = await response.Content.ReadAsStringAsync();
 		if (!response.IsSuccessStatusCode)
 		{
 			throw new InvalidOperationException(
-				$"Could not list '{SourceDocsPath}' contents of {GithubOrganization}/{projectName}: {responseContent}");
+				$"Could not list '{source.SourcePath}' contents of {source.Organization}/{source.Repository}: {responseContent}");
 		}
 
 		try
@@ -72,7 +79,7 @@ partial class Build
 			JsonDocument jsonDocument = JsonDocument.Parse(responseContent);
 			foreach (JsonElement file in jsonDocument.RootElement.EnumerateArray())
 			{
-				await DownloadFileOrDirectory(client, projectName, "/", file, baseDirectory);
+				await DownloadFileOrDirectory(client, source, "/", file, baseDirectory);
 			}
 		}
 		catch (JsonException e)
@@ -81,14 +88,14 @@ partial class Build
 		}
 	}
 
-	async Task DownloadFileOrDirectory(HttpClient client, string projectName, string subPath,
+	async Task DownloadFileOrDirectory(HttpClient client, DocsSource source, string subPath,
 		JsonElement fileOrDirectory, AbsolutePath targetDirectory)
 	{
 		string name = fileOrDirectory.GetProperty("name").GetString()!;
 		string filePath = targetDirectory / name;
 		HttpResponseMessage fileResponse =
 			await client.GetAsync(
-				$"https://api.github.com/repos/{GithubOrganization}/{projectName}/contents/{SourceDocsPath}{subPath}{name}");
+				$"https://api.github.com/repos/{source.Organization}/{source.Repository}/contents/{source.SourcePath}{subPath}{name}");
 		string fileResponseContent = await fileResponse.Content.ReadAsStringAsync();
 		using JsonDocument document = JsonDocument.Parse(fileResponseContent);
 		if (document.RootElement.ValueKind == JsonValueKind.Array)
@@ -97,7 +104,7 @@ partial class Build
 			subDirectory.CreateDirectory();
 			foreach (JsonElement subFileOrDirectory in document.RootElement.EnumerateArray())
 			{
-				await DownloadFileOrDirectory(client, projectName, subPath + name + "/", subFileOrDirectory, subDirectory);
+				await DownloadFileOrDirectory(client, source, subPath + name + "/", subFileOrDirectory, subDirectory);
 			}
 		}
 		else

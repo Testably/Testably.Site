@@ -1,11 +1,45 @@
 /**
- * Any CSS included here will be global. The classic template
- * bundles Infima by default. Infima is a CSS framework designed to
- * work well for content-centric websites.
+ * Per-section theming. The `data-section` attribute on <html> is set by
+ * `src/clientModules/sectionTheme.ts` based on the current route.
+ *
+ * Colors:
+ *   - Default / Extensions: bracket beige #c8c0b4 (matches the SVG brackets).
+ *   - Abstractions: raspberry / pink (light / dark).
+ *   - aweXpect:     forest    / mint.
+ *   - Mockolate:    chocolate / tan.
  */
 
-/* Light mode - Material Pink 700 (#c2185b) base. */
+/* ───── Default (landing page, /docs/extensions/*) ─────
+ * Light mode: darker warm neutral (the bracket beige #c8c0b4 has poor
+ *             contrast against the white page background).
+ * Dark mode:  the bracket beige itself, which reads well on dark.
+ * The SVG bracket color is unchanged in both — only the theme primary
+ * differs by mode.
+ */
 :root {
+  --ifm-color-primary: #75674e;
+  --ifm-color-primary-dark: #6c5f48;
+  --ifm-color-primary-darker: #665a44;
+  --ifm-color-primary-darkest: #564c3a;
+  --ifm-color-primary-light: #7e6f54;
+  --ifm-color-primary-lighter: #84745a;
+  --ifm-color-primary-lightest: #927e63;
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+}
+[data-theme='dark'] {
+  --ifm-color-primary: #c8c0b4;
+  --ifm-color-primary-dark: #c0b8aa;
+  --ifm-color-primary-darker: #bcb3a3;
+  --ifm-color-primary-darkest: #ada48f;
+  --ifm-color-primary-light: #cfc8be;
+  --ifm-color-primary-lighter: #d4cdc4;
+  --ifm-color-primary-lightest: #e0dad3;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+}
+
+/* ───── Abstractions: #c2185b raspberry / #ec407a ───── */
+html[data-section='abstractions'] {
   --ifm-color-primary: #c2185b;
   --ifm-color-primary-dark: #af1652;
   --ifm-color-primary-darker: #a5154d;
@@ -13,20 +47,55 @@
   --ifm-color-primary-light: #d51865;
   --ifm-color-primary-lighter: #db256d;
   --ifm-color-primary-lightest: #e34782;
-  --ifm-code-font-size: 95%;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+}
+html[data-theme='dark'][data-section='abstractions'] {
+  --ifm-color-primary: #ec407a;
+  --ifm-color-primary-dark: #e92e6f;
+  --ifm-color-primary-darker: #e72367;
+  --ifm-color-primary-darkest: #d51b5e;
+  --ifm-color-primary-light: #ee5285;
+  --ifm-color-primary-lighter: #f0608d;
+  --ifm-color-primary-lightest: #f37ea3;
 }
 
-/* Dark mode - lighter, more vibrant variant of the same hue for contrast on dark backgrounds. */
-[data-theme='dark'] {
-  --ifm-color-primary: #eb6098;
-  --ifm-color-primary-dark: #e84789;
-  --ifm-color-primary-darker: #e63a82;
-  --ifm-color-primary-darkest: #c8246e;
-  --ifm-color-primary-light: #ed75a4;
-  --ifm-color-primary-lighter: #f084ad;
-  --ifm-color-primary-lightest: #f4a8c2;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+/* ───── aweXpect: #2e7d32 forest / #66bb6a ───── */
+html[data-section='awexpect'] {
+  --ifm-color-primary: #2e7d32;
+  --ifm-color-primary-dark: #2a712f;
+  --ifm-color-primary-darker: #276a2c;
+  --ifm-color-primary-darkest: #205724;
+  --ifm-color-primary-light: #338a37;
+  --ifm-color-primary-lighter: #36923a;
+  --ifm-color-primary-lightest: #3da542;
+}
+html[data-theme='dark'][data-section='awexpect'] {
+  --ifm-color-primary: #66bb6a;
+  --ifm-color-primary-dark: #5db662;
+  --ifm-color-primary-darker: #57b25d;
+  --ifm-color-primary-darkest: #4ba252;
+  --ifm-color-primary-light: #75c578;
+  --ifm-color-primary-lighter: #7fc983;
+  --ifm-color-primary-lightest: #97d39a;
+}
+
+/* ───── Mockolate: #5d3a1f chocolate / #c89a6e ───── */
+html[data-section='mockolate'] {
+  --ifm-color-primary: #5d3a1f;
+  --ifm-color-primary-dark: #50331c;
+  --ifm-color-primary-darker: #4b2f1a;
+  --ifm-color-primary-darkest: #382414;
+  --ifm-color-primary-light: #6a4123;
+  --ifm-color-primary-lighter: #714525;
+  --ifm-color-primary-lightest: #84512b;
+}
+html[data-theme='dark'][data-section='mockolate'] {
+  --ifm-color-primary: #c89a6e;
+  --ifm-color-primary-dark: #c39064;
+  --ifm-color-primary-darker: #c08960;
+  --ifm-color-primary-darkest: #b87b50;
+  --ifm-color-primary-light: #cda378;
+  --ifm-color-primary-lighter: #d0aa81;
+  --ifm-color-primary-lightest: #d8b696;
 }
 
 /* Footer: each library is its own column with the project name on top

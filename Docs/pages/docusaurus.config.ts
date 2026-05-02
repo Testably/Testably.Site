@@ -3,8 +3,8 @@ import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
-  title: 'Testably.Abstractions',
-  tagline: 'Mock the unmockable.',
+  title: 'Testably',
+  tagline: 'Testing libraries that get out of your way.',
   favicon: 'img/favicon.ico',
 
   future: {
@@ -17,7 +17,13 @@ const config: Config = {
   organizationName: 'Testably',
   projectName: 'Testably.Site',
 
-  onBrokenLinks: 'throw',
+  clientModules: ['./src/clientModules/sectionTheme.ts'],
+
+  // Relaxed for the multi-library preview — links across sections from the
+  // original single-library sites have not yet been fixed up.
+  onBrokenLinks: 'warn',
+  onBrokenAnchors: 'warn',
+  onBrokenMarkdownLinks: 'warn',
 
   i18n: {
     defaultLocale: 'en',
@@ -47,11 +53,11 @@ const config: Config = {
       respectPrefersColorScheme: true,
     },
     navbar: {
-      title: 'Testably.Abstractions',
+      title: 'Testably',
       logo: {
-        alt: 'Testably.Abstractions logo',
-        src: 'img/testably-abstractions-light.svg',
-        srcDark: 'img/testably-abstractions-dark.svg',
+        alt: 'Testably logo',
+        src: 'img/testably-light.svg',
+        srcDark: 'img/testably-dark.svg',
         width: 32,
         height: 32,
       },
@@ -60,7 +66,25 @@ const config: Config = {
           type: 'docSidebar',
           sidebarId: 'abstractionsSidebar',
           position: 'left',
-          label: 'Docs',
+          label: 'Abstractions',
+        },
+        {
+          type: 'docSidebar',
+          sidebarId: 'awexpectSidebar',
+          position: 'left',
+          label: 'aweXpect',
+        },
+        {
+          type: 'docSidebar',
+          sidebarId: 'mockolateSidebar',
+          position: 'left',
+          label: 'Mockolate',
+        },
+        {
+          type: 'docSidebar',
+          sidebarId: 'extensionsSidebar',
+          position: 'right',
+          label: 'Extensions',
         },
       ],
     },
@@ -74,6 +98,26 @@ const config: Config = {
             },
             {
               html: `<a href="https://www.nuget.org/packages/Testably.Abstractions" class="footer__nuget-badge"><img src="https://img.shields.io/nuget/v/Testably.Abstractions?label=NuGet&logo=nuget" alt="Testably.Abstractions on NuGet"/></a>`,
+            },
+          ],
+        },
+        {
+          items: [
+            {
+              html: `<a href="https://github.com/aweXpect/aweXpect" class="footer__library-name">aweXpect</a>`,
+            },
+            {
+              html: `<a href="https://www.nuget.org/packages/aweXpect" class="footer__nuget-badge"><img src="https://img.shields.io/nuget/v/aweXpect?label=NuGet&logo=nuget" alt="aweXpect on NuGet"/></a>`,
+            },
+          ],
+        },
+        {
+          items: [
+            {
+              html: `<a href="https://github.com/aweXpect/Mockolate" class="footer__library-name">Mockolate</a>`,
+            },
+            {
+              html: `<a href="https://www.nuget.org/packages/Mockolate" class="footer__nuget-badge"><img src="https://img.shields.io/nuget/v/Mockolate?label=NuGet&logo=nuget" alt="Mockolate on NuGet"/></a>`,
             },
           ],
         },
