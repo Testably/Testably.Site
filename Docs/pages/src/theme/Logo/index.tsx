@@ -32,7 +32,7 @@ const DEFAULT_LOGO = {
   dark: 'img/testably-dark.svg',
 };
 
-const SECTION_PATTERN = /^\/docs\/(abstractions|awexpect|mockolate)/;
+const SECTION_PATTERN = /^\/(abstractions|awexpect|mockolate)(?:\/|$)/;
 
 function pickLogo(pathname: string) {
   const match = pathname.match(SECTION_PATTERN);
