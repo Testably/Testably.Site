@@ -91,6 +91,12 @@ const config: Config = {
           position: 'right',
           label: 'Extensions',
         },
+        {
+          type: 'docSidebar',
+          sidebarId: 'chronologySidebar',
+          position: 'right',
+          label: 'Chronology',
+        },
       ],
     },
     footer: {
