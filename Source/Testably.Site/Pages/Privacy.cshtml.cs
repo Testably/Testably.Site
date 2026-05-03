@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
 
-namespace Testably.Server.Pages;
+namespace Testably.Site.Pages;
 
 public class PrivacyModel : PageModel
 {

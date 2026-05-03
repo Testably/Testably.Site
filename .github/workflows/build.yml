@@ -23,7 +23,7 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Publish
-      run: dotnet publish -c Release --output ${{ github.workspace }}/publish/ Source/Testably.Server/Testably.Server.csproj
+      run: dotnet publish -c Release --output ${{ github.workspace }}/publish/ Source/Testably.Site/Testably.Site.csproj
     - name: Shutdown webpage
       shell: pwsh
       continue-on-error: true

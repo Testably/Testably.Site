@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Text.Json;
 using Serilog;
 
-namespace Testably.Server;
+namespace Testably.Site;
 
 public class Program
 {

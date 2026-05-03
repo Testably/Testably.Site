@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Testably.Server.Controllers;
+namespace Testably.Site.Controllers;
 
 [ApiController]
 [Route("lifetime")]

@@ -1,4 +1,4 @@
-﻿namespace Testably.Server.Models;
+﻿namespace Testably.Site.Models;
 
 public class WebhookModel<T>
 {

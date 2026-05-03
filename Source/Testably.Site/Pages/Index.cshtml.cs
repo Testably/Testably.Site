@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Testably.Server.Pages;
+namespace Testably.Site.Pages;
 
 public class IndexModel : PageModel
 {

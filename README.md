@@ -17,7 +17,7 @@ The list of aggregated source repositories lives in `Pipeline/Build.Pages.cs`
 
 ## Layout
 
-- `Source/Testably.Server/` — ASP.NET Core service for shared webhooks (e.g. PR title / conventional-commits status check).
+- `Source/Testably.Site/` — ASP.NET Core service for shared webhooks (e.g. PR title / conventional-commits status check).
 - `Docs/pages/` — Docusaurus scaffold. The `docs/` subdirectory is fetched at build time and is gitignored.
 - `Pipeline/` — [Nuke](https://nuke.build/) build with the `Pages` target that aggregates docs from sibling repositories.
 

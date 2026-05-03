@@ -3,18 +3,18 @@
     <Project Path="Pipeline/Build.csproj" />
   </Folder>
   <Folder Name="/Tests/">
-    <Project Path="Tests/Testably.Server.Tests/Testably.Server.Tests.csproj" />
+    <Project Path="Tests/Testably.Site.Tests/Testably.Site.Tests.csproj" />
   </Folder>
   <Folder Name="/_/">
     <File Path=".gitignore" />
     <File Path="LICENSE" />
     <File Path="README.md" />
-    <File Path="Testably.Server.sln.DotSettings" />
+    <File Path="Testably.Site.sln.DotSettings" />
   </Folder>
   <Folder Name="/_/.github/" />
   <Folder Name="/_/.github/workflows/">
     <File Path=".github/workflows/build.yml" />
     <File Path=".github/workflows/ci.yml" />
   </Folder>
-  <Project Path="Source/Testably.Server/Testably.Server.csproj" />
+  <Project Path="Source/Testably.Site/Testably.Site.csproj" />
 </Solution>

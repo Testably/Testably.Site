@@ -3,9 +3,9 @@ using System.Reflection;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Testably.Server.Models;
+using Testably.Site.Models;
 
-namespace Testably.Server.Controllers;
+namespace Testably.Site.Controllers;
 
 [ApiController]
 [Route("pr-status-check")]

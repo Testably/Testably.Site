@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Source\Testably.Server\Testably.Server.csproj" />
+    <ProjectReference Include="..\..\Source\Testably.Site\Testably.Site.csproj" />
   </ItemGroup>
 
   <ItemGroup>
