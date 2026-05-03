@@ -10,6 +10,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testably.Server.Tests", "Tests\Testably.Server.Tests\Testably.Server.Tests.csproj", "{4FA12A15-D59A-4D97-A300-0CEBEB196AAB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_", "_", "{C8FAFB67-C8F7-4E23-A599-9527195C158D}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		LICENSE = LICENSE
+		README.md = README.md
+		Testably.Server.sln.DotSettings = Testably.Server.sln.DotSettings
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{864BF8A5-9FCB-4C03-AC86-85D52FCB4DE2}"
 EndProject
@@ -18,6 +24,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		.github\workflows\build.yml = .github\workflows\build.yml
 		.github\workflows\ci.yml = .github\workflows\ci.yml
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Build", "Pipeline\Build.csproj", "{607239F0-A75D-4A0C-8653-FCB3088D6087}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pipeline", "Pipeline", "{24AAB199-6AA0-4CEA-A522-90CA63BE30B5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +43,10 @@ Global
 		{4FA12A15-D59A-4D97-A300-0CEBEB196AAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4FA12A15-D59A-4D97-A300-0CEBEB196AAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4FA12A15-D59A-4D97-A300-0CEBEB196AAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{607239F0-A75D-4A0C-8653-FCB3088D6087}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{607239F0-A75D-4A0C-8653-FCB3088D6087}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{607239F0-A75D-4A0C-8653-FCB3088D6087}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{607239F0-A75D-4A0C-8653-FCB3088D6087}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -41,6 +55,7 @@ Global
 		{4FA12A15-D59A-4D97-A300-0CEBEB196AAB} = {C37E70C5-DD52-458B-8484-331D2241AEFB}
 		{864BF8A5-9FCB-4C03-AC86-85D52FCB4DE2} = {C8FAFB67-C8F7-4E23-A599-9527195C158D}
 		{ABE451CC-9876-4E8F-8143-89571B319C13} = {864BF8A5-9FCB-4C03-AC86-85D52FCB4DE2}
+		{607239F0-A75D-4A0C-8653-FCB3088D6087} = {24AAB199-6AA0-4CEA-A522-90CA63BE30B5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9BFA302B-0E80-4120-BD6E-417BADC61D01}
