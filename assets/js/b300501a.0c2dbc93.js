@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkpages=self.webpackChunkpages||[]).push([["176"],{6093(e){e.exports=JSON.parse('{"categoryGeneratedIndex":{"title":"Extension Projects","slug":"/category/extension-projects","permalink":"/category/extension-projects","sidebar":"extensionsSidebar","navigation":{"next":{"title":"aweXpect.Json","permalink":"/extensions/project/Json/"}}}}')}}]);
