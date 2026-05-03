@@ -74,7 +74,11 @@ partial class Build
 		new("Testably", "aweXpect.Reflection",   "Docs/pages",      "extensions/aweXpect.Reflection", InlineReadme: true),
 		new("Testably", "aweXpect.Testably",     "Docs/pages",      "extensions/aweXpect.Testably",   InlineReadme: true),
 		new("Testably", "aweXpect.Web",          "Docs/pages",      "extensions/aweXpect.Web",        InlineReadme: true),
-		new("Testably", "Mockolate",             "Docs/pages",      "mockolate"),
+		new("Testably", "Mockolate",             "Docs/pages",      "mockolate",
+			ExtraReadmes:
+			[
+				new("Testably", "Mockolate.Migration", "11-migration.md"),
+			]),
 	];
 
 	Target Pages => _ => _
