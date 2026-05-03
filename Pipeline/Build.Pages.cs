@@ -44,15 +44,14 @@ partial class Build
 	/// </summary>
 	static readonly DocsSource[] AggregatedSources =
 	[
-		new("Testably", "Testably.Abstractions", "Docs/pages/docs",              "abstractions"),
-		new("Testably", "aweXpect",              "Docs/pages/docs/expectations", "awexpect"),
-		new("Testably", "aweXpect",              "Docs/pages/docs/extensions",   "extensions"),
-		new("Testably", "aweXpect.Json",         "Docs/pages",                   "extensions/project/Json",       InlineReadme: true),
-		new("Testably", "aweXpect.Mockolate",    "Docs/pages",                   "extensions/project/Mockolate",  InlineReadme: true),
-		new("Testably", "aweXpect.Reflection",   "Docs/pages",                   "extensions/project/Reflection", InlineReadme: true),
-		new("Testably", "aweXpect.Testably",     "Docs/pages",                   "extensions/project/Testably",   InlineReadme: true),
-		new("Testably", "aweXpect.Web",          "Docs/pages",                   "extensions/project/Web",        InlineReadme: true),
-		new("Testably", "Mockolate",             "Docs/pages",                   "mockolate"),
+		new("Testably", "Testably.Abstractions", "Docs/pages/docs", "abstractions"),
+		new("Testably", "aweXpect",              "Docs/pages",      "awexpect"),
+		new("Testably", "aweXpect.Json",         "Docs/pages",      "extensions/aweXpect.Json",       InlineReadme: true),
+		new("Testably", "aweXpect.Mockolate",    "Docs/pages",      "extensions/aweXpect.Mockolate",  InlineReadme: true),
+		new("Testably", "aweXpect.Reflection",   "Docs/pages",      "extensions/aweXpect.Reflection", InlineReadme: true),
+		new("Testably", "aweXpect.Testably",     "Docs/pages",      "extensions/aweXpect.Testably",   InlineReadme: true),
+		new("Testably", "aweXpect.Web",          "Docs/pages",      "extensions/aweXpect.Web",        InlineReadme: true),
+		new("Testably", "Mockolate",             "Docs/pages",      "mockolate"),
 	];
 
 	Target Pages => _ => _
