@@ -1,0 +1,146 @@
+.result {
+  margin: 1rem 0 1.5rem;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 6px;
+  padding: 1rem 1.25rem 0.75rem;
+  background: var(--ifm-card-background-color, var(--ifm-background-surface-color));
+}
+
+.metricRow {
+  display: grid;
+  /* Last column sized to fit the trend indicator (e.g. "−66%") with a sliver
+     of breathing room. Anything larger leaves dead space between the bars
+     and the indicator because the text is right-aligned. */
+  grid-template-columns: 5rem 1fr 3.5rem;
+  align-items: center;
+  column-gap: 0.75rem;
+  margin: 0.4rem 0;
+}
+
+.metricLabel {
+  font-weight: 600;
+  color: var(--ifm-color-emphasis-700);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.bars {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.barRow {
+  display: grid;
+  grid-template-columns: 8rem 1fr 5.5rem 7rem;
+  align-items: center;
+  column-gap: 0.5rem;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.9rem;
+}
+
+.libraryLabel {
+  color: var(--ifm-color-emphasis-700);
+  font-size: 0.85rem;
+}
+
+.bar {
+  position: relative;
+  height: 0.6rem;
+  background: var(--ifm-color-emphasis-100);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.barFillPrimary {
+  display: block;
+  height: 100%;
+  background: var(--ifm-color-primary);
+  border-radius: 3px;
+}
+
+.barFillFluentAssertions {
+  display: block;
+  height: 100%;
+  background: #ff671b;
+  border-radius: 3px;
+}
+
+.barValue {
+  text-align: right;
+  color: var(--ifm-color-emphasis-800);
+}
+
+.sparkline {
+  display: block;
+  justify-self: end;
+}
+
+.sparklineAwexpect {
+  color: var(--ifm-color-primary);
+}
+
+.sparklineFluentAssertions {
+  color: #ff671b;
+}
+
+.delta {
+  text-align: right;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ifm-color-success);
+  font-variant-numeric: tabular-nums;
+}
+
+.deltaWorse {
+  color: var(--ifm-color-danger);
+}
+
+.caption {
+  margin-top: 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px dashed var(--ifm-color-emphasis-200);
+  color: var(--ifm-color-emphasis-600);
+  font-size: 0.8rem;
+}
+
+.caption code {
+  font-size: 0.78rem;
+}
+
+.error {
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--ifm-color-danger);
+  border-radius: 6px;
+  color: var(--ifm-color-danger);
+  background: var(--ifm-color-danger-contrast-background);
+  font-size: 0.9rem;
+}
+
+/* Anything narrower than wide-desktop: drop the sparkline so the value
+   column keeps its room. Threshold accounts for Docusaurus' left sidebar
+   (~250 px) and right TOC (~200 px) eating into the content area. */
+@media (max-width: 1200px) {
+  .barRow {
+    grid-template-columns: 8rem 1fr 5.5rem;
+  }
+  .sparkline {
+    display: none;
+  }
+}
+
+/* Phone: also stack the metric label / bars / delta vertically. */
+@media (max-width: 600px) {
+  .metricRow {
+    grid-template-columns: 1fr;
+    row-gap: 0.4rem;
+  }
+  .delta {
+    text-align: left;
+  }
+  .barRow {
+    grid-template-columns: 7rem 1fr 5rem;
+  }
+}
