@@ -79,6 +79,7 @@ partial class Build
 
 	Target Pages => _ => _
 		.DependsOn(Benchmarks)
+		.DependsOn(MockolateBenchmarks)
 		.Executes(async () =>
 		{
 			AbsolutePath docsRoot = RootDirectory / "Docs" / "pages" / "docs";
