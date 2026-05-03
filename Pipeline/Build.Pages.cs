@@ -55,6 +55,7 @@ partial class Build
 	];
 
 	Target Pages => _ => _
+		.DependsOn(Benchmarks)
 		.Executes(async () =>
 		{
 			AbsolutePath docsRoot = RootDirectory / "Docs" / "pages" / "docs";
