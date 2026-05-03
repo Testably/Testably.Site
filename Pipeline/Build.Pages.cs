@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -29,12 +30,30 @@ partial class Build
 	///     a <c>00-*</c> file. Lets extension repos keep their public README and their first docs page
 	///     in sync without duplicating content.
 	/// </param>
+	/// <param name="ExtraReadmes">
+	///     Optional cross-repo README substitutions. Each entry pulls the named foreign repo's
+	///     <c>README.md</c>, strips the leading H1 plus any badge block, and substitutes it into the
+	///     placeholder of the named file inside this slice. Lets a docs page own its scaffolding while
+	///     sourcing its body from a different repo's README.
+	/// </param>
 	record DocsSource(
 		string Organization,
 		string Repository,
 		string SourcePath,
 		string TargetSubDirectory,
-		bool InlineReadme = false);
+		bool InlineReadme = false,
+		ReadmeSubstitution[]? ExtraReadmes = null);
+
+	/// <summary>
+	///     A cross-repo README substitution. Fetches <c>README.md</c> from <paramref name="Organization"/>/<paramref name="Repository"/>,
+	///     strips its leading H1 and any consecutive badge lines, and replaces <paramref name="Placeholder"/>
+	///     in the docs file named <paramref name="TargetFileName"/>.
+	/// </summary>
+	record ReadmeSubstitution(
+		string Organization,
+		string Repository,
+		string TargetFileName,
+		string Placeholder = "{README}");
 
 	/// <summary>
 	///     The slices that compose the testably.org documentation portal. Order matters:
@@ -45,7 +64,11 @@ partial class Build
 	static readonly DocsSource[] AggregatedSources =
 	[
 		new("Testably", "Testably.Abstractions", "Docs/pages/docs", "abstractions"),
-		new("Testably", "aweXpect",              "Docs/pages",      "awexpect"),
+		new("Testably", "aweXpect",              "Docs/pages",      "awexpect",
+			ExtraReadmes:
+			[
+				new("Testably", "aweXpect.Migration", "09-migration.md"),
+			]),
 		new("Testably", "aweXpect.Json",         "Docs/pages",      "extensions/aweXpect.Json",       InlineReadme: true),
 		new("Testably", "aweXpect.Mockolate",    "Docs/pages",      "extensions/aweXpect.Mockolate",  InlineReadme: true),
 		new("Testably", "aweXpect.Reflection",   "Docs/pages",      "extensions/aweXpect.Reflection", InlineReadme: true),
@@ -89,16 +112,45 @@ partial class Build
 			? await FetchReadmeIntro(client, source)
 			: string.Empty;
 
-		Func<string, string, string>? transformer = source.InlineReadme
+		// Cross-repo README substitutions: each entry's README is fetched once, then
+		// substituted into the named target file. Stored as a mutable list so the
+		// transformer can clear an entry after it fires (substitute-once semantics).
+		List<(ReadmeSubstitution Config, string Body)> extraReadmes = new();
+		if (source.ExtraReadmes != null)
+		{
+			foreach (ReadmeSubstitution sub in source.ExtraReadmes)
+			{
+				string body = await FetchReadmeBody(client, sub.Organization, sub.Repository);
+				extraReadmes.Add((sub, body));
+			}
+		}
+
+		Func<string, string, string>? transformer = (source.InlineReadme || extraReadmes.Count > 0)
 			? (name, content) =>
 			{
-				if (name.StartsWith("00-", StringComparison.Ordinal) &&
+				if (source.InlineReadme &&
+				    name.StartsWith("00-", StringComparison.Ordinal) &&
 				    content.Contains("{README}", StringComparison.Ordinal))
 				{
 					string substitution = readmeContent.Replace("Docs/pages/", "./", StringComparison.Ordinal);
 					content = content.Replace("{README}", substitution, StringComparison.Ordinal);
 					readmeContent = string.Empty; // substitute into the first match only
 					Log.Information($"  Inlined README.md into {name}");
+				}
+				for (int i = 0; i < extraReadmes.Count; i++)
+				{
+					(ReadmeSubstitution cfg, string body) = extraReadmes[i];
+					if (string.IsNullOrEmpty(body))
+					{
+						continue;
+					}
+					if (string.Equals(name, cfg.TargetFileName, StringComparison.Ordinal) &&
+					    content.Contains(cfg.Placeholder, StringComparison.Ordinal))
+					{
+						content = content.Replace(cfg.Placeholder, body, StringComparison.Ordinal);
+						extraReadmes[i] = (cfg, string.Empty); // substitute once
+						Log.Information($"  Inlined {cfg.Organization}/{cfg.Repository} README.md into {name}");
+					}
 				}
 				return content;
 			}
@@ -144,6 +196,58 @@ partial class Build
 		string readme = Base64Decode(document.RootElement.GetProperty("content").GetString()!);
 		int indexOfFirstH2 = readme.IndexOf("\n##", StringComparison.Ordinal);
 		return indexOfFirstH2 > 0 ? readme.Substring(indexOfFirstH2) : string.Empty;
+	}
+
+	/// <summary>
+	///     Fetches a foreign repo's <c>README.md</c> and strips its leading H1 plus any consecutive
+	///     badge block, returning the body. Used by <see cref="DocsSource.ExtraReadmes"/>; unlike
+	///     <see cref="FetchReadmeIntro"/>, this does not require a <c>##</c> heading to be present.
+	/// </summary>
+	async Task<string> FetchReadmeBody(HttpClient client, string organization, string repository)
+	{
+		HttpResponseMessage response = await client.GetAsync(
+			$"https://api.github.com/repos/{organization}/{repository}/contents/README.md");
+		string responseContent = await response.Content.ReadAsStringAsync();
+		if (!response.IsSuccessStatusCode)
+		{
+			Log.Warning($"Could not fetch README.md from {organization}/{repository}: {response.StatusCode}");
+			return string.Empty;
+		}
+
+		using JsonDocument document = JsonDocument.Parse(responseContent);
+		string readme = Base64Decode(document.RootElement.GetProperty("content").GetString()!);
+		return StripReadmeFront(readme);
+	}
+
+	/// <summary>
+	///     Drops the leading H1 line, any consecutive badge lines that follow, and the resulting
+	///     leading blank lines. Leaves the rest of the README intact.
+	/// </summary>
+	static string StripReadmeFront(string readme)
+	{
+		string[] lines = readme.Split('\n');
+		int i = 0;
+		while (i < lines.Length && string.IsNullOrWhiteSpace(lines[i]))
+		{
+			i++;
+		}
+		if (i < lines.Length && lines[i].TrimStart().StartsWith("# ", StringComparison.Ordinal))
+		{
+			i++;
+		}
+		while (i < lines.Length && string.IsNullOrWhiteSpace(lines[i]))
+		{
+			i++;
+		}
+		while (i < lines.Length && lines[i].TrimStart().StartsWith("[!", StringComparison.Ordinal))
+		{
+			i++;
+		}
+		while (i < lines.Length && string.IsNullOrWhiteSpace(lines[i]))
+		{
+			i++;
+		}
+		return string.Join('\n', lines, i, lines.Length - i);
 	}
 
 	async Task DownloadFileOrDirectory(HttpClient client, DocsSource source, string subPath,
