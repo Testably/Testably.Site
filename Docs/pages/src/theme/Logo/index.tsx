@@ -32,11 +32,11 @@ const DEFAULT_LOGO = {
   dark: 'img/testably-dark.svg',
 };
 
-const SECTION_PATTERN = /^\/(abstractions|awexpect|mockolate)(?:\/|$)/;
+const SECTION_PATTERN = /^\/(abstractions|awexpect|mockolate)(?:\/|$)/i;
 
 function pickLogo(pathname: string) {
   const match = pathname.match(SECTION_PATTERN);
-  return match ? SECTION_LOGOS[match[1]] : DEFAULT_LOGO;
+  return match ? SECTION_LOGOS[match[1].toLowerCase()] : DEFAULT_LOGO;
 }
 
 export default function Logo(props: Props): ReactNode {
