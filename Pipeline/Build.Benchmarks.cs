@@ -5,10 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using Nuke.Common;
 using Nuke.Common.IO;
 using Serilog;
@@ -21,7 +19,7 @@ partial class Build
 {
 	/// <summary>
 	///     Fetches the latest aweXpect benchmark snapshot from the long-lived
-	///     <c>benchmarks</c> branch of <c>aweXpect/aweXpect</c> and reduces it
+	///     <c>benchmarks</c> branch of <c>Testably/aweXpect</c> and reduces it
 	///     to the shape consumed by the <c>BenchmarkResult</c> React component.
 	///     Pulled from the same <c>limited-data.js</c> file the legacy benchmarks
 	///     page used; the source is kept up-to-date by aweXpect's own CI on every
@@ -70,7 +68,7 @@ partial class Build
 				snapshot.Benchmarks.Count, outputPath, snapshot.CapturedAt.ShortSha, snapshot.CapturedAt.Date);
 		});
 
-	const string BenchmarksRepo = "aweXpect/aweXpect";
+	const string BenchmarksRepo = "Testably/aweXpect";
 	const string BenchmarksBranch = "benchmarks";
 	const string BenchmarksFile = "limited-data.js";
 	const string BenchmarksJsPrefix = "window.BENCHMARK_DATA = ";
@@ -140,36 +138,28 @@ partial class Build
 		double[]? aweMem = FindData(benchmark.Datasets!, "aweXpect", "y1");
 		double[]? faTime = FindData(benchmark.Datasets!, "FluentAssertions", "y");
 		double[]? faMem = FindData(benchmark.Datasets!, "FluentAssertions", "y1");
-		if (aweTime is null || faTime is null) return null;
+		if (aweTime is not {Length: > 0,} || faTime is not {Length: > 0,}) return null;
 
 		return new BenchmarkEntry
 		{
-			AweXpect = new Sample
-			{
-				TimeNs = Round1(aweTime[^1]),
-				MemoryBytes = (long)Math.Round(aweMem?[^1] ?? double.NaN),
-				History = new SampleHistory
-				{
-					TimeNs = TakeLast(aweTime, historyLength).Select(Round1).ToArray(),
-					MemoryBytes = aweMem is null
-						? Array.Empty<long>()
-						: TakeLast(aweMem, historyLength).Select(v => (long)Math.Round(v)).ToArray(),
-				},
-			},
-			FluentAssertions = new Sample
-			{
-				TimeNs = Round1(faTime[^1]),
-				MemoryBytes = (long)Math.Round(faMem?[^1] ?? double.NaN),
-				History = new SampleHistory
-				{
-					TimeNs = TakeLast(faTime, historyLength).Select(Round1).ToArray(),
-					MemoryBytes = faMem is null
-						? Array.Empty<long>()
-						: TakeLast(faMem, historyLength).Select(v => (long)Math.Round(v)).ToArray(),
-				},
-			},
+			AweXpect = BuildSample(aweTime, aweMem, historyLength),
+			FluentAssertions = BuildSample(faTime, faMem, historyLength),
 		};
 	}
+
+	static Sample BuildSample(double[] time, double[]? memory, int historyLength)
+		=> new()
+		{
+			TimeNs = Round1(time[^1]),
+			MemoryBytes = memory is {Length: > 0,} ? (long)Math.Round(memory[^1]) : null,
+			History = new SampleHistory
+			{
+				TimeNs = TakeLast(time, historyLength).Select(Round1).ToArray(),
+				MemoryBytes = memory is null
+					? Array.Empty<long>()
+					: TakeLast(memory, historyLength).Select(v => (long)Math.Round(v)).ToArray(),
+			},
+		};
 
 	static double[]? FindData(List<RawDataset> datasets, string libraryPrefix, string axisId)
 	{
@@ -220,25 +210,22 @@ partial class Build
 	// ─── Upstream JSON shape (Chart.js-ready) ───
 	sealed class RawBenchmark
 	{
-		[JsonPropertyName("commits")] public List<RawCommit>? Commits { get; init; }
-		[JsonPropertyName("labels")]  public List<string>?    Labels  { get; init; }
+		[JsonPropertyName("commits")]  public List<RawCommit>?  Commits  { get; init; }
 		[JsonPropertyName("datasets")] public List<RawDataset>? Datasets { get; init; }
 	}
 
 	sealed class RawCommit
 	{
 		[JsonPropertyName("sha")]     public string? Sha     { get; init; }
-		[JsonPropertyName("author")]  public string? Author  { get; init; }
 		[JsonPropertyName("date")]    public string? Date    { get; init; }
 		[JsonPropertyName("message")] public string? Message { get; init; }
 	}
 
 	sealed class RawDataset
 	{
-		[JsonPropertyName("label")]    public string?   Label   { get; init; }
-		[JsonPropertyName("unit")]     public string?   Unit    { get; init; }
-		[JsonPropertyName("data")]     public double[]? Data    { get; init; }
-		[JsonPropertyName("yAxisID")]  public string?   YAxisId { get; init; }
+		[JsonPropertyName("label")]   public string?   Label   { get; init; }
+		[JsonPropertyName("data")]    public double[]? Data    { get; init; }
+		[JsonPropertyName("yAxisID")] public string?   YAxisId { get; init; }
 	}
 
 	// ─── Snapshot shape consumed by BenchmarkResult.tsx ───
@@ -272,7 +259,7 @@ partial class Build
 	sealed class Sample
 	{
 		[JsonPropertyName("timeNs")]      public double         TimeNs      { get; init; }
-		[JsonPropertyName("memoryBytes")] public long           MemoryBytes { get; init; }
+		[JsonPropertyName("memoryBytes")] public long?          MemoryBytes { get; init; }
 		[JsonPropertyName("history")]     public SampleHistory? History     { get; init; }
 	}
 

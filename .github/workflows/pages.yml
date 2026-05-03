@@ -6,6 +6,7 @@ on:
         paths:
             - 'Docs/pages/**'
             - 'Pipeline/Build.Pages.cs'
+            - 'Pipeline/Build.Benchmarks.cs'
             - '.github/workflows/pages.yml'
     repository_dispatch:
         types: [ extension-documentation-updated-event ]

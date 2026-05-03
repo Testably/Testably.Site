@@ -1,9 +1,10 @@
 /**
  * Renders the latest aweXpect vs FluentAssertions snapshot for a single
  * benchmark name (e.g. "Bool", "String", "Int_GreaterThan"). Reads from
- * `src/data/awexpect/benchmarks.json` — eventually written by Testably.Server's
- * docs build pipeline after fetching the latest values from the
- * `aweXpect/aweXpect` benchmarks branch.
+ * `src/data/awexpect/benchmarks.json` — refreshed at deploy time by
+ * Testably.Server's docs pipeline (the `Benchmarks` Nuke target) from the
+ * `Testably/aweXpect` benchmarks branch. The committed file doubles as a
+ * fallback so `npm start`/`npm run build` work in a clean checkout.
  */
 import React, {type ReactElement} from 'react';
 import benchmarks from '@site/src/data/awexpect/benchmarks.json';
@@ -11,7 +12,7 @@ import styles from './styles.module.css';
 
 type Sample = {
   timeNs: number;
-  memoryBytes: number;
+  memoryBytes?: number;
   history?: {
     timeNs: number[];
     memoryBytes: number[];
@@ -51,9 +52,17 @@ function formatBytes(b: number): string {
   return `${(b / (1_024 * 1_024)).toFixed(2)} MiB`;
 }
 
-function formatDelta(ratio: number): {text: string; better: boolean} {
-  // ratio = aweXpect / FluentAssertions; lower is better for both metrics here.
-  if (ratio === 1) return {text: '±0%', better: true};
+function formatDelta(awe: number, fa: number): {text: string; better: boolean} {
+  // Lower is better for both metrics. Handle the zero-baseline cases explicitly:
+  // FluentAssertions reports 0 B for many allocation benchmarks, so a naive
+  // awe / fa would divide by zero and a "ratio === 1" fallback would silently
+  // hide regressions where aweXpect allocates and FA does not.
+  if (fa === 0) {
+    if (awe === 0) return {text: '±0%', better: true};
+    return {text: '+∞', better: false};
+  }
+  if (awe === fa) return {text: '±0%', better: true};
+  const ratio = awe / fa;
   const pct = Math.abs(ratio - 1) * 100;
   const better = ratio < 1;
   const arrow = better ? '−' : '+';
@@ -130,7 +139,7 @@ function MetricRow({
   const max = Math.max(aweXpectValue, faValue);
   const aweXpectWidth = max === 0 ? 0 : (aweXpectValue / max) * 100;
   const faWidth = max === 0 ? 0 : (faValue / max) * 100;
-  const delta = formatDelta(faValue === 0 ? 1 : aweXpectValue / faValue);
+  const delta = formatDelta(aweXpectValue, faValue);
 
   return (
     <div className={styles.metricRow}>
@@ -184,14 +193,17 @@ export default function BenchmarkResult({name}: Props): ReactElement {
         faHistory={entry.FluentAssertions.history?.timeNs}
         format={formatNs}
       />
-      <MetricRow
-        label="Memory"
-        aweXpectValue={entry.aweXpect.memoryBytes}
-        faValue={entry.FluentAssertions.memoryBytes}
-        aweXpectHistory={entry.aweXpect.history?.memoryBytes}
-        faHistory={entry.FluentAssertions.history?.memoryBytes}
-        format={formatBytes}
-      />
+      {entry.aweXpect.memoryBytes !== undefined &&
+        entry.FluentAssertions.memoryBytes !== undefined && (
+          <MetricRow
+            label="Memory"
+            aweXpectValue={entry.aweXpect.memoryBytes}
+            faValue={entry.FluentAssertions.memoryBytes}
+            aweXpectHistory={entry.aweXpect.history?.memoryBytes}
+            faHistory={entry.FluentAssertions.history?.memoryBytes}
+            format={formatBytes}
+          />
+        )}
       <div className={styles.caption}>
         Captured on commit{' '}
         <a
