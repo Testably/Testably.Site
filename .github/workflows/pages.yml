@@ -7,6 +7,7 @@ on:
             - 'Docs/pages/**'
             - 'Pipeline/Build.Pages.cs'
             - 'Pipeline/Build.Benchmarks.cs'
+            - 'Pipeline/Build.MockolateBenchmarks.cs'
             - '.github/workflows/pages.yml'
     repository_dispatch:
         types: [ extension-documentation-updated-event ]

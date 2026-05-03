@@ -127,7 +127,7 @@ function Sparkline({values, className}: SparklineProps): ReactElement | null {
 
 type LibraryRow = {
   library: string;
-  value: number;
+  value: number | null;
   history?: number[];
 };
 
@@ -139,7 +139,7 @@ type MetricBlockProps = {
 };
 
 function MetricBlock({label, rows, baselineValue, format}: MetricBlockProps): ReactElement {
-  const max = Math.max(...rows.map(r => r.value), 0);
+  const max = Math.max(...rows.map(r => r.value ?? 0), 0);
 
   return (
     <div className={styles.metricBlock}>
@@ -147,28 +147,38 @@ function MetricBlock({label, rows, baselineValue, format}: MetricBlockProps): Re
       <div className={styles.bars}>
         {rows.map(row => {
           const isBaseline = row.library === BASELINE_LIBRARY;
-          const width = max === 0 ? 0 : (row.value / max) * 100;
+          const isMissing = row.value === null;
+          const width = isMissing || max === 0 ? 0 : (row.value! / max) * 100;
+          const rowClass = [
+            styles.barRow,
+            isBaseline && styles.barRowBaseline,
+            isMissing && styles.barRowMissing,
+          ].filter(Boolean).join(' ');
           return (
-            <div
-              key={row.library}
-              className={isBaseline ? `${styles.barRow} ${styles.barRowBaseline}` : styles.barRow}>
+            <div key={row.library} className={rowClass}>
               <span className={styles.libraryLabel}>
                 {LIBRARY_DISPLAY_NAMES[row.library] ?? row.library}
               </span>
               <span className={styles.bar}>
-                <span
-                  className={isBaseline ? styles.barFillBaseline : styles.barFill}
-                  style={{width: `${width}%`}}
-                />
+                {!isMissing && (
+                  <span
+                    className={isBaseline ? styles.barFillBaseline : styles.barFill}
+                    style={{width: `${width}%`}}
+                  />
+                )}
               </span>
-              <span className={styles.barValue}>{format(row.value)}</span>
+              <span className={styles.barValue}>
+                {isMissing ? 'not available' : format(row.value!)}
+              </span>
               <span className={styles.ratio}>
-                {isBaseline ? 'baseline' : formatRatio(row.value, baselineValue)}
+                {isMissing ? '—' : isBaseline ? 'baseline' : formatRatio(row.value!, baselineValue)}
               </span>
-              <Sparkline
-                values={row.history}
-                className={isBaseline ? `${styles.sparkline} ${styles.sparklineBaseline}` : styles.sparkline}
-              />
+              {!isMissing && (
+                <Sparkline
+                  values={row.history}
+                  className={isBaseline ? `${styles.sparkline} ${styles.sparklineBaseline}` : styles.sparkline}
+                />
+              )}
             </div>
           );
         })}
@@ -182,19 +192,25 @@ function buildRows(
   picker: (s: Sample) => number | undefined,
   history: (s: Sample) => number[] | undefined,
 ): LibraryRow[] {
-  // Build all available rows for libraries whose dataset includes the metric, then
-  // sort by metric value ascending — fastest-first / smallest-allocation-first.
-  // Libraries missing this scenario or this metric are skipped silently.
-  const rows: LibraryRow[] = [];
+  // Render every library in LIBRARY_ORDER so absences are visible: a library
+  // with no sample for this scenario / metric appears as a "not available"
+  // placeholder rather than silently disappearing from the comparison.
+  // Present rows sort by value ascending (fastest first); missing rows fall
+  // through to the bottom in declared order so the chart's shape stays stable
+  // across scenarios.
+  const present: LibraryRow[] = [];
+  const missing: LibraryRow[] = [];
   for (const library of LIBRARY_ORDER) {
     const sample = samples[library];
-    if (!sample) continue;
-    const value = picker(sample);
-    if (value === undefined) continue;
-    rows.push({library, value, history: history(sample)});
+    const value = sample ? picker(sample) : undefined;
+    if (value === undefined) {
+      missing.push({library, value: null});
+    } else {
+      present.push({library, value, history: sample ? history(sample) : undefined});
+    }
   }
-  rows.sort((a, b) => a.value - b.value);
-  return rows;
+  present.sort((a, b) => (a.value as number) - (b.value as number));
+  return [...present, ...missing];
 }
 
 type Props = {
@@ -226,13 +242,12 @@ export default function MockolateBenchmarkResult({name}: Props): ReactElement {
   return (
     <div className={styles.result}>
       {showParamTabs && (
-        <div className={styles.paramTabs} role="tablist" aria-label={`${name} parameter`}>
+        <div className={styles.paramTabs} role="group" aria-label={`${name} parameter`}>
           {params.map(p => (
             <button
               type="button"
               key={p || '_default'}
-              role="tab"
-              aria-selected={p === activeParam}
+              aria-pressed={p === activeParam}
               className={p === activeParam ? `${styles.paramTab} ${styles.paramTabActive}` : styles.paramTab}
               onClick={() => setActiveParam(p)}>
               {p || 'default'}
