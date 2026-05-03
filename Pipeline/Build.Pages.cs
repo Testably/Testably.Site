@@ -59,23 +59,23 @@ partial class Build
 	///     The slices that compose the testably.org documentation portal. Order matters:
 	///     later sources may overlay files written by earlier ones (e.g. each extension
 	///     overwrites the placeholder <c>00-index.md</c> seeded by the bundled
-	///     <c>aweXpect/extensions</c> slice).
+	///     <c>aweXpect/Extensions</c> slice).
 	/// </summary>
 	static readonly DocsSource[] AggregatedSources =
 	[
-		new("Testably", "Testably.Abstractions", "Docs/pages/docs", "abstractions"),
-		new("Testably", "aweXpect",              "Docs/pages",      "awexpect",
+		new("Testably", "Testably.Abstractions", "Docs/pages/docs", "Abstractions"),
+		new("Testably", "aweXpect",              "Docs/pages",      "aweXpect",
 			ExtraReadmes:
 			[
 				new("Testably", "aweXpect.Migration", "09-migration.md"),
 			]),
-		new("Testably", "aweXpect.Json",         "Docs/pages",      "extensions/aweXpect.Json",       InlineReadme: true),
-		new("Testably", "aweXpect.Mockolate",    "Docs/pages",      "extensions/aweXpect.Mockolate",  InlineReadme: true),
-		new("Testably", "aweXpect.Reflection",   "Docs/pages",      "extensions/aweXpect.Reflection", InlineReadme: true),
-		new("Testably", "aweXpect.Testably",     "Docs/pages",      "extensions/aweXpect.Testably",   InlineReadme: true),
-		new("Testably", "aweXpect.Web",          "Docs/pages",      "extensions/aweXpect.Web",        InlineReadme: true),
-		new("Testably", "aweXpect.Chronology",   "Docs/pages",      "chronology",                     InlineReadme: true),
-		new("Testably", "Mockolate",             "Docs/pages",      "mockolate",
+		new("Testably", "aweXpect.Json",         "Docs/pages",      "Extensions/aweXpect.Json",       InlineReadme: true),
+		new("Testably", "aweXpect.Mockolate",    "Docs/pages",      "Extensions/aweXpect.Mockolate",  InlineReadme: true),
+		new("Testably", "aweXpect.Reflection",   "Docs/pages",      "Extensions/aweXpect.Reflection", InlineReadme: true),
+		new("Testably", "aweXpect.Testably",     "Docs/pages",      "Extensions/aweXpect.Testably",   InlineReadme: true),
+		new("Testably", "aweXpect.Web",          "Docs/pages",      "Extensions/aweXpect.Web",        InlineReadme: true),
+		new("Testably", "aweXpect.Chronology",   "Docs/pages",      "Chronology",                     InlineReadme: true),
+		new("Testably", "Mockolate",             "Docs/pages",      "Mockolate",
 			ExtraReadmes:
 			[
 				new("Testably", "Mockolate.Migration", "11-migration.md"),

@@ -87,15 +87,15 @@ const config: Config = {
         },
         {
           type: 'docSidebar',
-          sidebarId: 'extensionsSidebar',
-          position: 'right',
-          label: 'Extensions',
-        },
-        {
-          type: 'docSidebar',
           sidebarId: 'chronologySidebar',
           position: 'right',
           label: 'Chronology',
+        },
+        {
+          type: 'docSidebar',
+          sidebarId: 'extensionsSidebar',
+          position: 'right',
+          label: 'Extensions',
         },
       ],
     },

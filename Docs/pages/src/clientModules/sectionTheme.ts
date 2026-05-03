@@ -9,11 +9,11 @@
  * the bracket beige defined in `:root`.
  */
 
-const SECTION_PATTERN = /^\/(abstractions|awexpect|mockolate|extensions)(?:\/|$)/;
+const SECTION_PATTERN = /^\/(abstractions|awexpect|mockolate|extensions)(?:\/|$)/i;
 
 function getSection(pathname: string): string | null {
   const match = pathname.match(SECTION_PATTERN);
-  return match ? match[1] : null;
+  return match ? match[1].toLowerCase() : null;
 }
 
 function applySection(): void {

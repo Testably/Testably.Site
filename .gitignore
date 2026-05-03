@@ -405,7 +405,8 @@ Docs/pages/.docusaurus/
 Docs/pages/build/
 
 # Aggregated content (fetched at build time by ./build.sh Pages from sibling repositories)
-Docs/pages/docs/abstractions
-Docs/pages/docs/awexpect
-Docs/pages/docs/mockolate
-Docs/pages/docs/extensions
+Docs/pages/docs/Abstractions
+Docs/pages/docs/aweXpect
+Docs/pages/docs/Mockolate
+Docs/pages/docs/Extensions
+Docs/pages/docs/Chronology
