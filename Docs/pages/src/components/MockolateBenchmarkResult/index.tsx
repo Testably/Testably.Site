@@ -11,7 +11,7 @@
  * renders inline N=1 / N=10 buttons so readers can switch between
  * fixed-cost and per-call regimes.
  */
-import React, {type ReactElement, useState} from 'react';
+import React, {type ReactElement, useCallback, useState} from 'react';
 import benchmarks from '@site/src/data/mockolate/benchmarks.json';
 import styles from './styles.module.css';
 
@@ -136,10 +136,19 @@ type MetricBlockProps = {
   rows: LibraryRow[];
   baselineValue: number;
   format: (n: number) => string;
+  inactive: ReadonlySet<string>;
+  onToggle: (library: string) => void;
 };
 
-function MetricBlock({label, rows, baselineValue, format}: MetricBlockProps): ReactElement {
-  const max = Math.max(...rows.map(r => r.value ?? 0), 0);
+function MetricBlock({label, rows, baselineValue, format, inactive, onToggle}: MetricBlockProps): ReactElement {
+  // Bars rescale to the max of currently *active* rows so toggling Moq off
+  // lets the smaller frameworks spread out instead of all hugging the left edge.
+  const max = Math.max(
+    ...rows
+      .filter(r => r.value !== null && !inactive.has(r.library))
+      .map(r => r.value as number),
+    0,
+  );
 
   return (
     <div className={styles.metricBlock}>
@@ -148,19 +157,21 @@ function MetricBlock({label, rows, baselineValue, format}: MetricBlockProps): Re
         {rows.map(row => {
           const isBaseline = row.library === BASELINE_LIBRARY;
           const isMissing = row.value === null;
-          const width = isMissing || max === 0 ? 0 : (row.value! / max) * 100;
+          const isInactive = !isMissing && inactive.has(row.library);
+          const showFill = !isMissing && !isInactive;
+          const width = showFill && max !== 0 ? (row.value! / max) * 100 : 0;
           const rowClass = [
             styles.barRow,
             isBaseline && styles.barRowBaseline,
             isMissing && styles.barRowMissing,
+            isInactive && styles.barRowInactive,
           ].filter(Boolean).join(' ');
-          return (
-            <div key={row.library} className={rowClass}>
-              <span className={styles.libraryLabel}>
-                {LIBRARY_DISPLAY_NAMES[row.library] ?? row.library}
-              </span>
+          const display = LIBRARY_DISPLAY_NAMES[row.library] ?? row.library;
+          const content = (
+            <>
+              <span className={styles.libraryLabel}>{display}</span>
               <span className={styles.bar}>
-                {!isMissing && (
+                {showFill && (
                   <span
                     className={isBaseline ? styles.barFillBaseline : styles.barFill}
                     style={{width: `${width}%`}}
@@ -179,7 +190,25 @@ function MetricBlock({label, rows, baselineValue, format}: MetricBlockProps): Re
                   className={isBaseline ? `${styles.sparkline} ${styles.sparklineBaseline}` : styles.sparkline}
                 />
               )}
-            </div>
+            </>
+          );
+          if (isMissing) {
+            return (
+              <div key={row.library} className={rowClass}>
+                {content}
+              </div>
+            );
+          }
+          return (
+            <button
+              key={row.library}
+              type="button"
+              className={rowClass}
+              aria-pressed={!isInactive}
+              title={isInactive ? `Show ${display} in chart` : `Hide ${display} from chart`}
+              onClick={() => onToggle(row.library)}>
+              {content}
+            </button>
           );
         })}
       </div>
@@ -229,6 +258,18 @@ export default function MockolateBenchmarkResult({name}: Props): ReactElement {
 
   const params = scenario.parameters;
   const [activeParam, setActiveParam] = useState(params[0]);
+  const [inactive, setInactive] = useState<ReadonlySet<string>>(() => new Set());
+  const toggleLibrary = useCallback((library: string) => {
+    setInactive(prev => {
+      const next = new Set(prev);
+      if (next.has(library)) {
+        next.delete(library);
+      } else {
+        next.add(library);
+      }
+      return next;
+    });
+  }, []);
   const samples = scenario.samples[activeParam] ?? {};
   const baselineSample = samples[BASELINE_LIBRARY];
 
@@ -260,6 +301,8 @@ export default function MockolateBenchmarkResult({name}: Props): ReactElement {
         rows={timeRows}
         baselineValue={baselineSample?.timeNs ?? 0}
         format={formatNs}
+        inactive={inactive}
+        onToggle={toggleLibrary}
       />
       {memoryRows.length > 0 && baselineSample?.memoryBytes !== undefined && (
         <MetricBlock
@@ -267,6 +310,8 @@ export default function MockolateBenchmarkResult({name}: Props): ReactElement {
           rows={memoryRows}
           baselineValue={baselineSample.memoryBytes}
           format={formatBytes}
+          inactive={inactive}
+          onToggle={toggleLibrary}
         />
       )}
       <div className={styles.caption}>
