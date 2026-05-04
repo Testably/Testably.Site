@@ -70,6 +70,28 @@
   font-size: 0.9rem;
   padding: 0.15rem 0.4rem;
   border-radius: 4px;
+  /* Reset button defaults so the same grid layout works for clickable rows
+     (active/inactive toggles) and non-clickable divs (missing data). */
+  width: 100%;
+  border: 0;
+  font-family: inherit;
+  color: inherit;
+  text-align: left;
+  background: transparent;
+}
+
+button.barRow {
+  cursor: pointer;
+  transition: box-shadow 0.1s, background 0.1s;
+}
+
+button.barRow:hover {
+  box-shadow: inset 0 0 0 1px var(--ifm-color-emphasis-300);
+}
+
+button.barRow:focus-visible {
+  outline: 2px solid var(--ifm-color-primary);
+  outline-offset: -2px;
 }
 
 .barRowBaseline {
@@ -80,6 +102,16 @@
 .barRowMissing {
   color: var(--ifm-color-emphasis-500);
   font-style: italic;
+}
+
+.barRowInactive,
+.barRowInactive.barRowBaseline {
+  background: transparent;
+  opacity: 0.5;
+}
+
+.barRowInactive .libraryLabel {
+  text-decoration: line-through;
 }
 
 .barRowMissing .libraryLabel,
