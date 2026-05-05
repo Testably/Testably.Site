@@ -67,7 +67,7 @@ partial class Build
 		new("Testably", "aweXpect",              "Docs/pages",      "aweXpect",
 			ExtraReadmes:
 			[
-				new("Testably", "aweXpect.Migration", "09-migration.md"),
+				new("Testably", "aweXpect.Migration", "10-migration.md"),
 			]),
 		new("Testably", "aweXpect.Json",         "Docs/pages",      "Extensions/aweXpect.Json",       InlineReadme: true),
 		new("Testably", "aweXpect.Mockolate",    "Docs/pages",      "Extensions/aweXpect.Mockolate",  InlineReadme: true),
