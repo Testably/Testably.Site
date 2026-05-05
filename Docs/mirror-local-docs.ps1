@@ -38,7 +38,7 @@ $DocsRoot = Join-Path $RepoRoot "Docs/pages/docs"
 $Sources = @(
     [pscustomobject]@{ Repo="Testably.Abstractions"; SourcePath="Docs/pages/docs"; Target="Abstractions"; InlineReadme=$false; ExtraReadmes=@() }
     [pscustomobject]@{ Repo="aweXpect";              SourcePath="Docs/pages";      Target="aweXpect";     InlineReadme=$false; ExtraReadmes=@(
-        [pscustomobject]@{ Repo="aweXpect.Migration"; TargetFile="09-migration.md" }
+        [pscustomobject]@{ Repo="aweXpect.Migration"; TargetFile="10-migration.md" }
     ) }
     [pscustomobject]@{ Repo="aweXpect.Json";         SourcePath="Docs/pages";      Target="Extensions/aweXpect.Json";       InlineReadme=$true;  ExtraReadmes=@() }
     [pscustomobject]@{ Repo="aweXpect.Mockolate";    SourcePath="Docs/pages";      Target="Extensions/aweXpect.Mockolate";  InlineReadme=$true;  ExtraReadmes=@() }
