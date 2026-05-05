@@ -8,6 +8,16 @@ The documentation site for [Testably.Abstractions](https://github.com/Testably/T
 
 ## Local development
 
+The `docs/` folder is gitignored and must be populated before starting the dev server. Use either `./build.ps1 Pages` from the repo root (fetches from GitHub via the Contents API; set the `GithubToken` parameter to avoid rate limits) or, for token-free local mirroring, [`Docs/mirror-local-docs.ps1`](../mirror-local-docs.ps1):
+
+```powershell
+pwsh ./Docs/mirror-local-docs.ps1
+```
+
+The script copies each docs slice from a sibling clone instead of fetching from GitHub. It assumes every source repo from `Pipeline/Build.Pages.cs` is checked out as a sibling of `Testably.Site` and on the latest `main` (no `git` operations are performed). Pass `-Root <path>` to override the parent directory if your clones live elsewhere. Stop the dev server before re-running — it holds file handles on `docs/`.
+
+Then start the site:
+
 ```powershell
 npm install
 npm run start
