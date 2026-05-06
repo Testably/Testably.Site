@@ -100,12 +100,11 @@ function Ensure-SidebarPosition([string]$content, [int]$position) {
     return "---`nsidebar_position: $position`n---`n`n$content"
 }
 
-if (Test-Path -LiteralPath $DocsRoot) {
-    Write-Host "Cleaning $DocsRoot"
-    Remove-Item -LiteralPath $DocsRoot -Recurse -Force
-}
 New-Item -ItemType Directory -Path $DocsRoot -Force | Out-Null
 
+# Clean each target subdirectory rather than the whole DocsRoot so that
+# site-owned overlays committed under docs/ (e.g. Extensions/index.mdx)
+# survive the mirror.
 foreach ($source in $Sources) {
     $sourceDir = Join-Path $Root (Join-Path $source.Repo $source.SourcePath)
     $targetDir = Join-Path $DocsRoot $source.Target
@@ -118,6 +117,9 @@ foreach ($source in $Sources) {
         continue
     }
 
+    if (Test-Path -LiteralPath $targetDir) {
+        Remove-Item -LiteralPath $targetDir -Recurse -Force
+    }
     New-Item -ItemType Directory -Path $targetDir -Force | Out-Null
 
     $readmeIntro = ""

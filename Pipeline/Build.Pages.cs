@@ -88,14 +88,17 @@ partial class Build
 		.Executes(async () =>
 		{
 			AbsolutePath docsRoot = RootDirectory / "Docs" / "pages" / "docs";
-			docsRoot.CreateOrCleanDirectory();
+			docsRoot.CreateDirectory();
 
+			// Clean each target subdirectory rather than the whole docsRoot so that
+			// site-owned overlays committed under docs/ (e.g. Extensions/index.mdx)
+			// survive the build.
 			foreach (DocsSource source in AggregatedSources)
 			{
 				AbsolutePath targetDirectory = string.IsNullOrEmpty(source.TargetSubDirectory)
 					? docsRoot
 					: docsRoot / source.TargetSubDirectory;
-				targetDirectory.CreateDirectory();
+				targetDirectory.CreateOrCleanDirectory();
 				await DownloadDocsContent(source, targetDirectory);
 			}
 		});
