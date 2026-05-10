@@ -1,9 +1,9 @@
 name: Build
 
 on:
-  workflow_dispatch: 
+  workflow_dispatch:
   push:
-    branches: [main]
+    branches: [ main ]
 
 jobs:
   build:
@@ -11,35 +11,35 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 10.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
-    - name: Publish
-      run: dotnet publish -c Release --output ${{ github.workspace }}/publish/ Source/Testably.Site/Testably.Site.csproj
-    - name: Shutdown webpage
-      shell: pwsh
-      continue-on-error: true
-      run: |
-        try { 
-          (Invoke-WebRequest -Uri https://testably.org/lifetime/quit -Method POST -ErrorAction Stop).BaseResponse
-          Write-Information "The server was shutdown"
-          Start-Sleep -Seconds 5
-        } catch [System.Net.WebException] { 
-          Write-Warning "An exception was caught: $($_.Exception.Message)"
-        }
-    - name: Upload ftp
-      uses: sebastianpopp/ftp-action@releases/v2
-      with:
-        host: ftps://access938340810.webspace-data.io:990
-        user: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        localDir: ${{ github.workspace }}/publish/
-        remoteDir: "."
+      - uses: actions/checkout@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 10.0.x
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --no-restore
+      - name: Test
+        run: dotnet test --no-build --verbosity normal
+      - name: Publish
+        run: dotnet publish -c Release --output ${{ github.workspace }}/publish/ Source/Testably.Site/Testably.Site.csproj
+      - name: Shutdown webpage
+        shell: pwsh
+        continue-on-error: true
+        run: |
+          try { 
+            (Invoke-WebRequest -Uri https://testably.org/lifetime/quit -Method POST -ErrorAction Stop).BaseResponse
+            Write-Information "The server was shutdown"
+            Start-Sleep -Seconds 5
+          } catch [System.Net.WebException] { 
+            Write-Warning "An exception was caught: $($_.Exception.Message)"
+          }
+      - name: Upload ftp
+        uses: sebastianpopp/ftp-action@releases/v2
+        with:
+          host: ftps://access938340810.webspace-data.io:990
+          user: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          localDir: ${{ github.workspace }}/publish/
+          remoteDir: "."
