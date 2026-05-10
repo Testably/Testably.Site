@@ -15,6 +15,7 @@
   <Folder Name="/_/.github/workflows/">
     <File Path=".github/workflows/build.yml" />
     <File Path=".github/workflows/ci.yml" />
+    <File Path=".github/workflows/pages.yml" />
   </Folder>
   <Project Path="Source/Testably.Site/Testably.Site.csproj" />
 </Solution>
