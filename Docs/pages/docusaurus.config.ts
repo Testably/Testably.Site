@@ -115,7 +115,7 @@ const config: Config = {
         {
           items: [
             {
-              html: `<a href="https://github.com/aweXpect/aweXpect" class="footer__library-name">aweXpect</a>`,
+              html: `<a href="https://github.com/Testably/aweXpect" class="footer__library-name">aweXpect</a>`,
             },
             {
               html: `<a href="https://www.nuget.org/packages/aweXpect" class="footer__nuget-badge"><img src="https://img.shields.io/nuget/v/aweXpect?label=NuGet&logo=nuget" alt="aweXpect on NuGet"/></a>`,
@@ -125,7 +125,7 @@ const config: Config = {
         {
           items: [
             {
-              html: `<a href="https://github.com/aweXpect/Mockolate" class="footer__library-name">Mockolate</a>`,
+              html: `<a href="https://github.com/Testably/Mockolate" class="footer__library-name">Mockolate</a>`,
             },
             {
               html: `<a href="https://www.nuget.org/packages/Mockolate" class="footer__nuget-badge"><img src="https://img.shields.io/nuget/v/Mockolate?label=NuGet&logo=nuget" alt="Mockolate on NuGet"/></a>`,
