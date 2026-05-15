@@ -63,8 +63,10 @@ partial class Build
 	/// </summary>
 	static readonly DocsSource[] AggregatedSources =
 	[
-		new("Testably", "Testably.Abstractions", "Docs/pages/docs", "Abstractions"),
-		new("Testably", "aweXpect",              "Docs/pages",      "aweXpect",
+		new("Testably", "Testably.Abstractions",           "Docs/pages/docs", "Abstractions"),
+		new("Testably", "Testably.Abstractions.Migration", "Docs/pages",      "Abstractions/Migration",
+			InlineReadme: true, Title: "Migration", SidebarPosition: 8),
+		new("Testably", "aweXpect",                        "Docs/pages",      "aweXpect",
 			ExtraReadmes:
 			[
 				new("Testably", "aweXpect.Migration", "10-migration.md"),

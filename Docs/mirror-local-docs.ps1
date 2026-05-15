@@ -36,8 +36,9 @@ $DocsRoot = Join-Path $RepoRoot "Docs/pages/docs"
 
 # Mirrors AggregatedSources in Pipeline/Build.Pages.cs.
 $Sources = @(
-    [pscustomobject]@{ Repo="Testably.Abstractions"; SourcePath="Docs/pages/docs"; Target="Abstractions"; InlineReadme=$false; ExtraReadmes=@() }
-    [pscustomobject]@{ Repo="aweXpect";              SourcePath="Docs/pages";      Target="aweXpect";     InlineReadme=$false; ExtraReadmes=@(
+    [pscustomobject]@{ Repo="Testably.Abstractions";           SourcePath="Docs/pages/docs"; Target="Abstractions";           InlineReadme=$false; ExtraReadmes=@() }
+    [pscustomobject]@{ Repo="Testably.Abstractions.Migration"; SourcePath="Docs/pages";      Target="Abstractions/Migration"; InlineReadme=$true;  ExtraReadmes=@() }
+    [pscustomobject]@{ Repo="aweXpect";                        SourcePath="Docs/pages";      Target="aweXpect";               InlineReadme=$false; ExtraReadmes=@(
         [pscustomobject]@{ Repo="aweXpect.Migration"; TargetFile="10-migration.md" }
     ) }
     [pscustomobject]@{ Repo="aweXpect.Json";         SourcePath="Docs/pages";      Target="Extensions/aweXpect.Json";       InlineReadme=$true;  ExtraReadmes=@() }
@@ -72,7 +73,7 @@ function Strip-ReadmeFront([string]$readme) {
 
 function Get-ReadmeIntro([string]$readmePath) {
     if (-not (Test-Path -LiteralPath $readmePath)) { return "" }
-    $content = Get-Content -Raw -LiteralPath $readmePath
+    $content = Get-Content -Raw -LiteralPath $readmePath -Encoding UTF8
     $idx = $content.IndexOf("`n##")
     if ($idx -gt 0) { return $content.Substring($idx) }
     return ""
@@ -80,7 +81,7 @@ function Get-ReadmeIntro([string]$readmePath) {
 
 function Get-ReadmeBody([string]$readmePath) {
     if (-not (Test-Path -LiteralPath $readmePath)) { return "" }
-    $content = Get-Content -Raw -LiteralPath $readmePath
+    $content = Get-Content -Raw -LiteralPath $readmePath -Encoding UTF8
     return Strip-ReadmeFront $content
 }
 
@@ -178,7 +179,7 @@ foreach ($source in $Sources) {
         $isText = $TextExt -contains $ext
 
         if ($isText) {
-            $content = Get-Content -Raw -LiteralPath $file.FullName
+            $content = Get-Content -Raw -LiteralPath $file.FullName -Encoding UTF8
             if ($null -eq $content) { $content = "" }
 
             if ($source.InlineReadme -and -not $readmeIntroDone -and $name.StartsWith("00-") -and $content.Contains("{README}")) {
