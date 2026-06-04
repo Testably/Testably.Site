@@ -339,6 +339,11 @@ partial class Build
 	static string Base64Decode(string base64EncodedData)
 	{
 		byte[] base64EncodedBytes = Convert.FromBase64String(base64EncodedData);
-		return Encoding.UTF8.GetString(base64EncodedBytes);
+		// The GitHub API returns file bytes verbatim, so a UTF-8 BOM survives into the
+		// decoded string. A leading BOM (U+FEFF) before the first markdown heading stops
+		// Docusaurus from parsing it (the heading renders as a literal paragraph) and also
+		// breaks StripReadmeFront's H1 detection, since char.IsWhiteSpace('﻿') is false
+		// and TrimStart() leaves it in place. Drop it once at the single decode chokepoint.
+		return Encoding.UTF8.GetString(base64EncodedBytes).TrimStart('﻿');
 	}
 }
