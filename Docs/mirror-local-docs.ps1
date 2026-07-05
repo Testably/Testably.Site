@@ -50,6 +50,7 @@ $Sources = @(
     [pscustomobject]@{ Repo="Mockolate";             SourcePath="Docs/pages";      Target="Mockolate";                      InlineReadme=$false; ExtraReadmes=@(
         [pscustomobject]@{ Repo="Mockolate.Migration"; TargetFile="11-migration.md" }
     ) }
+    [pscustomobject]@{ Repo="Awaiten";               SourcePath="Docs/pages";      Target="Awaiten";                        InlineReadme=$false; ExtraReadmes=@() }
 )
 
 # Local clones often contain build output that the GitHub-API path would not
