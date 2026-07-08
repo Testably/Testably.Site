@@ -25,6 +25,10 @@ const SECTION_LOGOS: Record<string, {light: string; dark: string}> = {
     light: 'img/mockolate-light.svg',
     dark: 'img/mockolate-dark.svg',
   },
+  awaiten: {
+    light: 'img/awaiten.png',
+    dark: 'img/awaiten.png',
+  },
 };
 
 const DEFAULT_LOGO = {
@@ -32,7 +36,7 @@ const DEFAULT_LOGO = {
   dark: 'img/testably-dark.svg',
 };
 
-const SECTION_PATTERN = /^\/(abstractions|awexpect|mockolate)(?:\/|$)/i;
+const SECTION_PATTERN = /^\/(abstractions|awexpect|mockolate|awaiten)(?:\/|$)/i;
 
 function pickLogo(pathname: string) {
   const match = pathname.match(SECTION_PATTERN);

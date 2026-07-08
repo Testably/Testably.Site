@@ -97,6 +97,24 @@ html[data-theme='dark'][data-section='mockolate'] {
   --ifm-color-primary-lighter: #d0aa81;
   --ifm-color-primary-lightest: #d8b696;
 }
+html[data-section='awaiten'] {
+  --ifm-color-primary: #3949ab;
+  --ifm-color-primary-dark: #34429c;
+  --ifm-color-primary-darker: #313f93;
+  --ifm-color-primary-darkest: #2a357d;
+  --ifm-color-primary-light: #4b59b3;
+  --ifm-color-primary-lighter: #5562b7;
+  --ifm-color-primary-lightest: #6e7ac2;
+}
+html[data-theme='dark'][data-section='awaiten'] {
+  --ifm-color-primary: #5c6bc0;
+  --ifm-color-primary-dark: #5461af;
+  --ifm-color-primary-darker: #4f5ca5;
+  --ifm-color-primary-darkest: #434e8c;
+  --ifm-color-primary-light: #6b78c6;
+  --ifm-color-primary-lighter: #7380c9;
+  --ifm-color-primary-lightest: #8893d1;
+}
 
 /* Footer: each library is its own column with the project name on top
    (linking to GitHub) and the NuGet badge below (linking to NuGet).

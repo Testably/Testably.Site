@@ -87,6 +87,12 @@ const config: Config = {
         },
         {
           type: 'docSidebar',
+          sidebarId: 'awaitenSidebar',
+          position: 'left',
+          label: 'Awaiten',
+        },
+        {
+          type: 'docSidebar',
           sidebarId: 'chronologySidebar',
           position: 'right',
           label: 'Chronology',
@@ -129,6 +135,16 @@ const config: Config = {
             },
             {
               html: `<a href="https://www.nuget.org/packages/Mockolate" class="footer__nuget-badge"><img src="https://img.shields.io/nuget/v/Mockolate?label=NuGet&logo=nuget" alt="Mockolate on NuGet"/></a>`,
+            },
+          ],
+        },
+        {
+          items: [
+            {
+              html: `<a href="https://github.com/Testably/Awaiten" class="footer__library-name">Awaiten</a>`,
+            },
+            {
+              html: `<a href="https://www.nuget.org/packages/Awaiten" class="footer__nuget-badge"><img src="https://img.shields.io/nuget/v/Awaiten?label=NuGet&logo=nuget" alt="Awaiten on NuGet"/></a>`,
             },
           ],
         },

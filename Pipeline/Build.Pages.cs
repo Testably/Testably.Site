@@ -82,11 +82,13 @@ partial class Build
 			[
 				new("Testably", "Mockolate.Migration", "11-migration.md"),
 			]),
+		new("Testably", "Awaiten",               "Docs/pages",      "Awaiten"),
 	];
 
 	Target Pages => _ => _
 		.DependsOn(Benchmarks)
 		.DependsOn(MockolateBenchmarks)
+		.DependsOn(AwaitenBenchmarks)
 		.Executes(async () =>
 		{
 			AbsolutePath docsRoot = RootDirectory / "Docs" / "pages" / "docs";
