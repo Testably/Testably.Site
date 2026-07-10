@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -169,43 +170,30 @@ partial class Build
 			}
 			: null;
 
-		HttpResponseMessage response = await client.GetAsync(
+		using JsonDocument? listing = await GetGithubJsonAsync(client,
 			$"https://api.github.com/repos/{source.Organization}/{source.Repository}/contents/{source.SourcePath}");
-
-		string responseContent = await response.Content.ReadAsStringAsync();
-		if (!response.IsSuccessStatusCode)
+		if (listing is null)
 		{
-			Log.Warning(
-				$"Skipping {source.Organization}/{source.Repository}: could not list '{source.SourcePath}' ({(int)response.StatusCode} {response.StatusCode}): {responseContent}");
-			return;
+			throw new Exception(
+				$"GitHub returned 404 for '{source.SourcePath}' in {source.Organization}/{source.Repository}; the aggregated source no longer exists at the configured path.");
 		}
 
-		try
+		foreach (JsonElement file in listing.RootElement.EnumerateArray())
 		{
-			JsonDocument jsonDocument = JsonDocument.Parse(responseContent);
-			foreach (JsonElement file in jsonDocument.RootElement.EnumerateArray())
-			{
-				await DownloadFileOrDirectory(client, source, "/", file, baseDirectory, transformer);
-			}
-		}
-		catch (JsonException e)
-		{
-			Log.Error($"Could not parse JSON: {e.Message}\n{responseContent}");
+			await DownloadFileOrDirectory(client, source, "/", file, baseDirectory, transformer);
 		}
 	}
 
 	async Task<string> FetchReadmeIntro(HttpClient client, DocsSource source)
 	{
-		HttpResponseMessage response = await client.GetAsync(
+		using JsonDocument? document = await GetGithubJsonAsync(client,
 			$"https://api.github.com/repos/{source.Organization}/{source.Repository}/contents/README.md");
-		string responseContent = await response.Content.ReadAsStringAsync();
-		if (!response.IsSuccessStatusCode)
+		if (document is null)
 		{
-			Log.Warning($"Could not fetch README.md from {source.Organization}/{source.Repository}: {response.StatusCode}");
+			Log.Warning($"No README.md in {source.Organization}/{source.Repository}.");
 			return string.Empty;
 		}
 
-		using JsonDocument document = JsonDocument.Parse(responseContent);
 		string readme = Base64Decode(document.RootElement.GetProperty("content").GetString()!);
 		int indexOfFirstH2 = readme.IndexOf("\n##", StringComparison.Ordinal);
 		return indexOfFirstH2 > 0 ? readme.Substring(indexOfFirstH2) : string.Empty;
@@ -218,16 +206,14 @@ partial class Build
 	/// </summary>
 	async Task<string> FetchReadmeBody(HttpClient client, string organization, string repository)
 	{
-		HttpResponseMessage response = await client.GetAsync(
+		using JsonDocument? document = await GetGithubJsonAsync(client,
 			$"https://api.github.com/repos/{organization}/{repository}/contents/README.md");
-		string responseContent = await response.Content.ReadAsStringAsync();
-		if (!response.IsSuccessStatusCode)
+		if (document is null)
 		{
-			Log.Warning($"Could not fetch README.md from {organization}/{repository}: {response.StatusCode}");
+			Log.Warning($"No README.md in {organization}/{repository}.");
 			return string.Empty;
 		}
 
-		using JsonDocument document = JsonDocument.Parse(responseContent);
 		string readme = Base64Decode(document.RootElement.GetProperty("content").GetString()!);
 		return StripReadmeFront(readme);
 	}
@@ -278,11 +264,16 @@ partial class Build
 		string targetName = indexMatch.Success ? "index" + indexMatch.Groups[2].Value : name;
 		int? sidebarPosition = indexMatch.Success ? int.Parse(indexMatch.Groups[1].Value) : null;
 		string filePath = targetDirectory / targetName;
-		HttpResponseMessage fileResponse =
-			await client.GetAsync(
-				$"https://api.github.com/repos/{source.Organization}/{source.Repository}/contents/{source.SourcePath}{subPath}{name}");
-		string fileResponseContent = await fileResponse.Content.ReadAsStringAsync();
-		using JsonDocument document = JsonDocument.Parse(fileResponseContent);
+		using JsonDocument? document = await GetGithubJsonAsync(client,
+			$"https://api.github.com/repos/{source.Organization}/{source.Repository}/contents/{source.SourcePath}{subPath}{name}");
+		if (document is null)
+		{
+			// The parent directory listing just named this entry, so a 404 here is not a
+			// legitimate "missing" case but a real error (renamed/removed between calls, or a
+			// bad response) — fail loudly rather than silently dropping the page.
+			throw new Exception(
+				$"GitHub returned 404 for '{source.SourcePath}{subPath}{name}', which its parent directory listing referenced.");
+		}
 		if (document.RootElement.ValueKind == JsonValueKind.Array)
 		{
 			AbsolutePath subDirectory = targetDirectory / name;
@@ -336,6 +327,67 @@ partial class Build
 			}
 		}
 		return $"---\nsidebar_position: {position}\n---\n\n{content}";
+	}
+
+	/// <summary>
+	///     GETs a GitHub API URL and returns the parsed JSON body. Retries transient failures
+	///     (HTTP 5xx, 429, 403 secondary-rate-limit, and truncated/malformed 2xx bodies) with
+	///     backoff, honouring any <c>Retry-After</c> header. Returns <c>null</c> only on a
+	///     definitive 404 so callers can decide whether a missing resource is fatal. Any other
+	///     non-success status, or exhausted retries, throws — so a transient GitHub hiccup fails
+	///     the build loudly instead of silently producing a partial documentation set.
+	/// </summary>
+	async Task<JsonDocument?> GetGithubJsonAsync(HttpClient client, string url)
+	{
+		const int maxAttempts = 5;
+		for (int attempt = 1;; attempt++)
+		{
+			HttpResponseMessage response = await client.GetAsync(url);
+			string body = await response.Content.ReadAsStringAsync();
+
+			if (response.IsSuccessStatusCode)
+			{
+				try
+				{
+					return JsonDocument.Parse(body);
+				}
+				catch (JsonException) when (attempt < maxAttempts)
+				{
+					Log.Warning($"Malformed JSON from '{url}' (attempt {attempt}/{maxAttempts}); retrying.");
+				}
+			}
+			else if (response.StatusCode == HttpStatusCode.NotFound)
+			{
+				return null;
+			}
+			else if (!IsTransientStatus(response.StatusCode) || attempt >= maxAttempts)
+			{
+				throw new Exception(
+					$"GitHub request '{url}' failed with {(int)response.StatusCode} {response.StatusCode} after {attempt} attempt(s): {body}");
+			}
+			else
+			{
+				Log.Warning(
+					$"Transient {(int)response.StatusCode} from '{url}' (attempt {attempt}/{maxAttempts}); retrying.");
+			}
+
+			await Task.Delay(RetryDelay(response, attempt));
+		}
+	}
+
+	static bool IsTransientStatus(HttpStatusCode status)
+		=> (int)status >= 500 ||
+		   status == HttpStatusCode.TooManyRequests ||
+		   status == HttpStatusCode.Forbidden;
+
+	static TimeSpan RetryDelay(HttpResponseMessage response, int attempt)
+	{
+		if (response.Headers.RetryAfter?.Delta is { } delta && delta > TimeSpan.Zero)
+		{
+			return delta < TimeSpan.FromMinutes(2) ? delta : TimeSpan.FromMinutes(2);
+		}
+		double seconds = Math.Min(30, Math.Pow(2, attempt));
+		return TimeSpan.FromSeconds(seconds);
 	}
 
 	static string Base64Decode(string base64EncodedData)
