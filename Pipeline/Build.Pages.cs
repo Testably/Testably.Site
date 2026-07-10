@@ -172,9 +172,8 @@ partial class Build
 			$"https://api.github.com/repos/{source.Organization}/{source.Repository}/contents/{source.SourcePath}");
 		if (listing is null)
 		{
-			Log.Warning(
-				$"Skipping {source.Organization}/{source.Repository}: '{source.SourcePath}' does not exist (404).");
-			return;
+			throw new Exception(
+				$"GitHub returned 404 for '{source.SourcePath}' in {source.Organization}/{source.Repository}; the aggregated source no longer exists at the configured path.");
 		}
 
 		foreach (JsonElement file in listing.RootElement.EnumerateArray())
