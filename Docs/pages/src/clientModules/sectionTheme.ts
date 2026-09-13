@@ -34,7 +34,7 @@ if (typeof window !== 'undefined') {
   // and replaceState so we react to programmatic route changes too.
   for (const method of ['pushState', 'replaceState'] as const) {
     const original = history[method];
-    history[method] = function (...args: Parameters<typeof original>) {
+    history[method] = function (this: History, ...args: Parameters<typeof original>) {
       const result = original.apply(this, args);
       applySection();
       return result;
