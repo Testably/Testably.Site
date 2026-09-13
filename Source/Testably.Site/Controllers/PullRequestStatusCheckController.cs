@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Headers;
 using System.Reflection;
+using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +14,13 @@ namespace Testably.Site.Controllers;
 public class PullRequestStatusCheckController : ControllerBase
 {
 	private static readonly string[] RepositoryOwners = ["Testably", "aweXpect", "TestableIO"];
+
+	/// <summary>
+	///     The actions that can introduce a title this check has not seen yet. Every other action - closing, labelling,
+	///     assigning, … - leaves the title as it was, so re-posting the same status for it is pure noise.
+	/// </summary>
+	private static readonly string[] TitleRelevantActions =
+		["opened", "edited", "reopened", "synchronize", "ready_for_review"];
 
 	private const string SuccessMessage =
 		"The PR title must conform to the conventional commits guideline.";
@@ -59,6 +67,11 @@ public class PullRequestStatusCheckController : ControllerBase
 		    value != "pull_request")
 		{
 			return Ok("Ignore all events except 'pull_request'.");
+		}
+
+		if (!TitleRelevantActions.Contains(pullRequestModel.Action))
+		{
+			return Ok($"Ignore the '{pullRequestModel.Action}' action, which cannot have changed the title.");
 		}
 
 		if (pullRequestModel.Repository.Private ||
@@ -137,44 +150,51 @@ public class PullRequestStatusCheckController : ControllerBase
 			state = hasValidTitle ? "success" : "failure",
 			description = SuccessMessage
 		});
-		using var content = new StringContent(json);
-		await client.PostAsync(statusUri, content, cancellationToken);
+		using var content = new StringContent(json, Encoding.UTF8, "application/json");
+		var statusResponse = await client.PostAsync(statusUri, content, cancellationToken);
+		if (!statusResponse.IsSuccessStatusCode)
+		{
+			var statusContent = await statusResponse.Content.ReadAsStringAsync(cancellationToken);
+			_logger.LogWarning("Could not create the commit status at '{StatusUri}': {StatusCode} {ResponseContent}",
+				statusUri, (int)statusResponse.StatusCode, statusContent);
+			return StatusCode(StatusCodes.Status500InternalServerError,
+				$"Could not create the commit status at '{statusUri}': {(int)statusResponse.StatusCode} {statusContent}");
+		}
+
 		return NoContent();
 	}
 
-	private bool ValidateTitle(string title)
+	/// <summary>
+	///     Matches <c>type(optional scope)!: description</c>, where both the scope and the <c>!</c> marking a breaking
+	///     change are optional and may appear together.
+	/// </summary>
+	private static bool ValidateTitle(string title)
 	{
-		foreach (var validType in ValidTypes)
+		// Searching for the separator rather than the type keeps a title that ends in a colon from
+		// running past its own end, and stops `feature: …` from being read as the `feat` type.
+		var separator = title.IndexOf(": ", StringComparison.Ordinal);
+		if (separator < 0)
 		{
-			if (!title.StartsWith(validType))
-			{
-				continue;
-			}
-
-			var index = title.IndexOf(':');
-			if (index < 0)
-			{
-				continue;
-			}
-
-			// Check whitespace after first colon
-			if (title.Substring(index + 1, 1) != " ")
-			{
-				continue;
-			}
-
-			var scope = title.Substring(0, index).Substring(validType.Length);
-			if (scope == "" || scope == "!")
-			{
-				return true;
-			}
-
-			if (scope.StartsWith('(') && scope.EndsWith(')'))
-			{
-				return true;
-			}
+			return false;
 		}
 
-		return false;
+		var prefix = title.Substring(0, separator);
+		if (prefix.EndsWith('!'))
+		{
+			prefix = prefix.Substring(0, prefix.Length - 1);
+		}
+
+		var scopeStart = prefix.IndexOf('(');
+		if (scopeStart >= 0)
+		{
+			if (!prefix.EndsWith(')') || prefix.Length - scopeStart <= 2)
+			{
+				return false;
+			}
+
+			prefix = prefix.Substring(0, scopeStart);
+		}
+
+		return ValidTypes.Contains(prefix, StringComparer.Ordinal);
 	}
 }
