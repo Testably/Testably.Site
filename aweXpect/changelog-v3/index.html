@@ -1,0 +1,229 @@
+<!doctype html><html lang=en dir=ltr class="docs-wrapper plugin-docs plugin-id-default docs-version-current docs-doc-page docs-doc-id-aweXpect/changelog-v3" data-has-hydrated=false><head><meta charset=UTF-8><meta name=generator content="Docusaurus v3.10.2"><title data-rh=true>What's new in v3 | Testably</title><meta data-rh=true name=viewport content="width=device-width, initial-scale=1.0"/><meta data-rh=true name=twitter:card content=summary_large_image /><meta data-rh=true property=og:image content=https://docs.testably.org/img/social-preview.png /><meta data-rh=true name=twitter:image content=https://docs.testably.org/img/social-preview.png /><meta data-rh=true property=og:url content=https://docs.testably.org/aweXpect/changelog-v3 /><meta data-rh=true property=og:locale content=en /><meta data-rh=true name=docusaurus_locale content=en /><meta data-rh=true name=docsearch:language content=en /><meta data-rh=true name=docusaurus_version content=current /><meta data-rh=true name=docusaurus_tag content=docs-default-current /><meta data-rh=true name=docsearch:version content=current /><meta data-rh=true name=docsearch:docusaurus_tag content=docs-default-current /><meta data-rh=true property=og:title content="What's new in v3 | Testably"/><meta data-rh=true name=description content="aweXpect v3 is currently available as a pre-release only. The API described on this page can still change before the"/><meta data-rh=true property=og:description content="aweXpect v3 is currently available as a pre-release only. The API described on this page can still change before the"/><link data-rh=true rel=icon href=/img/favicon.ico /><link data-rh=true rel=canonical href=https://docs.testably.org/aweXpect/changelog-v3 /><link data-rh=true rel=alternate href=https://docs.testably.org/aweXpect/changelog-v3 hreflang=en /><link data-rh=true rel=alternate href=https://docs.testably.org/aweXpect/changelog-v3 hreflang=x-default /><script data-rh=true type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://docs.testably.org/aweXpect/changelog-v3","name":"What's new in v3","position":1}]}</script><link rel=stylesheet href=/assets/css/styles.506cc8df.css /><script src=/assets/js/runtime~main.1e78ca0a.js defer></script><script src=/assets/js/main.6a2642b7.js defer></script></head><body><svg style="display: none;"><defs>
+<symbol id=theme-svg-external-link viewBox="0 0 24 24"><path fill=currentColor d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"/></symbol>
+</defs></svg>
+<script>!function(){var t=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return window.localStorage.getItem("theme-4e2")}catch(t){}}();document.documentElement.setAttribute("data-theme",t||(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light")),document.documentElement.setAttribute("data-theme-choice",t||"system")}(),function(){try{for(var[t,e]of new URLSearchParams(window.location.search).entries())if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id=__docusaurus><link rel=preload as=image href=/img/awexpect-light.svg /><link rel=preload as=image href=/img/awexpect-dark.svg /><div role=region aria-label="Skip to main content"><a class=skipToContent_fXgn href=#__docusaurus_skipToContent_fallback>Skip to main content</a></div><nav aria-label=Main class="theme-layout-navbar navbar navbar--fixed-top"><div class=navbar__inner><div class="theme-layout-navbar-left navbar__items"><button aria-label="Toggle navigation bar" aria-expanded=false class="navbar__toggle clean-btn" type=button><svg width=30 height=30 viewBox="0 0 30 30" aria-hidden=true><path stroke=currentColor stroke-linecap=round stroke-miterlimit=10 stroke-width=2 d="M4 7h22M4 15h22M4 23h22"/></svg></button><a class=navbar__brand href=/><div class=navbar__logo><img src=/img/awexpect-light.svg alt="Testably logo" class="themedComponent_mlkZ themedComponent--light_NVdE" height=32 width=32 /><img src=/img/awexpect-dark.svg alt="Testably logo" class="themedComponent_mlkZ themedComponent--dark_xIcU" height=32 width=32 /></div><b class="navbar__title text--truncate">Testably</b></a><a class="navbar__item navbar__link" href=/Abstractions/>Abstractions</a><a aria-current=page class="navbar__item navbar__link navbar__link--active" href=/aweXpect/>aweXpect</a><a class="navbar__item navbar__link" href=/Mockolate/>Mockolate</a><a class="navbar__item navbar__link" href=/Awaiten/>Awaiten</a></div><div class="theme-layout-navbar-right navbar__items navbar__items--right"><a class="navbar__item navbar__link" href=/Chronology/>Chronology</a><a class="navbar__item navbar__link" href=/Extensions/>Extensions</a><div class="toggle_vylO colorModeToggle_DEke"><button class="clean-btn toggleButton_gllP toggleButtonDisabled_aARS" type=button disabled title="system mode" aria-label="Switch between dark and light mode (currently system mode)"><svg viewBox="0 0 24 24" width=24 height=24 aria-hidden=true class="toggleIcon_g3eP lightToggleIcon_pyhR"><path fill=currentColor d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"/></svg><svg viewBox="0 0 24 24" width=24 height=24 aria-hidden=true class="toggleIcon_g3eP darkToggleIcon_wfgR"><path fill=currentColor d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"/></svg><svg viewBox="0 0 24 24" width=24 height=24 aria-hidden=true class="toggleIcon_g3eP systemToggleIcon_QzmC"><path fill=currentColor d="m12 21c4.971 0 9-4.029 9-9s-4.029-9-9-9-9 4.029-9 9 4.029 9 9 9zm4.95-13.95c1.313 1.313 2.05 3.093 2.05 4.95s-0.738 3.637-2.05 4.95c-1.313 1.313-3.093 2.05-4.95 2.05v-14c1.857 0 3.637 0.737 4.95 2.05z"/></svg></button></div><div class=navbarSearchContainer_Bca1></div></div></div><div role=presentation class=navbar-sidebar__backdrop></div></nav><div id=__docusaurus_skipToContent_fallback class="theme-layout-main main-wrapper mainWrapper_z2l0"><div class=docsWrapper_hBAB><button aria-label="Scroll back to top" class="clean-btn theme-back-to-top-button backToTopButton_sjWU" type=button></button><div class=docRoot_UBD9><aside class="theme-doc-sidebar-container docSidebarContainer_YfHR"><div class=sidebarViewport_aRkj><div class=sidebar_njMd><nav aria-label="Docs sidebar" class="menu thin-scrollbar menu_SIkG"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class=menu__link href=/aweXpect/><span class=linkLabel_WmDU>aweXpect</span></a><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class=menu__link href=/aweXpect/getting-started><span class=linkLabel_WmDU>Getting started</span></a><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class=menu__list-item-collapsible><a class="categoryLink_byQd menu__link menu__link--sublist" href=/category/common-types><span class=categoryLinkLabel_W154>Common types</span></a><button aria-label="Expand sidebar category 'Common types'" aria-expanded=false type=button class="clean-btn menu__caret"></button></div><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class=menu__link href=/aweXpect/collections><span class=linkLabel_WmDU>Collections</span></a><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class=menu__link href=/aweXpect/delegates><span class=linkLabel_WmDU>Delegates</span></a><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class=menu__link href=/aweXpect/events><span class=linkLabel_WmDU>Events</span></a><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class=menu__link href=/aweXpect/equivalency><span class=linkLabel_WmDU>Equivalency</span></a><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class=menu__list-item-collapsible><a class="categoryLink_byQd menu__link menu__link--sublist" href=/category/advanced><span class=categoryLinkLabel_W154>Advanced</span></a><button aria-label="Expand sidebar category 'Advanced'" aria-expanded=false type=button class="clean-btn menu__caret"></button></div><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class=menu__link href=/aweXpect/write-extension><span class=linkLabel_WmDU>Write your own extension</span></a><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class=menu__link href=/aweXpect/benchmarks><span class=linkLabel_WmDU>Benchmarks</span></a><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class=menu__link href=/aweXpect/migration><span class=linkLabel_WmDU>Migration</span></a><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link menu__link--active" aria-current=page href=/aweXpect/changelog-v3><span class=linkLabel_WmDU>What's new in v3</span></a></ul></nav></div></div></aside><main class=docMainContainer_TBSr><div class="container padding-top--md padding-bottom--lg"><div class=row><div class="col docItemCol_VOVn"><div class=docItemContainer_Djhp><article><nav class="theme-doc-breadcrumbs breadcrumbsContainer_Z_bl" aria-label=Breadcrumbs><ul class=breadcrumbs><li class=breadcrumbs__item><a aria-label="Home page" class=breadcrumbs__link href=/><svg viewBox="0 0 24 24" class=breadcrumbHomeIcon_YNFT><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z" fill=currentColor /></svg></a><li class="breadcrumbs__item breadcrumbs__item--active"><span class=breadcrumbs__link>What's new in v3</span></ul></nav><div class="tocCollapsible_ETCw theme-doc-toc-mobile tocMobile_ITEo"><button type=button class="clean-btn tocCollapsibleButton_TO0P">On this page</button></div><div class="theme-doc-markdown markdown"><header><h1>What's new in v3</h1></header>
+<div class="theme-admonition theme-admonition-warning admonition_xJq3 alert alert--warning"><div class=admonitionHeading_Gvgb><span class=admonitionIcon_Rf37><svg viewBox="0 0 16 16"><path fill-rule=evenodd d="M8.893 1.5c-.183-.31-.52-.5-.887-.5s-.703.19-.886.5L.138 13.499a.98.98 0 0 0 0 1.001c.193.31.53.501.886.501h13.964c.367 0 .704-.19.877-.5a1.03 1.03 0 0 0 .01-1.002L8.893 1.5zm.133 11.497H6.987v-2.003h2.039v2.003zm0-3.004H6.987V5.987h2.039v4.006z"/></svg></span>Pre-release</div><div class=admonitionContent_BuS1><p>aweXpect v3 is currently available as a pre-release only. The API described on this page can still change before the
+final v3.0.0 release.</div></div>
+<p>aweXpect v3 is the first release that can be published with trimming and Native AOT. Along the way it settles two
+things that had grown inconsistent over the v2 releases: how a <code>null</code> subject is treated, and how the same comparison
+is spelled across different result types. Most of the breaking changes below are renames that the compiler will point
+out; the behavioural changes are collected in their own sections so that you can check your test suite for them.</p>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id=trimming-and-native-aot>Trimming and Native AOT<a href=#trimming-and-native-aot class=hash-link aria-label="Direct link to Trimming and Native AOT" title="Direct link to Trimming and Native AOT" translate=no>​</a></h2>
+<p>Both <code>aweXpect</code> and <code>aweXpect.Core</code> declare themselves trimmable and AOT compatible for <code>net8.0</code> and later. A test
+project that publishes with <code>PublishTrimmed</code> or <code>PublishAot</code> no longer receives trim warnings from aweXpect, and the
+smoke tests in CI run the expectations as a Native AOT binary.</p>
+<p>Under the JIT, aweXpect reached three things through reflection: the members that an equivalency comparison walks,
+the members that a failure message renders for an object, and the events that a recording subscribes to. Trimming
+removes whatever is only reached reflectively, so all three would silently do less than they claim. v3 replaces
+reflection with a registry that a source generator fills at compile time:</p>
+<ul>
+<li class=""><strong>Equivalency</strong> registers the public members of every type that reaches <code>IsEquivalentTo</code>, <code>IsNotEquivalentTo</code>,
+<code>AreEquivalentTo</code> or <code>Equivalent()</code>, transitively. See
+<a class="" href=/docs/expectations/equivalency#trimming-and-native-aot>Equivalency: Trimming and Native AOT</a>.</li>
+<li class=""><strong>Failure messages</strong> render a registered object from its registration, so the message keeps listing its members
+after trimming. Boxed <code>KeyValuePair</code> entries and non-generic dictionaries render as <code>[key] = value</code> without
+reflection.</li>
+<li class=""><strong>Event recording</strong> registers the public events of every subject passed to <code>Record()</code> together with a handler
+factory, which also lifts the previous limit of four handler parameters. See
+<a class="" href=/docs/expectations/events#trimming-and-native-aot>Events: Trimming and Native AOT</a>.</li>
+<li class=""><strong>Initialization</strong> no longer scans the loaded assemblies. The test framework adapter and extension initializers
+register themselves from a module initializer.</li>
+</ul>
+<p>Reflection stays available as a fallback under the JIT for types the generator cannot see. When you publish with
+trimming or Native AOT enabled, the fallback is switched off and such a type fails with an error that names it and
+asks you to register it with <code>[assembly: GenerateMetadata(typeof(MyType))]</code>. The <code>AweXpectReflectionFallback</code> MSBuild
+property forces the fallback either way, and the public <code>ReflectionFallback.IsSupported</code> switch lets an extension
+guard its own reflection the same way.</p>
+<p>Nothing changes for a project that is not trimmed: the registrations are generated regardless, and a type without one
+is reflected over as before. The registry only holds public instance members, so a registered object no longer lists
+static members, indexers or write-only properties in a failure message.</p>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id=what-you-have-to-do>What you have to do<a href=#what-you-have-to-do class=hash-link aria-label="Direct link to What you have to do" title="Direct link to What you have to do" translate=no>​</a></h3>
+<ul>
+<li class=""><strong>Nothing</strong>, if your test project only uses the built-in expectations under the JIT.</li>
+<li class=""><strong>Extension authors</strong> replace <code>IAweXpectInitializer</code> with a <code>[ModuleInitializer]</code>, mark extension methods whose
+argument reaches equivalency or a recording with <code>[RequiresMemberMetadata]</code> or <code>[RequiresEventMetadata]</code>, and
+register a hand-written <code>ITestFrameworkAdapter</code> explicitly. See <a href=#extensions-and-awexpectcore class="">Extensions</a> below and
+<a class="" href=/docs/expectations/write-extension#initialization>Write your own extension</a>.</li>
+<li class=""><strong>Equivalency options</strong> that inspected a <code>MemberInfo</code> move to <code>IgnoringFields</code> and <code>IgnoringProperties</code>, because a
+registration cannot supply one. See <a href=#equivalency class="">Equivalency</a> below.</li>
+</ul>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id=null-subjects>Null subjects<a href=#null-subjects class=hash-link aria-label="Direct link to Null subjects" title="Direct link to Null subjects" translate=no>​</a></h2>
+<p>v2 answered the question "what does a <code>null</code> subject do?" differently from expectation to expectation, and often
+differently between an expectation and its negated form: <code>IsNotEmpty()</code> failed for a <code>null</code> collection but passed for
+a <code>null</code> string, and <code>DoesNotComplyWith(it => it.HasItem(1))</code> passed for a <code>null</code> list.</p>
+<p>v3 follows one rule. An expectation that <strong>inspects</strong> the subject fails for a <code>null</code> subject, in its negated form and
+through <code>DoesNotComplyWith</code> as well, because there is nothing to inspect. An expectation that <strong>compares</strong> the subject
+against a value you supply keeps treating <code>null</code> as an ordinary value on both sides, so <code>IsEqualTo(null)</code>,
+<code>IsSameAs(null)</code> and <code>IsOneOf(null, "a")</code> succeed for a <code>null</code> subject.</p>
+<p>The following expectations now <strong>fail</strong> for a <code>null</code> subject where they succeeded before:</p>
+<table><thead><tr><th>Area<th>Expectations<tbody><tr><td>Strings<td><code>IsNotEmpty()</code>, <code>DoesNotStartWith(…)</code>, <code>DoesNotEndWith(…)</code><tr><td>Collections<td><code>DoesNotContain(…)</code>, <code>IsNotContainedIn(…)</code>, every negated inspection via <code>DoesNotComplyWith</code><tr><td>Numbers<td><code>IsNotBetween(…)</code>, <code>IsNotNaN()</code>, <code>IsNotFinite()</code>, <code>IsNotInfinite()</code>, and the ordering comparisons and <code>IsPositive()</code> / <code>IsNegative()</code> on a nullable number under <code>DoesNotComplyWith</code><tr><td>Enums<td><code>DoesNotHaveFlag(…)</code>, <code>HasValue().NotEqualTo(…)</code>, <code>HasFlag(null)</code><tr><td>Types<td><code>IsNot&lt;T>()</code>, <code>IsNotExactly&lt;T>()</code>, <code>IsNot(Type)</code>, <code>IsNotExactly(Type)</code>, <code>IsNotEquatableTo(…)</code>, <code>IsNotParsableInto&lt;T>()</code><tr><td>Properties<td>every <code>Has…().NotEqualTo(…)</code>, such as <code>HasLength()</code>, <code>HasLineCount()</code>, <code>HasDay()</code>, <code>HasKind()</code>, <code>HasPosition()</code><tr><td>Booleans<td><code>Implies(…)</code> reports <code>it was &lt;null></code> instead of <code>it did not</code></table>
+<p>One change goes the other way: <code>IsSameAs(null)</code> and <code>IsNotSameAs(other)</code> now <strong>succeed</strong> for a <code>null</code> subject, because
+identity is a comparison and <code>ReferenceEquals(null, null)</code> is <code>true</code>. Previously <code>IsSameAs(null)</code> failed with
+<code>refers to &lt;null>, but it was &lt;null></code>.</p>
+<p>Every expectation that a <code>null</code> subject cannot satisfy carries a <code>[GuaranteesNotNull]</code> attribute, and the analyzer
+reads it to suppress a CS8602 on the subject after the expectation ran. In v2 only three expectations were recognised
+by name, so you may be able to remove <code>!</code> operators from your tests.</p>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id=argument-validation>Argument validation<a href=#argument-validation class=hash-link aria-label="Direct link to Argument validation" title="Direct link to Argument validation" translate=no>​</a></h2>
+<p>Passing an empty value to search for made an expectation meaningless: every string contains <code>""</code>, every collection
+starts with an empty sequence, and <code>ContainsKeys()</code> without arguments asserted nothing, so such a test could never
+fail. Passing <code>null</code> produced a failure that had nothing to do with the subject. Both now throw at the call site:
+<code>ArgumentNullException</code> for <code>null</code>, <code>ArgumentException</code> for an empty value.</p>
+<ul>
+<li class=""><code>Contains</code>, <code>StartsWith</code>, <code>EndsWith</code> and their negated forms, on strings and on collections, including the <code>params</code>
+overloads.</li>
+<li class=""><code>ContainsKeys</code>, <code>ContainsValues</code>, <code>DoesNotContainKeys</code>, <code>DoesNotContainValues</code>.</li>
+<li class=""><code>IsContainedIn</code> and <code>IsNotContainedIn</code> for a <code>null</code> collection. An empty collection is still accepted, because only an
+empty subject is contained in it.</li>
+<li class=""><code>HasMessage().Containing(…)</code> and <code>HasParamName().Containing(…)</code> and their <code>With…</code> twins. <code>EqualTo(null)</code> keeps
+accepting <code>null</code>, because <code>HasParamName().EqualTo(null)</code> is a real expectation.</li>
+</ul>
+<p>The parameters are declared non-nullable, so a caller only hits the exception where a warning was already
+suppressed.</p>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id=vocabulary>Vocabulary<a href=#vocabulary class=hash-link aria-label="Direct link to Vocabulary" title="Direct link to Vocabulary" translate=no>​</a></h2>
+<p>The same comparison was spelled differently depending on which result type it happened to land in: <code>>=</code> was
+<code>AtLeast</code> on <code>HasCount()</code> but <code>GreaterThanOrEqualTo</code> on a number. v3 draws one line. A continuation on a <strong>value</strong>
+compares (<code>EqualTo</code>, <code>NotEqualTo</code>, <code>GreaterThan</code>, <code>GreaterThanOrEqualTo</code>, <code>LessThan</code>, <code>LessThanOrEqualTo</code>,
+<code>Between</code>) and a continuation on an <strong>occurrence count</strong> counts (<code>Exactly</code>, <code>AtLeast</code>, <code>AtMost</code>, <code>MoreThan</code>,
+<code>LessThan</code>, <code>Between</code>, <code>Never</code>).</p>
+<p>Every scalar <code>Has…</code> expectation now offers both shapes that <code>HasCount</code> already had: <code>HasLength(9)</code> as the shorthand
+and <code>HasLength().EqualTo(9)</code> as the explicit form with the full comparison vocabulary. This adds the shorthand to the
+date and time components, <code>HasKind</code>, <code>HasOffset</code>, the <code>Version</code> components, <code>HasLength</code>, <code>HasLineCount</code>,
+<code>HasPosition</code> and <code>HasBufferSize</code>, and adds the continuation to <code>HasHResult</code>, <code>HasValue</code> and <code>WithHResult</code>.</p>
+<p>None of the renames has an <code>[Obsolete]</code> forwarder; each is a compile error that is fixed once.</p>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id=renames-and-removals>Renames and removals<a href=#renames-and-removals class=hash-link aria-label="Direct link to Renames and removals" title="Direct link to Renames and removals" translate=no>​</a></h3>
+<table><thead><tr><th>v2<th>v3<tbody><tr><td><code>ThrowsException()</code><td><code>Throws()</code><tr><td><code>For(x => x.Member, m => m.IsEqualTo(…))</code><td><code>Whose(x => x.Member, m => m.IsEqualTo(…))</code><tr><td><code>HasCount().MoreThan(n)</code><td><code>HasCount().GreaterThan(n)</code><tr><td><code>HasCount().AtLeast(n)</code><td><code>HasCount().GreaterThanOrEqualTo(n)</code><tr><td><code>HasCount().AtMost(n)</code><td><code>HasCount().LessThanOrEqualTo(n)</code><tr><td><code>DoesNotHaveCount(n)</code><td><code>HasCount().NotEqualTo(n)</code><tr><td><code>DoesNotHaveValue(n)</code> on an enum<td><code>HasValue().NotEqualTo(n)</code><tr><td><code>ExecutesIn().Approximately(expected, tolerance)</code><td><code>ExecutesIn(expected).Within(tolerance)</code><tr><td><code>AreAllUnique()</code> on a collection<td><code>All().AreUnique()</code><tr><td><code>AreAllUnique()</code> on a dictionary<td><code>Values.All().AreUnique()</code><tr><td><code>HasMessageContaining(…)</code> / <code>WithMessageContaining(…)</code><td><code>HasMessage().Containing(…)</code> / <code>WithMessage().Containing(…)</code><tr><td><code>DoesNotHaveMessage(…)</code> / <code>WithoutMessage(…)</code><td><code>HasMessage().NotEqualTo(…)</code> / <code>WithMessage().NotEqualTo(…)</code><tr><td><code>HasParamNameContaining(…)</code> and the other <code>ParamName</code> variants<td><code>HasParamName().Containing(…)</code> and so on<tr><td><code>Contains(…).Exactly()</code> (the parameterless match type)<td>removed, it restated the default</table>
+<p>Two of these change behaviour beyond the name:</p>
+<ul>
+<li class=""><code>HasMessage().Containing(x)</code> is a literal substring match. The undocumented wildcard support of
+<code>HasMessageContaining</code> is gone; write <code>HasMessage("*x*").AsWildcard()</code> instead.</li>
+<li class=""><code>All().AreUnique()</code> reports duplicates through the quantifier family. A failure reads
+<code>is unique for all items, but only 2 of 4 were</code> instead of <code>only has unique items, but it contained 1 duplicate</code>,
+and <code>null</code> elements of a non-generic <code>IEnumerable</code> now compare as equal to each other, as they always did on the
+generic overloads.</li>
+</ul>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id=failure-messages>Failure messages<a href=#failure-messages class=hash-link aria-label="Direct link to Failure messages" title="Direct link to Failure messages" translate=no>​</a></h3>
+<p>The rendering was unified where the same option had several spellings. Tests that assert on the exact failure text may
+need an update.</p>
+<ul>
+<li class="">A tolerance renders as <code>± x</code> everywhere. <code>ExecutesIn</code> previously rendered <code>approximately 0:05 ± 0:01</code>, and date and
+time comparisons rendered <code>within 1:00</code>, which reads like a deadline.</li>
+<li class=""><code>HasHResult(5)</code> renders <code>has HResult equal to 5</code> instead of <code>has HResult 5</code>, <code>HasValue(1)</code> renders
+<code>has value equal to 1</code>, and <code>WithHResult(5)</code> renders <code>with HResult equal to 5</code>, because all three are now the
+shorthand for the continuation.</li>
+<li class="">A struct property nested under <code>HasInnerException</code> reads <code>whose HResult is equal to 42</code> instead of
+<code>whose has HResult equal to 42</code>.</li>
+<li class="">Collection equality reads like the other collection relations: <code>IsEqualTo(expected)</code> renders
+<code>is equal to collection expected in order</code> instead of <code>matches collection expected in order</code>, and <code>IsNotEqualTo</code>
+renders <code>is not equal to collection …</code> instead of <code>does not match collection …</code>.</li>
+<li class="">A member selected with <code>Whose(x => x.Message.Length, …)</code> renders without the leading dot:
+<code>whose Message.Length is …</code> and <code>but Message.Length was …</code> instead of <code>whose .Message.Length is …</code>.</li>
+<li class=""><code>DoesNotHaveItem(1).AtIndex(0)</code> names the item it found: <code>but it had item 1 at index 0</code> instead of <code>but it did</code>.</li>
+<li class="">A <code>Never()</code> quantifier appends its <code>within</code> window when one was given.</li>
+<li class="">Every equivalency member difference renders as a <code>Property X differed:</code> block with <code>Found:</code> and <code>Expected:</code> lines.
+A <code>null</code> on one side previously read <code>Property Value was &lt;null> instead of "Foo"</code>, and an <code>It.Is&lt;T>()</code> member read
+<code>Property IntValue was 1</code> or, on a type mismatch, <code>Property StringValue was string</code>. An <code>It.Is&lt;T>()</code> member now
+shows its expectation as <code>Expected</code> and, on a type mismatch, the found type in parentheses:
+<code>Found: "abc" (string)</code>.</li>
+</ul>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id=timeouts-on-negative-event-expectations>Timeouts on negative event expectations<a href=#timeouts-on-negative-event-expectations class=hash-link aria-label="Direct link to Timeouts on negative event expectations" title="Direct link to Timeouts on negative event expectations" translate=no>​</a></h2>
+<p><code>Within(…)</code> was ignored on every event expectation with an upper bound: <code>DidNotTrigger</code>, <code>DidNotTriggerPropertyChanged</code>,
+<code>Never()</code>, <code>AtMost</code>, <code>LessThan</code>, <code>Exactly</code> and <code>Between</code>. The expectation returned immediately with the current
+count, so an event fired later inside the window went unseen and <code>DidNotTrigger("X").Within(500.Milliseconds())</code>
+passed after a few milliseconds. In v3 such an expectation waits out the full timeout and returns early only on the
+event that breaks it. The same applies to a <code>Signaled()</code> count with an upper bound.</p>
+<p>This is the one behavioural change that can make a passing test fail without touching its code: a negative event
+expectation with <code>Within(…)</code> now observes the window it asks for.</p>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id=equivalency>Equivalency<a href=#equivalency class=hash-link aria-label="Direct link to Equivalency" title="Direct link to Equivalency" translate=no>​</a></h2>
+<ul>
+<li class=""><code>IsEquivalentTo</code> passed unconditionally when it found no member to compare. It now fails, unless every member was
+excluded explicitly through <code>IncludeMembers.None</code>.</li>
+<li class=""><code>MemberToIgnore.IgnoreMember</code> no longer receives a <code>MemberInfo</code>, because a registration cannot supply one. The
+<code>Ignoring</code> overload that exposed it is replaced by <code>IgnoringFields</code> and <code>IgnoringProperties</code>.</li>
+<li class=""><code>EquivalencyExtensions</code> moved to the <code>aweXpect</code> namespace, so <code>Contains(x).Equivalent()</code> needs no extra <code>using</code>.
+The <code>Equivalent</code> parameter is named <code>options</code>.</li>
+<li class="">Asking a registered type for <code>IncludeMembers.Internal</code> or <code>IncludeMembers.Private</code> reflects over the whole type,
+because only public members are registered. Under trimming this throws.</li>
+<li class="">Indexers are skipped, a <code>new</code>-hidden member is taken from the most derived type instead of throwing, a property on
+the actual side is read only through a public getter, and an exception thrown by a getter surfaces unwrapped.</li>
+</ul>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id=extensions-and-awexpectcore>Extensions and aweXpect.Core<a href=#extensions-and-awexpectcore class=hash-link aria-label="Direct link to Extensions and aweXpect.Core" title="Direct link to Extensions and aweXpect.Core" translate=no>​</a></h2>
+<ul>
+<li class=""><code>IAweXpectInitializer</code> is removed. Run the initialization from a <code>[ModuleInitializer]</code> as described in
+<a class="" href=/docs/expectations/write-extension#initialization>Write your own extension</a>.</li>
+<li class="">A hand-written <code>ITestFrameworkAdapter</code> is no longer discovered by scanning the loaded assemblies on <code>net8.0</code> and
+later. Register it with <code>TestFrameworkRegistry.Register</code>. The generated adapters register themselves.</li>
+<li class="">The <code>aweXpect.Frameworks</code> project is renamed to <code>aweXpect.Generators</code> and hosts both generators.</li>
+<li class="">The result types of <code>Contains</code> and <code>IsContainedIn</code> were named after the pre-rename infinitives <code>Contain</code> and
+<code>BeContainedIn</code>. They are now named after what they do, such as <code>ProperCollectionMatchResult</code>, and the dictionary
+results <code>ContainsValueResult</code> and <code>ContainsValuesResult</code> are <code>ContainsKeyResult</code> and <code>ContainsKeysResult</code>.
+<code>EnumerableQuantifier</code> and <code>CollectionCountResult</code> moved out of the root namespace into <code>aweXpect.Options</code> and
+<code>aweXpect.Results</code>. A test only names these types when it stores a result in an explicitly typed variable.</li>
+<li class="">The receiver parameter of every expectation is named <code>subject</code> instead of <code>source</code>. This only affects the static
+call form with a named argument, such as <code>ThatString.IsEqualTo(subject: value, …)</code>.</li>
+<li class=""><code>AndOrWhichResult&lt;,></code> and <code>AndOrWhichResult&lt;,,></code> are removed. No built-in expectation returned them, so only an
+extension that constructed them directly is affected; <code>Whose</code> covers the member navigation they offered.</li>
+<li class=""><code>PropertyResult.Int</code>, <code>Long</code>, <code>TimeSpan</code> and <code>DateTimeKind</code> gain the <code>&lt;TValue, TType, TThat></code> shape that
+<code>PropertyResult.String</code> already had, with an <code>ExpectationGrammars</code> parameter, so one continuation renders
+<code>has HResult equal to 42</code> on a subject and <code>with HResult equal to 42</code> after <code>Throws()</code>. The existing <code>&lt;TItem></code>
+classes stay as thin subclasses, so <code>Has…</code> expectations built on them are unchanged.</li>
+<li class=""><code>PropertyResult.String</code> returns <code>StringEqualityTypeResult</code>, so <code>AsWildcard()</code> and friends are reachable, and gains
+<code>StartingWith</code>, <code>EndingWith</code> and their negations.</li>
+<li class="">The three <code>ConstraintResult</code> base classes document how they treat a <code>null</code> actual, and the
+<a class="" href=/docs/expectations/write-extension#constraints>null rule</a> that an extension has to follow is stated on the
+extension page.</li>
+<li class=""><code>ConstraintResult.WithValue&lt;T></code> takes the name of the subject like <code>WithNotNullValue&lt;T></code> and <code>WithEqualToValue&lt;T></code>:
+its constructor is <code>WithValue&lt;T>(string it, ExpectationGrammars grammars)</code>, and the name is available as the
+inherited <code>It</code> property. A derived class passes its <code>it</code> to the base and uses <code>It</code> in its own result texts.</li>
+<li class="">The <code>[GuaranteesNotNull]</code> attribute in <code>aweXpect.Core</code> marks an expectation that a <code>null</code> subject can never satisfy,
+and the source generator emits it for expectations derived from <code>ConstraintResult.WithNotNullValue</code>.</li>
+<li class="">The option types follow the result vocabulary: <code>StringEqualityOptions.UsingComparer(comparer)</code> is renamed to
+<code>Using(comparer)</code> like <code>ObjectEqualityOptions.Using</code>, <code>StringEqualityOptions.Exactly()</code> is removed because exact
+matching is the default, and <code>TimeSpanEqualityOptions.Approximately(expected, tolerance)</code> is internal; construct an
+<code>ExecutesInToleranceResult</code> to get the tolerance continuation <code>ExecutesIn(expected).Within(tolerance)</code>.</li>
+</ul>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id=new-expectations>New expectations<a href=#new-expectations class=hash-link aria-label="Direct link to New expectations" title="Direct link to New expectations" translate=no>​</a></h2>
+<ul>
+<li class=""><strong>Dictionaries</strong> navigate to their keys and values: <code>That(dictionary).Keys.Contains(42)</code> and
+<code>That(dictionary).Values.All().AreUnique()</code> continue with the full collection vocabulary. These are C# 14 extension
+properties and need a C# 14 compiler.</li>
+<li class=""><strong>Collections</strong> gain a positional <code>DoesNotHaveItem(x).AtIndex(n)</code> and <code>DoesNotHaveItemThat(…)</code>, mirroring every
+<code>HasItem</code> overload. A collection too short to have an item at that index satisfies the expectation.</li>
+<li class=""><strong>Uniqueness</strong> is a quantifier: <code>AtLeast(1).AreNotUnique()</code>, <code>None().AreUnique()</code> and <code>AtLeast(4).AreUnique()</code>
+express what <code>AreAllUnique</code> could not.</li>
+<li class=""><strong>Events</strong> gain a positional <code>DidNotTrigger(eventName)</code>, the twin of <code>Triggered(eventName)</code>.</li>
+<li class=""><strong>Delegates</strong> gain <code>DoesNotSatisfy(…).Within(…)</code>, <code>Throws().WithHResult()</code> with the comparison vocabulary, and
+<code>WithMessage().StartingWith(…)</code> and <code>EndingWith(…)</code>.</li>
+<li class=""><strong>Version</strong> gains comparisons (<code>IsGreaterThan</code>, <code>IsBetween</code>, …) and the components <code>HasMajor</code>, <code>HasMinor</code>,
+<code>HasBuild</code> and <code>HasRevision</code>. See <a class="" href=/docs/expectations/common-types/version>Version</a>.</li>
+<li class=""><strong>Guid</strong> gains <code>IsOneOf</code> and <code>IsNotOneOf</code>.</li>
+<li class=""><strong>Char</strong> gains <code>IsADigit</code>, <code>IsAnAsciiDigit</code>, <code>IsAnAsciiHexDigit</code>, <code>IsUpperCased</code>, <code>IsLowerCased</code> and <code>IsControl</code>
+with their negations.</li>
+</ul>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id=analyzer>Analyzer<a href=#analyzer class=hash-link aria-label="Direct link to Analyzer" title="Direct link to Analyzer" translate=no>​</a></h2>
+<ul>
+<li class=""><code>aweXpect0003</code> flags a <code>Has…</code> exception expectation bound directly after <code>Throws</code>, which compiles but reads
+"throws a CustomException has Message …". The code fix renames it to the <code>With…</code> twin or inserts <code>.Which</code>. See
+<a class="" href=/docs/expectations/delegates#with-after-throws-has-on-the-exception>Delegates</a>.</li>
+<li class=""><code>aweXpect2001</code> warns when a type named in <code>[assembly: GenerateMetadata]</code> yields no registration.</li>
+<li class="">The nullability suppressor reads <code>[GuaranteesNotNull]</code> instead of a fixed list of three names, so it suppresses the
+warning after far more expectations than before.</li>
+</ul>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id=fixes>Fixes<a href=#fixes class=hash-link aria-label="Direct link to Fixes" title="Direct link to Fixes" translate=no>​</a></h2>
+<ul>
+<li class=""><code>And</code> and <code>Or</code> inside a <code>HasInner</code>, <code>WithInner</code> or <code>Whose</code> continuation silently dropped the later expectation,
+so a failing <code>And</code> passed and a passing <code>Or</code> failed.</li>
+<li class="">An expectation typed at the narrowed exception under <code>HasInner&lt;T>(…)</code>, such as <code>Satisfies</code> or <code>Is&lt;T></code>, never
+matched and threw "does not support".</li>
+<li class=""><code>HasValue(0)</code> on a <code>null</code> enum subject succeeded, because <code>null</code> converted to <code>0</code>.</li>
+<li class=""><code>IsEquatableTo</code> threw a <code>NullReferenceException</code> for a <code>null</code> subject instead of failing.</li>
+<li class="">A number failure message dropped the difference when the subject was <code>MinValue</code>.</li>
+<li class="">The numeric conversion of <code>IsEqualTo</code> used <code>dynamic</code>, which is unavailable under Native AOT and swallowed its failure
+into a wrong result. It converts through generic math now, and <code>nint</code> and <code>nuint</code> take part.</li>
+<li class="">A boxed <code>KeyValuePair</code> rendered as <code>[foo, 42]</code> instead of <code>["foo"] = 42</code>.</li>
+<li class="">The reflective event recorder kept a handler for a static event subscribed after the subject was collected, so the
+event kept recording across tests. A handler that returns a value or takes a parameter by reference now fails with
+the event name and the reason instead of a bare <code>ArgumentException</code>.</li>
+<li class=""><code>IsNotBetween(1).And(3)</code> passed for a <code>null</code> number while <code>IsNotBetween(null).And(null)</code> failed.</li>
+<li class=""><code>IsEqualTo</code> and <code>IsNotEqualTo</code> on an <code>ImmutableArray&lt;T></code> offered a <code>Properly()</code> modifier that silently turned the
+equality into a proper subset check. They now return the same result as every other overload.</li>
+</ul></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="row margin-top--sm theme-doc-footer-edit-meta-row"><div class="col noPrint_WFHX"><a href=https://github.com/Testably/Testably.Site/tree/main/Docs/pages/docs/aweXpect/11-changelog-v3.md target=_blank rel="noopener noreferrer" class=theme-edit-this-page><svg fill=currentColor height=20 width=20 viewBox="0 0 40 40" class=iconEdit_Z9Sw aria-hidden=true><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"/></g></svg>Edit this page</a></div><div class="col lastUpdated_JAkA"></div></div></footer></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href=/aweXpect/migration><div class=pagination-nav__sublabel>Previous</div><div class=pagination-nav__label>Migration</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href=#trimming-and-native-aot class="table-of-contents__link toc-highlight">Trimming and Native AOT</a><ul><li><a href=#what-you-have-to-do class="table-of-contents__link toc-highlight">What you have to do</a></ul><li><a href=#null-subjects class="table-of-contents__link toc-highlight">Null subjects</a><li><a href=#argument-validation class="table-of-contents__link toc-highlight">Argument validation</a><li><a href=#vocabulary class="table-of-contents__link toc-highlight">Vocabulary</a><ul><li><a href=#renames-and-removals class="table-of-contents__link toc-highlight">Renames and removals</a><li><a href=#failure-messages class="table-of-contents__link toc-highlight">Failure messages</a></ul><li><a href=#timeouts-on-negative-event-expectations class="table-of-contents__link toc-highlight">Timeouts on negative event expectations</a><li><a href=#equivalency class="table-of-contents__link toc-highlight">Equivalency</a><li><a href=#extensions-and-awexpectcore class="table-of-contents__link toc-highlight">Extensions and aweXpect.Core</a><li><a href=#new-expectations class="table-of-contents__link toc-highlight">New expectations</a><li><a href=#analyzer class="table-of-contents__link toc-highlight">Analyzer</a><li><a href=#fixes class="table-of-contents__link toc-highlight">Fixes</a></ul></div></div></div></div></main></div></div></div><footer class="theme-layout-footer footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="theme-layout-footer-column col footer__col"><div class=footer__title></div><ul class="footer__items clean-list"><li class=footer__item><a href=https://github.com/Testably/Testably.Abstractions class=footer__library-name>Testably.Abstractions</a><li class=footer__item><a href=https://www.nuget.org/packages/Testably.Abstractions class=footer__nuget-badge><img src="https://img.shields.io/nuget/v/Testably.Abstractions?label=NuGet&logo=nuget" alt="Testably.Abstractions on NuGet"/></a></ul></div><div class="theme-layout-footer-column col footer__col"><div class=footer__title></div><ul class="footer__items clean-list"><li class=footer__item><a href=https://github.com/Testably/aweXpect class=footer__library-name>aweXpect</a><li class=footer__item><a href=https://www.nuget.org/packages/aweXpect class=footer__nuget-badge><img src="https://img.shields.io/nuget/v/aweXpect?label=NuGet&logo=nuget" alt="aweXpect on NuGet"/></a></ul></div><div class="theme-layout-footer-column col footer__col"><div class=footer__title></div><ul class="footer__items clean-list"><li class=footer__item><a href=https://github.com/Testably/Mockolate class=footer__library-name>Mockolate</a><li class=footer__item><a href=https://www.nuget.org/packages/Mockolate class=footer__nuget-badge><img src="https://img.shields.io/nuget/v/Mockolate?label=NuGet&logo=nuget" alt="Mockolate on NuGet"/></a></ul></div><div class="theme-layout-footer-column col footer__col"><div class=footer__title></div><ul class="footer__items clean-list"><li class=footer__item><a href=https://github.com/Testably/Awaiten class=footer__library-name>Awaiten</a><li class=footer__item><a href=https://www.nuget.org/packages/Awaiten class=footer__nuget-badge><img src="https://img.shields.io/nuget/v/Awaiten?label=NuGet&logo=nuget" alt="Awaiten on NuGet"/></a></ul></div></div><div class="footer__bottom text--center"><div class=footer__copyright>Copyright © 2026 Testably.</div></div></div></footer></div></body>
