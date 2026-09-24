@@ -38,9 +38,8 @@ $DocsRoot = Join-Path $RepoRoot "Docs/pages/docs"
 $Sources = @(
     [pscustomobject]@{ Repo="Testably.Abstractions";           SourcePath="Docs/pages/docs"; Target="Abstractions";           InlineReadme=$false; ExtraReadmes=@() }
     [pscustomobject]@{ Repo="Testably.Abstractions.Migration"; SourcePath="Docs/pages";      Target="Abstractions/migration-from-testableio/Migration"; InlineReadme=$true;  ExtraReadmes=@() }
-    [pscustomobject]@{ Repo="aweXpect";                        SourcePath="Docs/pages";      Target="aweXpect";               InlineReadme=$false; ExtraReadmes=@(
-        [pscustomobject]@{ Repo="aweXpect.Migration"; TargetFile="10-migration.md" }
-    ) }
+    [pscustomobject]@{ Repo="aweXpect";                        SourcePath="Docs/pages";      Target="aweXpect";               InlineReadme=$false; ExtraReadmes=@(); ExcludedFiles=@("10-migration.md") }
+    [pscustomobject]@{ Repo="aweXpect.Migration";              SourcePath="Docs/pages";      Target="aweXpect/10-migration";  InlineReadme=$true;  ExtraReadmes=@() }
     [pscustomobject]@{ Repo="aweXpect.Json";         SourcePath="Docs/pages";      Target="Extensions/aweXpect.Json";       InlineReadme=$true;  ExtraReadmes=@() }
     [pscustomobject]@{ Repo="aweXpect.Mockolate";    SourcePath="Docs/pages";      Target="Extensions/aweXpect.Mockolate";  InlineReadme=$true;  ExtraReadmes=@() }
     [pscustomobject]@{ Repo="aweXpect.Reflection";   SourcePath="Docs/pages";      Target="Extensions/aweXpect.Reflection"; InlineReadme=$true;  ExtraReadmes=@() }
@@ -148,6 +147,7 @@ foreach ($source in $Sources) {
         })
     }
 
+    $excludedFiles = if ($source.PSObject.Properties['ExcludedFiles']) { $source.ExcludedFiles } else { @() }
     $sourceDirFull = (Resolve-Path -LiteralPath $sourceDir).ProviderPath.TrimEnd('\')
     $files = Get-ChildItem -LiteralPath $sourceDirFull -Recurse -File | Where-Object {
         $rel = $_.FullName.Substring($sourceDirFull.Length).TrimStart('\','/')
@@ -155,6 +155,10 @@ foreach ($source in $Sources) {
         $excluded = $false
         foreach ($seg in $segments) {
             if ($ExcludeDirs -contains $seg) { $excluded = $true; break }
+        }
+        if (-not $excluded -and $excludedFiles -ccontains ($segments -join '/')) {
+            Write-Host "  Skipped excluded $rel"
+            $excluded = $true
         }
         -not $excluded
     }
