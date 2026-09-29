@@ -43,6 +43,11 @@ partial class Build
 	///     upstream page that another slice supersedes without waiting for the upstream repo to
 	///     remove it.
 	/// </param>
+	/// <param name="CleanTarget">
+	///     When false, the target directory is not cleaned before the slice is written. Lets a slice
+	///     nested in another slice's target add its files without deleting the files the parent slice
+	///     wrote there (e.g. <c>aweXpect/10-migration/03-from-awexpect-2.md</c>).
+	/// </param>
 	record DocsSource(
 		string Organization,
 		string Repository,
@@ -50,7 +55,8 @@ partial class Build
 		string TargetSubDirectory,
 		bool InlineReadme = false,
 		ReadmeSubstitution[]? ExtraReadmes = null,
-		string[]? ExcludedFiles = null);
+		string[]? ExcludedFiles = null,
+		bool CleanTarget = true);
 
 	/// <summary>
 	///     A cross-repo README substitution. Fetches <c>README.md</c> from <paramref name="Organization"/>/<paramref name="Repository"/>,
@@ -69,7 +75,8 @@ partial class Build
 	///     overwrites the placeholder <c>00-index.md</c> seeded by the bundled
 	///     <c>aweXpect/Extensions</c> slice), and a slice whose target is nested inside another
 	///     slice's target must come after it, because each target directory is cleaned right
-	///     before its slice is written.
+	///     before its slice is written (unless the slice sets <see cref="DocsSource.CleanTarget"/>
+	///     to false).
 	/// </summary>
 	static readonly DocsSource[] AggregatedSources =
 	[
@@ -79,7 +86,7 @@ partial class Build
 		new("Testably", "aweXpect",                        "Docs/pages",      "aweXpect",
 			ExcludedFiles: ["10-migration.md"]),
 		new("Testably", "aweXpect.Migration",              "Docs/pages",      "aweXpect/10-migration",
-			InlineReadme: true),
+			InlineReadme: true, CleanTarget: false),
 		new("Testably", "aweXpect.Json",         "Docs/pages",      "Extensions/aweXpect.Json",       InlineReadme: true),
 		new("Testably", "aweXpect.Mockolate",    "Docs/pages",      "Extensions/aweXpect.Mockolate",  InlineReadme: true),
 		new("Testably", "aweXpect.Reflection",   "Docs/pages",      "Extensions/aweXpect.Reflection", InlineReadme: true),
@@ -111,7 +118,15 @@ partial class Build
 				AbsolutePath targetDirectory = string.IsNullOrEmpty(source.TargetSubDirectory)
 					? docsRoot
 					: docsRoot / source.TargetSubDirectory;
-				targetDirectory.CreateOrCleanDirectory();
+				if (source.CleanTarget)
+				{
+					targetDirectory.CreateOrCleanDirectory();
+				}
+				else
+				{
+					targetDirectory.CreateDirectory();
+				}
+
 				await DownloadDocsContent(source, targetDirectory);
 			}
 		});
