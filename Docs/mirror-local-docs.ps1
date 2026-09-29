@@ -39,7 +39,7 @@ $Sources = @(
     [pscustomobject]@{ Repo="Testably.Abstractions";           SourcePath="Docs/pages/docs"; Target="Abstractions";           InlineReadme=$false; ExtraReadmes=@() }
     [pscustomobject]@{ Repo="Testably.Abstractions.Migration"; SourcePath="Docs/pages";      Target="Abstractions/migration-from-testableio/Migration"; InlineReadme=$true;  ExtraReadmes=@() }
     [pscustomobject]@{ Repo="aweXpect";                        SourcePath="Docs/pages";      Target="aweXpect";               InlineReadme=$false; ExtraReadmes=@(); ExcludedFiles=@("10-migration.md") }
-    [pscustomobject]@{ Repo="aweXpect.Migration";              SourcePath="Docs/pages";      Target="aweXpect/10-migration";  InlineReadme=$true;  ExtraReadmes=@() }
+    [pscustomobject]@{ Repo="aweXpect.Migration";              SourcePath="Docs/pages";      Target="aweXpect/10-migration";  InlineReadme=$true;  ExtraReadmes=@(); CleanTarget=$false }
     [pscustomobject]@{ Repo="aweXpect.Json";         SourcePath="Docs/pages";      Target="Extensions/aweXpect.Json";       InlineReadme=$true;  ExtraReadmes=@() }
     [pscustomobject]@{ Repo="aweXpect.Mockolate";    SourcePath="Docs/pages";      Target="Extensions/aweXpect.Mockolate";  InlineReadme=$true;  ExtraReadmes=@() }
     [pscustomobject]@{ Repo="aweXpect.Reflection";   SourcePath="Docs/pages";      Target="Extensions/aweXpect.Reflection"; InlineReadme=$true;  ExtraReadmes=@() }
@@ -118,7 +118,8 @@ foreach ($source in $Sources) {
         continue
     }
 
-    if (Test-Path -LiteralPath $targetDir) {
+    $cleanTarget = if ($source.PSObject.Properties['CleanTarget']) { $source.CleanTarget } else { $true }
+    if ($cleanTarget -and (Test-Path -LiteralPath $targetDir)) {
         Remove-Item -LiteralPath $targetDir -Recurse -Force
     }
     New-Item -ItemType Directory -Path $targetDir -Force | Out-Null
