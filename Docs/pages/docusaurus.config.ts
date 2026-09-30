@@ -58,18 +58,18 @@ const config: Config = {
       {
         // Pages moved by the aweXpect documentation restructuring.
         redirects: [
-          {from: '/aweXpect/concepts', to: '/aweXpect/how-it-works/anatomy'},
+          {from: '/aweXpect/concepts', to: '/aweXpect/how-it-works/'},
           {from: '/aweXpect/delegates', to: '/aweXpect/behaviour/delegates'},
           {from: '/aweXpect/events', to: '/aweXpect/behaviour/events'},
           {from: '/aweXpect/equivalency', to: '/aweXpect/values/equivalency'},
-          {from: '/aweXpect/write-extension', to: '/aweXpect/extending/your-first-expectation'},
+          {from: '/aweXpect/write-extension', to: '/aweXpect/extending/'},
           {from: '/aweXpect/changelog-v3', to: '/aweXpect/migration/from-awexpect-2'},
           {from: '/aweXpect/advanced/multiple-expectations', to: '/aweXpect/how-it-works/combining'},
           {from: '/aweXpect/advanced/customization', to: '/aweXpect/how-it-works/configuration'},
           {from: '/aweXpect/advanced/cancellation', to: '/aweXpect/how-it-works/time-and-cancellation'},
           {from: '/aweXpect/advanced/callbacks', to: '/aweXpect/behaviour/callbacks'},
-          {from: '/aweXpect/advanced/ref-struct', to: '/aweXpect/how-it-works/anatomy'},
-          {from: '/category/common-types', to: '/category/values'},
+          {from: '/aweXpect/advanced/ref-struct', to: '/aweXpect/how-it-works/'},
+          {from: '/category/common-types', to: '/aweXpect/values/'},
           ...[
             'boolean', 'string', 'char', 'number', 'enum', 'object', 'timespan',
             'datetime-offset', 'date-time-only', 'guid', 'version', 'stream',
