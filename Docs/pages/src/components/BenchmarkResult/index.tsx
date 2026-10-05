@@ -1,5 +1,5 @@
 /**
- * Renders the latest aweXpect vs FluentAssertions snapshot for a single
+ * Renders the latest aweXpect vs FluentAssertions and TUnit snapshot for a single
  * benchmark name (e.g. "Bool", "String", "Int_GreaterThan"). Reads from
  * `src/data/awexpect/benchmarks.json` — refreshed at deploy time by
  * Testably.Server's docs pipeline (the `Benchmarks` Nuke target) from the
@@ -22,6 +22,7 @@ type Sample = {
 type BenchmarkEntry = {
   aweXpect: Sample;
   FluentAssertions: Sample;
+  TUnit?: Sample;
 };
 
 type Snapshot = {
@@ -52,17 +53,17 @@ function formatBytes(b: number): string {
   return `${(b / (1_024 * 1_024)).toFixed(2)} MiB`;
 }
 
-function formatDelta(awe: number, fa: number): {text: string; better: boolean} {
+function formatDelta(awe: number, other: number): {text: string; better: boolean} {
   // Lower is better for both metrics. Handle the zero-baseline cases explicitly:
   // FluentAssertions reports 0 B for many allocation benchmarks, so a naive
-  // awe / fa would divide by zero and a "ratio === 1" fallback would silently
-  // hide regressions where aweXpect allocates and FA does not.
-  if (fa === 0) {
+  // awe / other would divide by zero and a "ratio === 1" fallback would silently
+  // hide regressions where aweXpect allocates and the other library does not.
+  if (other === 0) {
     if (awe === 0) return {text: '±0%', better: true};
     return {text: '+∞', better: false};
   }
-  if (awe === fa) return {text: '±0%', better: true};
-  const ratio = awe / fa;
+  if (awe === other) return {text: '±0%', better: true};
+  const ratio = awe / other;
   const pct = Math.abs(ratio - 1) * 100;
   const better = ratio < 1;
   const arrow = better ? '−' : '+';
@@ -119,27 +120,31 @@ function Sparkline({values, className}: SparklineProps): ReactElement | null {
   );
 }
 
+type Metric = 'timeNs' | 'memoryBytes';
+
+const OTHER_LIBRARIES = [
+  {name: 'FluentAssertions', fill: styles.barFillFluentAssertions, sparkline: styles.sparklineFluentAssertions},
+  {name: 'TUnit', fill: styles.barFillTUnit, sparkline: styles.sparklineTUnit},
+] as const;
+
 type MetricRowProps = {
   label: string;
-  aweXpectValue: number;
-  faValue: number;
-  aweXpectHistory?: number[];
-  faHistory?: number[];
+  entry: BenchmarkEntry;
+  metric: Metric;
   format: (n: number) => string;
 };
 
-function MetricRow({
-  label,
-  aweXpectValue,
-  faValue,
-  aweXpectHistory,
-  faHistory,
-  format,
-}: MetricRowProps): ReactElement {
-  const max = Math.max(aweXpectValue, faValue);
-  const aweXpectWidth = max === 0 ? 0 : (aweXpectValue / max) * 100;
-  const faWidth = max === 0 ? 0 : (faValue / max) * 100;
-  const delta = formatDelta(aweXpectValue, faValue);
+function MetricRow({label, entry, metric, format}: MetricRowProps): ReactElement | null {
+  const aweXpectValue = entry.aweXpect[metric];
+  if (aweXpectValue === undefined) return null;
+
+  // Not every benchmark has a counterpart in every library.
+  const others = OTHER_LIBRARIES.flatMap((library) => {
+    const value = entry[library.name]?.[metric];
+    return value === undefined ? [] : [{...library, value, history: entry[library.name]?.history?.[metric]}];
+  });
+  const max = Math.max(aweXpectValue, ...others.map((other) => other.value));
+  const width = (value: number): string => `${max === 0 ? 0 : (value / max) * 100}%`;
 
   return (
     <div className={styles.metricRow}>
@@ -148,22 +153,32 @@ function MetricRow({
         <div className={styles.barRow}>
           <span className={styles.libraryLabel}>aweXpect</span>
           <span className={styles.bar}>
-            <span className={styles.barFillPrimary} style={{width: `${aweXpectWidth}%`}} />
+            <span className={styles.barFillPrimary} style={{width: width(aweXpectValue)}} />
           </span>
           <span className={styles.barValue}>{format(aweXpectValue)}</span>
-          <Sparkline values={aweXpectHistory} className={`${styles.sparkline} ${styles.sparklineAwexpect}`} />
+          <Sparkline
+            values={entry.aweXpect.history?.[metric]}
+            className={`${styles.sparkline} ${styles.sparklineAwexpect}`}
+          />
         </div>
-        <div className={styles.barRow}>
-          <span className={styles.libraryLabel}>FluentAssertions</span>
-          <span className={styles.bar}>
-            <span className={styles.barFillFluentAssertions} style={{width: `${faWidth}%`}} />
-          </span>
-          <span className={styles.barValue}>{format(faValue)}</span>
-          <Sparkline values={faHistory} className={`${styles.sparkline} ${styles.sparklineFluentAssertions}`} />
-        </div>
-      </div>
-      <div className={delta.better ? styles.delta : `${styles.delta} ${styles.deltaWorse}`}>
-        {delta.text}
+        {others.map((other) => {
+          const delta = formatDelta(aweXpectValue, other.value);
+          return (
+            <div className={styles.barRow} key={other.name}>
+              <span className={styles.libraryLabel}>{other.name}</span>
+              <span className={styles.bar}>
+                <span className={other.fill} style={{width: width(other.value)}} />
+              </span>
+              <span className={styles.barValue}>{format(other.value)}</span>
+              <Sparkline values={other.history} className={`${styles.sparkline} ${other.sparkline}`} />
+              <span
+                className={delta.better ? styles.delta : `${styles.delta} ${styles.deltaWorse}`}
+                title={`aweXpect compared to ${other.name}`}>
+                {delta.text}
+              </span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -185,25 +200,9 @@ export default function BenchmarkResult({name}: Props): ReactElement {
 
   return (
     <div className={styles.result}>
-      <MetricRow
-        label="Time"
-        aweXpectValue={entry.aweXpect.timeNs}
-        faValue={entry.FluentAssertions.timeNs}
-        aweXpectHistory={entry.aweXpect.history?.timeNs}
-        faHistory={entry.FluentAssertions.history?.timeNs}
-        format={formatNs}
-      />
-      {entry.aweXpect.memoryBytes !== undefined &&
-        entry.FluentAssertions.memoryBytes !== undefined && (
-          <MetricRow
-            label="Memory"
-            aweXpectValue={entry.aweXpect.memoryBytes}
-            faValue={entry.FluentAssertions.memoryBytes}
-            aweXpectHistory={entry.aweXpect.history?.memoryBytes}
-            faHistory={entry.FluentAssertions.history?.memoryBytes}
-            format={formatBytes}
-          />
-        )}
+      <MetricRow label="Time" entry={entry} metric="timeNs" format={formatNs} />
+      <MetricRow label="Memory" entry={entry} metric="memoryBytes" format={formatBytes} />
+
       <div className={styles.caption}>
         Captured on commit{' '}
         <a

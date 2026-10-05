@@ -139,11 +139,15 @@ partial class Build
 		double[]? faTime = FindData(benchmark.Datasets!, "FluentAssertions", "y");
 		double[]? faMem = FindData(benchmark.Datasets!, "FluentAssertions", "y1");
 		if (aweTime is not {Length: > 0,} || faTime is not {Length: > 0,}) return null;
+		// Not every benchmark has a TUnit counterpart.
+		double[]? tunitTime = FindData(benchmark.Datasets!, "TUnit", "y");
+		double[]? tunitMem = FindData(benchmark.Datasets!, "TUnit", "y1");
 
 		return new BenchmarkEntry
 		{
 			AweXpect = BuildSample(aweTime, aweMem, historyLength),
 			FluentAssertions = BuildSample(faTime, faMem, historyLength),
+			TUnit = tunitTime is {Length: > 0,} ? BuildSample(tunitTime, tunitMem, historyLength) : null,
 		};
 	}
 
@@ -254,6 +258,7 @@ partial class Build
 	{
 		[JsonPropertyName("aweXpect")]         public Sample AweXpect         { get; init; } = new();
 		[JsonPropertyName("FluentAssertions")] public Sample FluentAssertions { get; init; } = new();
+		[JsonPropertyName("TUnit")]            public Sample? TUnit           { get; init; }
 	}
 
 	sealed class Sample
