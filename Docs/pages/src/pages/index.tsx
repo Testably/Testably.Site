@@ -119,7 +119,7 @@ function LibraryCards() {
         <div className="text--center" style={{marginTop: '2rem'}}>
           <p>
             Looking for add-ons? See the{' '}
-            <Link to="/Extensions/">Extensions</Link> section.
+            <Link to="/aweXpect/extensions/">extension packages</Link> for aweXpect.
           </p>
         </div>
       </div>
