@@ -75,6 +75,19 @@ const config: Config = {
             'datetime-offset', 'date-time-only', 'guid', 'version', 'stream',
           ].map((page) => ({from: `/aweXpect/common-types/${page}`, to: `/aweXpect/values/${page}`})),
         ],
+        // The extension packages moved from the top-level Extensions section into the aweXpect section.
+        createRedirects(existingPath: string) {
+          const prefix = '/aweXpect/extensions';
+          if (existingPath !== prefix && !existingPath.startsWith(`${prefix}/`)) {
+            return undefined;
+          }
+          const rest = existingPath.substring(prefix.length);
+          // GitHub Pages serves paths case-sensitively, so the lower-case spelling needs its own redirect file,
+          // which a case-insensitive file system (Windows, macOS) cannot hold next to the original one.
+          return process.platform === 'linux'
+            ? [`/Extensions${rest}`, `/extensions${rest}`]
+            : [`/Extensions${rest}`];
+        },
       },
     ],
   ],
@@ -123,12 +136,6 @@ const config: Config = {
           sidebarId: 'chronologySidebar',
           position: 'right',
           label: 'Chronology',
-        },
-        {
-          type: 'docSidebar',
-          sidebarId: 'extensionsSidebar',
-          position: 'right',
-          label: 'Extensions',
         },
       ],
     },

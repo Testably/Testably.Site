@@ -40,11 +40,11 @@ $Sources = @(
     [pscustomobject]@{ Repo="Testably.Abstractions.Migration"; SourcePath="Docs/pages";      Target="Abstractions/migration-from-testableio/Migration"; InlineReadme=$true;  ExtraReadmes=@() }
     [pscustomobject]@{ Repo="aweXpect";                        SourcePath="Docs/pages";      Target="aweXpect";               InlineReadme=$false; ExtraReadmes=@(); ExcludedFiles=@("10-migration.md") }
     [pscustomobject]@{ Repo="aweXpect.Migration";              SourcePath="Docs/pages";      Target="aweXpect/10-migration";  InlineReadme=$true;  ExtraReadmes=@(); CleanTarget=$false }
-    [pscustomobject]@{ Repo="aweXpect.Json";         SourcePath="Docs/pages";      Target="Extensions/aweXpect.Json";       InlineReadme=$true;  ExtraReadmes=@() }
-    [pscustomobject]@{ Repo="aweXpect.Mockolate";    SourcePath="Docs/pages";      Target="Extensions/aweXpect.Mockolate";  InlineReadme=$true;  ExtraReadmes=@() }
-    [pscustomobject]@{ Repo="aweXpect.Reflection";   SourcePath="Docs/pages";      Target="Extensions/aweXpect.Reflection"; InlineReadme=$true;  ExtraReadmes=@() }
-    [pscustomobject]@{ Repo="aweXpect.Testably";     SourcePath="Docs/pages";      Target="Extensions/aweXpect.Testably";   InlineReadme=$true;  ExtraReadmes=@() }
-    [pscustomobject]@{ Repo="aweXpect.Web";          SourcePath="Docs/pages";      Target="Extensions/aweXpect.Web";        InlineReadme=$true;  ExtraReadmes=@() }
+    [pscustomobject]@{ Repo="aweXpect.Json";         SourcePath="Docs/pages";      Target="aweXpect/07-extensions/aweXpect.Json";       InlineReadme=$true;  ExtraReadmes=@() }
+    [pscustomobject]@{ Repo="aweXpect.Mockolate";    SourcePath="Docs/pages";      Target="aweXpect/07-extensions/aweXpect.Mockolate";  InlineReadme=$true;  ExtraReadmes=@() }
+    [pscustomobject]@{ Repo="aweXpect.Reflection";   SourcePath="Docs/pages";      Target="aweXpect/07-extensions/aweXpect.Reflection"; InlineReadme=$true;  ExtraReadmes=@() }
+    [pscustomobject]@{ Repo="aweXpect.Testably";     SourcePath="Docs/pages";      Target="aweXpect/07-extensions/aweXpect.Testably";   InlineReadme=$true;  ExtraReadmes=@() }
+    [pscustomobject]@{ Repo="aweXpect.Web";          SourcePath="Docs/pages";      Target="aweXpect/07-extensions/aweXpect.Web";        InlineReadme=$true;  ExtraReadmes=@() }
     [pscustomobject]@{ Repo="aweXpect.Chronology";   SourcePath="Docs/pages";      Target="Chronology";                     InlineReadme=$true;  ExtraReadmes=@() }
     [pscustomobject]@{ Repo="Mockolate";             SourcePath="Docs/pages";      Target="Mockolate";                      InlineReadme=$false; ExtraReadmes=@(
         [pscustomobject]@{ Repo="Mockolate.Migration"; TargetFile="11-migration.md" }
@@ -104,8 +104,7 @@ function Ensure-SidebarPosition([string]$content, [int]$position) {
 New-Item -ItemType Directory -Path $DocsRoot -Force | Out-Null
 
 # Clean each target subdirectory rather than the whole DocsRoot so that
-# site-owned overlays committed under docs/ (e.g. Extensions/index.mdx)
-# survive the mirror.
+# site-owned overlays committed under docs/ survive the mirror.
 foreach ($source in $Sources) {
     $sourceDir = Join-Path $Root (Join-Path $source.Repo $source.SourcePath)
     $targetDir = Join-Path $DocsRoot $source.Target

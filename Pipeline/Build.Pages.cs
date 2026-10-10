@@ -87,11 +87,11 @@ partial class Build
 			ExcludedFiles: ["10-migration.md"]),
 		new("Testably", "aweXpect.Migration",              "Docs/pages",      "aweXpect/10-migration",
 			InlineReadme: true, CleanTarget: false),
-		new("Testably", "aweXpect.Json",         "Docs/pages",      "Extensions/aweXpect.Json",       InlineReadme: true),
-		new("Testably", "aweXpect.Mockolate",    "Docs/pages",      "Extensions/aweXpect.Mockolate",  InlineReadme: true),
-		new("Testably", "aweXpect.Reflection",   "Docs/pages",      "Extensions/aweXpect.Reflection", InlineReadme: true),
-		new("Testably", "aweXpect.Testably",     "Docs/pages",      "Extensions/aweXpect.Testably",   InlineReadme: true),
-		new("Testably", "aweXpect.Web",          "Docs/pages",      "Extensions/aweXpect.Web",        InlineReadme: true),
+		new("Testably", "aweXpect.Json",         "Docs/pages",      "aweXpect/07-extensions/aweXpect.Json",       InlineReadme: true),
+		new("Testably", "aweXpect.Mockolate",    "Docs/pages",      "aweXpect/07-extensions/aweXpect.Mockolate",  InlineReadme: true),
+		new("Testably", "aweXpect.Reflection",   "Docs/pages",      "aweXpect/07-extensions/aweXpect.Reflection", InlineReadme: true),
+		new("Testably", "aweXpect.Testably",     "Docs/pages",      "aweXpect/07-extensions/aweXpect.Testably",   InlineReadme: true),
+		new("Testably", "aweXpect.Web",          "Docs/pages",      "aweXpect/07-extensions/aweXpect.Web",        InlineReadme: true),
 		new("Testably", "aweXpect.Chronology",   "Docs/pages",      "Chronology",                     InlineReadme: true),
 		new("Testably", "Mockolate",             "Docs/pages",      "Mockolate",
 			ExtraReadmes:
@@ -111,8 +111,7 @@ partial class Build
 			docsRoot.CreateDirectory();
 
 			// Clean each target subdirectory rather than the whole docsRoot so that
-			// site-owned overlays committed under docs/ (e.g. Extensions/index.mdx)
-			// survive the build.
+			// site-owned overlays committed under docs/ survive the build.
 			foreach (DocsSource source in AggregatedSources)
 			{
 				AbsolutePath targetDirectory = string.IsNullOrEmpty(source.TargetSubDirectory)

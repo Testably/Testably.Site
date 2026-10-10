@@ -4,12 +4,12 @@
  * library section, and by the swizzled `Logo` component to pick the matching
  * SVG icon.
  *
- * Sections: 'abstractions' | 'awexpect' | 'mockolate' | 'awaiten' | 'extensions'
+ * Sections: 'abstractions' | 'awexpect' | 'mockolate' | 'awaiten'
  * Anything else (including `/`) leaves the attribute unset, falling back to
  * the bracket beige defined in `:root`.
  */
 
-const SECTION_PATTERN = /^\/(abstractions|awexpect|mockolate|awaiten|extensions)(?:\/|$)/i;
+const SECTION_PATTERN = /^\/(abstractions|awexpect|mockolate|awaiten)(?:\/|$)/i;
 
 function getSection(pathname: string): string | null {
   const match = pathname.match(SECTION_PATTERN);

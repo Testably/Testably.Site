@@ -3,13 +3,13 @@
  * `src/clientModules/sectionTheme.ts` based on the current route.
  *
  * Colors:
- *   - Default / Extensions: bracket beige #c8c0b4 (matches the SVG brackets).
+ *   - Default:      bracket beige #c8c0b4 (matches the SVG brackets).
  *   - Abstractions: raspberry / pink (light / dark).
  *   - aweXpect:     forest    / mint.
  *   - Mockolate:    chocolate / tan.
  */
 
-/* ───── Default (landing page, /Extensions/*) ─────
+/* ───── Default (landing page) ─────
  * Light mode: darker warm neutral (the bracket beige #c8c0b4 has poor
  *             contrast against the white page background).
  * Dark mode:  the bracket beige itself, which reads well on dark.
