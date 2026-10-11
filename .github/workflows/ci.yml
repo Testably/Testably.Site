@@ -38,6 +38,7 @@ jobs:
         run: ./build.sh Pages
         env:
           GithubToken: ${{ secrets.GITHUB_TOKEN }}
+          NUKE_TELEMETRY_OPTOUT: 1
       - uses: actions/setup-node@v6
         with:
           node-version: 20
