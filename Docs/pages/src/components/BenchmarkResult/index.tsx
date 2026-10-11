@@ -53,21 +53,32 @@ function formatBytes(b: number): string {
   return `${(b / (1_024 * 1_024)).toFixed(2)} MiB`;
 }
 
-function formatDelta(awe: number, other: number): {text: string; better: boolean} {
-  // Lower is better for both metrics. Handle the zero-baseline cases explicitly:
-  // FluentAssertions reports 0 B for many allocation benchmarks, so a naive
-  // awe / other would divide by zero and a "ratio === 1" fallback would silently
-  // hide regressions where aweXpect allocates and the other library does not.
-  if (other === 0) {
-    if (awe === 0) return {text: '±0%', better: true};
-    return {text: '+∞', better: false};
-  }
-  if (awe === other) return {text: '±0%', better: true};
-  const ratio = awe / other;
-  const pct = Math.abs(ratio - 1) * 100;
-  const better = ratio < 1;
+const WORDING = {
+  timeNs: {verb: 'is', higher: 'slower', lower: 'faster', same: 'as fast as'},
+  memoryBytes: {verb: 'allocates', higher: 'more', lower: 'less', same: 'as much as'},
+};
+
+function formatDelta(
+  awe: number,
+  other: number,
+  metric: Metric,
+  name: string,
+): {text: string; title: string; better: boolean} {
+  // The delta describes the other library's row, so lower is better for it.
+  // aweXpect can report 0 B for allocation benchmarks, so other / awe needs an
+  // explicit zero-baseline case instead of dividing by zero.
+  const {verb, higher, lower, same} = WORDING[metric];
+  if (awe === other) return {text: '±0%', title: `${name} ${verb} ${same} aweXpect`, better: true};
+  if (awe === 0) return {text: '+∞', title: `${name} ${verb} ${higher} than aweXpect`, better: false};
+  const pct = (other / awe - 1) * 100;
+  const better = pct < 0;
   const arrow = better ? '−' : '+';
-  return {text: `${arrow}${pct.toFixed(0)}%`, better};
+  const factor = better ? awe / other : other / awe;
+  return {
+    text: `${arrow}${Math.abs(pct).toFixed(0)}%`,
+    title: `${name} ${verb} ${factor.toFixed(2)}× ${better ? lower : higher} than aweXpect`,
+    better,
+  };
 }
 
 const SPARK_WIDTH = 100;
@@ -162,7 +173,7 @@ function MetricRow({label, entry, metric, format}: MetricRowProps): ReactElement
           />
         </div>
         {others.map((other) => {
-          const delta = formatDelta(aweXpectValue, other.value);
+          const delta = formatDelta(aweXpectValue, other.value, metric, other.name);
           return (
             <div className={styles.barRow} key={other.name}>
               <span className={styles.libraryLabel}>{other.name}</span>
@@ -173,7 +184,7 @@ function MetricRow({label, entry, metric, format}: MetricRowProps): ReactElement
               <Sparkline values={other.history} className={`${styles.sparkline} ${other.sparkline}`} />
               <span
                 className={delta.better ? styles.delta : `${styles.delta} ${styles.deltaWorse}`}
-                title={`aweXpect compared to ${other.name}`}>
+                title={delta.title}>
                 {delta.text}
               </span>
             </div>
