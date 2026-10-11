@@ -1,0 +1,38 @@
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: 1rem;
+  margin-bottom: var(--ifm-paragraph-margin-bottom);
+  font-variant-numeric: tabular-nums;
+}
+
+.tile {
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-top: 4px solid;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  background: var(--ifm-background-surface-color);
+}
+
+.title {
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.factor {
+  font-size: 1.5rem;
+  font-weight: 700;
+  min-width: 3.5rem;
+}
+
+.muted {
+  color: var(--ifm-color-emphasis-600);
+  font-size: 0.8rem;
+  font-weight: normal;
+}

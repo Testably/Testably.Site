@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Xml.Linq;
 using Nuke.Common;
 using Nuke.Common.IO;
 using Serilog;
@@ -59,6 +60,13 @@ partial class Build
 				?? throw new NotSupportedException($"Could not deserialize {BenchmarksFile}");
 
 			Snapshot snapshot = ReduceToSnapshot(rawData, BenchmarkHistoryLength);
+
+			// The versions of the compared libraries at the measured commit, so that they always match the numbers.
+			string props = await client.GetStringAsync(
+				$"https://raw.githubusercontent.com/{BenchmarksRepo}/{snapshot.CapturedAt.Sha}/Directory.Packages.props");
+			snapshot.Versions = XDocument.Parse(props).Descendants("PackageVersion")
+				.Where(p => (string?)p.Attribute("Include") is "FluentAssertions" or "TUnit")
+				.ToDictionary(p => (string)p.Attribute("Include")!, p => (string?)p.Attribute("Version") ?? "");
 
 			string pretty = JsonSerializer.Serialize(snapshot, OutputJsonOptions);
 			await File.WriteAllTextAsync(outputPath, pretty + Environment.NewLine);
@@ -245,6 +253,7 @@ partial class Build
 		[JsonPropertyName("capturedAt")]  public SnapshotCommit       CapturedAt  { get; init; } = new();
 		[JsonPropertyName("environment")] public SnapshotEnvironment? Environment { get; init; }
 		[JsonPropertyName("benchmarks")]  public Dictionary<string, BenchmarkEntry> Benchmarks { get; init; } = new();
+		[JsonPropertyName("versions")]    public Dictionary<string, string>? Versions { get; set; }
 	}
 
 	sealed class SnapshotCommit
