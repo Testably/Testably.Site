@@ -1,11 +1,11 @@
 /**
- * Summarises the latest aweXpect benchmark snapshot: for each other library,
- * in how many benchmarks it is slower or allocates more than aweXpect, and the
- * median factor. Reads the same `src/data/awexpect/benchmarks.json` as
- * `BenchmarkResult`.
+ * Summarises the latest aweXpect benchmark snapshot in one tile per other library:
+ * its version and the median factor by which it is slower or allocates more than
+ * aweXpect. Reads the same `src/data/awexpect/benchmarks.json` as `BenchmarkResult`.
  */
 import React, {type ReactElement} from 'react';
 import benchmarks from '@site/src/data/awexpect/benchmarks.json';
+import styles from './styles.module.css';
 
 type Sample = {
   timeNs: number;
@@ -18,13 +18,17 @@ type BenchmarkEntry = {
   TUnit?: Sample;
 };
 
-const entries = Object.values((benchmarks as {benchmarks: Record<string, BenchmarkEntry>}).benchmarks);
+const data = benchmarks as {benchmarks: Record<string, BenchmarkEntry>; versions?: Record<string, string>};
+const entries = Object.values(data.benchmarks);
 
-const OTHER_LIBRARIES = ['FluentAssertions', 'TUnit'] as const;
+const OTHER_LIBRARIES = [
+  {name: 'FluentAssertions', accent: '#ff671b'},
+  {name: 'TUnit', accent: '#7e57c2'},
+] as const;
 
 const METRICS = [
-  {key: 'timeNs', label: 'Slower', worse: 'slower', better: 'faster'},
-  {key: 'memoryBytes', label: 'More', worse: 'more', better: 'less'},
+  {key: 'timeNs', worse: 'slower', better: 'faster'},
+  {key: 'memoryBytes', worse: 'more memory', better: 'less memory'},
 ] as const;
 
 function median(values: number[]): number {
@@ -33,47 +37,43 @@ function median(values: number[]): number {
   return sorted.length % 2 === 0 ? (sorted[middle - 1] + sorted[middle]) / 2 : sorted[middle];
 }
 
-function summarize(
-  library: (typeof OTHER_LIBRARIES)[number],
-  metric: (typeof METRICS)[number],
-): string {
-  const ratios = entries.flatMap((entry) => {
+function ratiosOf(library: (typeof OTHER_LIBRARIES)[number]['name'], metric: (typeof METRICS)[number]): number[] {
+  return entries.flatMap((entry) => {
     const awe = entry.aweXpect[metric.key];
     const other = entry[library]?.[metric.key];
     if (awe === undefined || other === undefined) return [];
     if (awe === other) return [1];
     return [awe === 0 ? Infinity : other / awe];
   });
-  if (ratios.length === 0) return '–';
-
-  const worse = ratios.filter((ratio) => ratio > 1).length;
-  const factor = median(ratios);
-  const typical = factor >= 1
-    ? `${factor.toFixed(2)}× ${metric.worse}`
-    : `${(1 / factor).toFixed(2)}× ${metric.better}`;
-  return `${metric.label} in ${worse} of ${ratios.length} (median ${typical})`;
 }
 
 export default function BenchmarkSummary(): ReactElement {
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>Compared to aweXpect</th>
-          <th>Time</th>
-          <th>Memory</th>
-        </tr>
-      </thead>
-      <tbody>
-        {OTHER_LIBRARIES.map((library) => (
-          <tr key={library}>
-            <td>{library}</td>
-            {METRICS.map((metric) => (
-              <td key={metric.key}>{summarize(library, metric)}</td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <div className={styles.tiles}>
+      {OTHER_LIBRARIES.map((library) => {
+        const version = data.versions?.[library.name];
+        const count = ratiosOf(library.name, METRICS[0]).length;
+        return (
+          <div key={library.name} className={styles.tile} style={{borderTopColor: library.accent}}>
+            <div className={styles.title}>
+              {library.name}
+              {version && <span className={styles.muted}> v{version}</span>}
+            </div>
+            {METRICS.map((metric) => {
+              const ratios = ratiosOf(library.name, metric);
+              if (ratios.length === 0) return null;
+              const factor = median(ratios);
+              return (
+                <div key={metric.key} className={styles.row}>
+                  <span className={styles.factor}>{(factor >= 1 ? factor : 1 / factor).toFixed(1)}×</span>
+                  <span>{factor >= 1 ? metric.worse : metric.better}</span>
+                </div>
+              );
+            })}
+            <div className={styles.muted}>median of {count} benchmarks</div>
+          </div>
+        );
+      })}
+    </div>
   );
 }
