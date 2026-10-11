@@ -70,7 +70,7 @@
 .barFillTUnit {
   display: block;
   height: 100%;
-  background: #1a6029;
+  background: #7e57c2;
   border-radius: 3px;
 }
 
@@ -84,16 +84,12 @@
   justify-self: end;
 }
 
-.sparklineAwexpect {
-  color: var(--ifm-color-primary);
-}
-
 .sparklineFluentAssertions {
   color: #ff671b;
 }
 
 .sparklineTUnit {
-  color: #1a6029;
+  color: #7e57c2;
 }
 
 .delta {

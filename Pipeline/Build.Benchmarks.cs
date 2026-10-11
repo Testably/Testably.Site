@@ -87,13 +87,13 @@ partial class Build
 
 	static Snapshot ReduceToSnapshot(Dictionary<string, RawBenchmark> rawData, int historyLength)
 	{
-		// All benchmark groups share the same commit list (the `Build.Benchmarks` target in aweXpect
-		// appends one new entry per push to main, in lockstep across every group). Pick the first
-		// non-empty list to source the "captured at" metadata.
+		// The `Build.Benchmarks` target in aweXpect appends one entry per push to main to every
+		// benchmark it ran. A benchmark that was removed upstream keeps its old entries, so the
+		// newest commit is the "captured at" one and benchmarks that did not run on it are dropped.
 		RawCommit? latestCommit = rawData.Values
 			.Where(b => b.Commits is {Count: > 0,})
 			.Select(b => b.Commits![^1])
-			.FirstOrDefault();
+			.MaxBy(c => ParseDate(c.Date) ?? DateTimeOffset.MinValue);
 		if (latestCommit is null)
 		{
 			throw new NotSupportedException("Benchmark data has no commits");
@@ -102,7 +102,9 @@ partial class Build
 		Dictionary<string, BenchmarkEntry> benchmarks = new();
 		foreach ((string name, RawBenchmark benchmark) in rawData.OrderBy(kvp => kvp.Key))
 		{
-			if (benchmark.Datasets is null) continue;
+			if (benchmark.Datasets is null ||
+			    benchmark.Commits is not {Count: > 0,} ||
+			    benchmark.Commits[^1].Sha != latestCommit.Sha) continue;
 			BenchmarkEntry? entry = ReduceBenchmark(benchmark, historyLength);
 			if (entry is not null)
 			{
@@ -196,6 +198,11 @@ partial class Build
 		// ISO-style short date for display. Parse with invariant culture so the English
 		// month abbreviation parses on machines whose default culture is non-English.
 		if (string.IsNullOrWhiteSpace(raw)) return string.Empty;
+		return ParseDate(raw)?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) ?? raw;
+	}
+
+	static DateTimeOffset? ParseDate(string? raw)
+	{
 		string[] formats =
 		[
 			"ddd MMM d HH:mm:ss yyyy zzz",
@@ -206,9 +213,9 @@ partial class Build
 		    DateTimeOffset.TryParse(raw, CultureInfo.InvariantCulture,
 			    DateTimeStyles.AssumeUniversal, out parsed))
 		{
-			return parsed.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+			return parsed;
 		}
-		return raw;
+		return null;
 	}
 
 	// ─── Upstream JSON shape (Chart.js-ready) ───

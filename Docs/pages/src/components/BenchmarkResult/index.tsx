@@ -85,26 +85,42 @@ const SPARK_WIDTH = 100;
 const SPARK_HEIGHT = 16;
 const SPARK_PADDING = 2;
 
+/**
+ * The ratio of the other library to aweXpect for each run, aligned from the newest run, because
+ * a library that was added later has a shorter history.
+ */
+function ratioHistory(awe: number[] | undefined, other: number[] | undefined): number[] {
+  if (!awe || !other) return [];
+  const count = Math.min(awe.length, other.length);
+  return Array.from({length: count}, (_, i) => {
+    const aweValue = awe[awe.length - count + i];
+    const otherValue = other[other.length - count + i];
+    return aweValue === otherValue ? 1 : otherValue / aweValue;
+  }).filter(Number.isFinite);
+}
+
 type SparklineProps = {
-  values: number[] | undefined;
+  values: number[];
   className: string;
+  title: string;
 };
 
-function Sparkline({values, className}: SparklineProps): ReactElement | null {
-  if (!values || values.length < 2) return null;
+function Sparkline({values, className, title}: SparklineProps): ReactElement | null {
+  if (values.length < 2) return null;
 
-  const min = Math.min(...values);
-  const max = Math.max(...values);
+  // Parity is always in range, so a stable ratio stays flat instead of stretching noise to full height.
+  const min = Math.min(1, ...values);
+  const max = Math.max(1, ...values);
   const range = max - min;
   const innerHeight = SPARK_HEIGHT - SPARK_PADDING * 2;
+  const toY = (v: number): number => SPARK_PADDING + innerHeight - ((v - min) / range) * innerHeight;
 
   const points = values.map((v, i) => {
     const x = (i / (values.length - 1)) * SPARK_WIDTH;
-    const y = range === 0
-      ? SPARK_HEIGHT / 2
-      : SPARK_PADDING + innerHeight - ((v - min) / range) * innerHeight;
+    const y = range === 0 ? SPARK_HEIGHT / 2 : toY(v);
     return [x, y] as const;
   });
+  const parityY = range === 0 ? SPARK_HEIGHT / 2 : toY(1);
 
   const d = points
     .map(([x, y], i) => `${i === 0 ? 'M' : 'L'}${x.toFixed(2)} ${y.toFixed(2)}`)
@@ -118,6 +134,17 @@ function Sparkline({values, className}: SparklineProps): ReactElement | null {
       height={SPARK_HEIGHT}
       viewBox={`0 0 ${SPARK_WIDTH} ${SPARK_HEIGHT}`}
       aria-hidden="true">
+      <title>{title}</title>
+      <line
+        x1={0}
+        y1={parityY}
+        x2={SPARK_WIDTH}
+        y2={parityY}
+        stroke="currentColor"
+        strokeOpacity="0.35"
+        strokeWidth="0.8"
+        strokeDasharray="2 2"
+      />
       <path
         d={d}
         fill="none"
@@ -152,7 +179,11 @@ function MetricRow({label, entry, metric, format}: MetricRowProps): ReactElement
   // Not every benchmark has a counterpart in every library.
   const others = OTHER_LIBRARIES.flatMap((library) => {
     const value = entry[library.name]?.[metric];
-    return value === undefined ? [] : [{...library, value, history: entry[library.name]?.history?.[metric]}];
+    return value === undefined ? [] : [{
+      ...library,
+      value,
+      ratios: ratioHistory(entry.aweXpect.history?.[metric], entry[library.name]?.history?.[metric]),
+    }];
   });
   const max = Math.max(aweXpectValue, ...others.map((other) => other.value));
   const width = (value: number): string => `${max === 0 ? 0 : (value / max) * 100}%`;
@@ -167,10 +198,6 @@ function MetricRow({label, entry, metric, format}: MetricRowProps): ReactElement
             <span className={styles.barFillPrimary} style={{width: width(aweXpectValue)}} />
           </span>
           <span className={styles.barValue}>{format(aweXpectValue)}</span>
-          <Sparkline
-            values={entry.aweXpect.history?.[metric]}
-            className={`${styles.sparkline} ${styles.sparklineAwexpect}`}
-          />
         </div>
         {others.map((other) => {
           const delta = formatDelta(aweXpectValue, other.value, metric, other.name);
@@ -181,7 +208,11 @@ function MetricRow({label, entry, metric, format}: MetricRowProps): ReactElement
                 <span className={other.fill} style={{width: width(other.value)}} />
               </span>
               <span className={styles.barValue}>{format(other.value)}</span>
-              <Sparkline values={other.history} className={`${styles.sparkline} ${other.sparkline}`} />
+              <Sparkline
+                values={other.ratios}
+                className={`${styles.sparkline} ${other.sparkline}`}
+                title={`${other.name} compared to aweXpect over the last ${other.ratios.length} runs (dashed line: equal)`}
+              />
               <span
                 className={delta.better ? styles.delta : `${styles.delta} ${styles.deltaWorse}`}
                 title={delta.title}>
