@@ -53,9 +53,12 @@ function formatBytes(b: number): string {
   return `${(b / (1_024 * 1_024)).toFixed(2)} MiB`;
 }
 
+/**
+ * Worded as "1.10× as long" rather than "1.10× slower", which could just as well be read as 110% slower.
+ */
 const WORDING = {
-  timeNs: {verb: 'is', higher: 'slower', lower: 'faster', same: 'as fast as'},
-  memoryBytes: {verb: 'allocates', higher: 'more', lower: 'less', same: 'as much as'},
+  timeNs: {verb: 'takes', amount: 'as long', more: 'longer'},
+  memoryBytes: {verb: 'allocates', amount: 'as much', more: 'more'},
 };
 
 function formatDelta(
@@ -67,16 +70,15 @@ function formatDelta(
   // The delta describes the other library's row, so lower is better for it.
   // aweXpect can report 0 B for allocation benchmarks, so other / awe needs an
   // explicit zero-baseline case instead of dividing by zero.
-  const {verb, higher, lower, same} = WORDING[metric];
-  if (awe === other) return {text: '±0%', title: `${name} ${verb} ${same} aweXpect`, better: true};
-  if (awe === 0) return {text: '+∞', title: `${name} ${verb} ${higher} than aweXpect`, better: false};
+  const {verb, amount, more} = WORDING[metric];
+  if (awe === other) return {text: '±0%', title: `${name} ${verb} ${amount} as aweXpect`, better: true};
+  if (awe === 0) return {text: '+∞', title: `${name} ${verb} ${more} than aweXpect`, better: false};
   const pct = (other / awe - 1) * 100;
   const better = pct < 0;
   const arrow = better ? '−' : '+';
-  const factor = better ? awe / other : other / awe;
   return {
     text: `${arrow}${Math.abs(pct).toFixed(0)}%`,
-    title: `${name} ${verb} ${factor.toFixed(2)}× ${better ? lower : higher} than aweXpect`,
+    title: `${name} ${verb} ${(other / awe).toFixed(2)}× ${amount} as aweXpect`,
     better,
   };
 }

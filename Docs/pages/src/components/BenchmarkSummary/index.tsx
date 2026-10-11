@@ -1,7 +1,7 @@
 /**
  * Summarises the latest aweXpect benchmark snapshot in one tile per other library:
- * its version and the median factor by which it is slower or allocates more than
- * aweXpect. Reads the same `src/data/awexpect/benchmarks.json` as `BenchmarkResult`.
+ * its version and the median factor of its time and memory relative to aweXpect,
+ * worded as "as long" so that 1.1× cannot be misread as 110% slower. Reads the same `src/data/awexpect/benchmarks.json` as `BenchmarkResult`.
  */
 import React, {type ReactElement} from 'react';
 import benchmarks from '@site/src/data/awexpect/benchmarks.json';
@@ -27,8 +27,8 @@ const OTHER_LIBRARIES = [
 ] as const;
 
 const METRICS = [
-  {key: 'timeNs', worse: 'slower', better: 'faster'},
-  {key: 'memoryBytes', worse: 'more memory', better: 'less memory'},
+  {key: 'timeNs', label: 'as long'},
+  {key: 'memoryBytes', label: 'as much memory'},
 ] as const;
 
 function median(values: number[]): number {
@@ -65,12 +65,12 @@ export default function BenchmarkSummary(): ReactElement {
               const factor = median(ratios);
               return (
                 <div key={metric.key} className={styles.row}>
-                  <span className={styles.factor}>{(factor >= 1 ? factor : 1 / factor).toFixed(1)}×</span>
-                  <span>{factor >= 1 ? metric.worse : metric.better}</span>
+                  <span className={styles.factor}>{factor.toFixed(1)}×</span>
+                  <span>{metric.label}</span>
                 </div>
               );
             })}
-            <div className={styles.muted}>median of {count} benchmarks</div>
+            <div className={styles.muted}>relative to aweXpect · median of {count} benchmarks</div>
           </div>
         );
       })}
