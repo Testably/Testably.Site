@@ -397,8 +397,8 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
-# Nuke build
-.nuke/temp/
+# Fallout temporary files
+.fallout/temp/
 
 # Docusaurus
 Docs/pages/.docusaurus/

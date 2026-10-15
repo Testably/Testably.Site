@@ -2,7 +2,7 @@
  * Renders the latest aweXpect vs FluentAssertions and TUnit snapshot for a single
  * benchmark name (e.g. "Bool", "String", "Int_GreaterThan"). Reads from
  * `src/data/awexpect/benchmarks.json` — refreshed at deploy time by
- * Testably.Server's docs pipeline (the `Benchmarks` Nuke target) from the
+ * Testably.Server's docs pipeline (the `Benchmarks` Fallout target) from the
  * `Testably/aweXpect` benchmarks branch. The committed file doubles as a
  * fallback so `npm start`/`npm run build` work in a clean checkout.
  */

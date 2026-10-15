@@ -2,7 +2,7 @@
  * Renders the latest Awaiten-vs-other-DI-containers snapshot for a single
  * benchmark scenario ("Build", "Resolve", "Realistic"). Reads from
  * `src/data/awaiten/benchmarks.json` — refreshed at deploy time by
- * Testably.Site's docs pipeline (the `AwaitenBenchmarks` Nuke target) from
+ * Testably.Site's docs pipeline (the `AwaitenBenchmarks` Fallout target) from
  * the `Testably/Awaiten` benchmarks branch. The committed file doubles as a
  * fallback so `npm start`/`npm run build` work in a clean checkout.
  *
