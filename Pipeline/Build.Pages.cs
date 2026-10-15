@@ -1,15 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
+using System.Linq;
 using System.Text;
-using System.Text.Json;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Fallout.Common;
 using Fallout.Common.IO;
+using Fallout.Common.Tools.Git;
 using Serilog;
 
 // ReSharper disable AllUnderscoreLocalParameterName
@@ -26,7 +23,7 @@ partial class Build
 	/// <param name="SourcePath">Path inside the source repo whose contents should be aggregated (e.g. <c>Docs/pages/docs</c>).</param>
 	/// <param name="TargetSubDirectory">Sub-directory under this site's <c>Docs/pages/docs/</c> where the slice lands.</param>
 	/// <param name="InlineReadme">
-	///     When true, fetch <c>README.md</c> from the source repo, drop everything before the first
+	///     When true, read <c>README.md</c> from the source repo, drop everything before the first
 	///     <c>##</c> heading, and substitute the result into any <c>{README}</c> placeholder found in
 	///     a <c>00-*</c> file. Lets extension repos keep their public README and their first docs page
 	///     in sync without duplicating content.
@@ -59,7 +56,7 @@ partial class Build
 		bool CleanTarget = true);
 
 	/// <summary>
-	///     A cross-repo README substitution. Fetches <c>README.md</c> from <paramref name="Organization"/>/<paramref name="Repository"/>,
+	///     A cross-repo README substitution. Reads <c>README.md</c> from <paramref name="Organization"/>/<paramref name="Repository"/>,
 	///     strips its leading H1 and any consecutive badge lines, and replaces <paramref name="Placeholder"/>
 	///     in the docs file named <paramref name="TargetFileName"/>.
 	/// </summary>
@@ -105,10 +102,12 @@ partial class Build
 		.DependsOn(Benchmarks)
 		.DependsOn(MockolateBenchmarks)
 		.DependsOn(AwaitenBenchmarks)
-		.Executes(async () =>
+		.Executes(() =>
 		{
 			AbsolutePath docsRoot = RootDirectory / "Docs" / "pages" / "docs";
 			docsRoot.CreateDirectory();
+			AbsolutePath clonesRoot = TemporaryDirectory / "docs-sources";
+			clonesRoot.CreateOrCleanDirectory();
 
 			// Clean each target subdirectory rather than the whole docsRoot so that
 			// site-owned overlays committed under docs/ survive the build.
@@ -126,29 +125,44 @@ partial class Build
 					targetDirectory.CreateDirectory();
 				}
 
-				await DownloadDocsContent(source, targetDirectory);
+				CopyDocsContent(source, clonesRoot, targetDirectory);
 			}
 		});
 
-	async Task DownloadDocsContent(DocsSource source, AbsolutePath baseDirectory)
+	/// <summary>
+	///     Shallow-clones the repository's default branch into <paramref name="clonesRoot"/>, once per run.
+	///     Cloning instead of crawling the GitHub REST API file by file keeps a run from exhausting the
+	///     API rate limit, which surfaced as spurious 404s when several runs were dispatched in a burst.
+	/// </summary>
+	static AbsolutePath CloneRepository(AbsolutePath clonesRoot, string organization, string repository)
+	{
+		AbsolutePath directory = clonesRoot / organization / repository;
+		if (!directory.DirectoryExists())
+		{
+			// Keeps the committed line endings and checks out deeply nested test files on Windows, too.
+			GitTasks.Git($"clone --quiet --depth 1 -c core.autocrlf=false -c core.longpaths=true https://github.com/{organization}/{repository}.git {directory}");
+		}
+		return directory;
+	}
+
+	void CopyDocsContent(DocsSource source, AbsolutePath clonesRoot, AbsolutePath baseDirectory)
 	{
 		Log.Information($"Aggregate {source.Organization}/{source.Repository}/{source.SourcePath} into {baseDirectory}:");
 
-		using HttpClient client = new();
-		client.DefaultRequestHeaders.UserAgent.ParseAdd("Testably.Site");
-		if (!string.IsNullOrEmpty(GithubToken))
+		AbsolutePath sourceDirectory = CloneRepository(clonesRoot, source.Organization, source.Repository) / source.SourcePath;
+		if (!sourceDirectory.DirectoryExists())
 		{
-			client.DefaultRequestHeaders.Authorization =
-				new AuthenticationHeaderValue("Bearer", GithubToken);
+			throw new Exception(
+				$"'{source.SourcePath}' does not exist in {source.Organization}/{source.Repository}; the aggregated source no longer exists at the configured path.");
 		}
 
-		// README inlining: fetch once, then a stateful transformer substitutes the
+		// README inlining: read once, then a stateful transformer substitutes the
 		// stripped README content into the first 00-* file containing {README}.
 		string readmeContent = source.InlineReadme
-			? await FetchReadmeIntro(client, source)
+			? ReadReadmeIntro(ReadReadme(clonesRoot, source.Organization, source.Repository))
 			: string.Empty;
 
-		// Cross-repo README substitutions: each entry's README is fetched once, then
+		// Cross-repo README substitutions: each entry's README is read once, then
 		// substituted into the named target file. Stored as a mutable list so the
 		// transformer can clear an entry after it fires (substitute-once semantics).
 		List<(ReadmeSubstitution Config, string Body)> extraReadmes = new();
@@ -156,7 +170,7 @@ partial class Build
 		{
 			foreach (ReadmeSubstitution sub in source.ExtraReadmes)
 			{
-				string body = await FetchReadmeBody(client, sub.Organization, sub.Repository);
+				string body = StripReadmeFront(ReadReadme(clonesRoot, sub.Organization, sub.Repository));
 				extraReadmes.Add((sub, body));
 			}
 		}
@@ -192,52 +206,25 @@ partial class Build
 			}
 			: null;
 
-		using JsonDocument? listing = await GetGithubJsonAsync(client,
-			$"https://api.github.com/repos/{source.Organization}/{source.Repository}/contents/{source.SourcePath}");
-		if (listing is null)
-		{
-			throw new Exception(
-				$"GitHub returned 404 for '{source.SourcePath}' in {source.Organization}/{source.Repository}; the aggregated source no longer exists at the configured path.");
-		}
-
-		foreach (JsonElement file in listing.RootElement.EnumerateArray())
-		{
-			await DownloadFileOrDirectory(client, source, "/", file, baseDirectory, transformer);
-		}
+		CopyDirectory(source, sourceDirectory, "", baseDirectory, transformer);
 	}
 
-	async Task<string> FetchReadmeIntro(HttpClient client, DocsSource source)
+	static string ReadReadme(AbsolutePath clonesRoot, string organization, string repository)
 	{
-		using JsonDocument? document = await GetGithubJsonAsync(client,
-			$"https://api.github.com/repos/{source.Organization}/{source.Repository}/contents/README.md");
-		if (document is null)
-		{
-			Log.Warning($"No README.md in {source.Organization}/{source.Repository}.");
-			return string.Empty;
-		}
-
-		string readme = Base64Decode(document.RootElement.GetProperty("content").GetString()!);
-		int indexOfFirstH2 = readme.IndexOf("\n##", StringComparison.Ordinal);
-		return indexOfFirstH2 > 0 ? readme.Substring(indexOfFirstH2) : string.Empty;
-	}
-
-	/// <summary>
-	///     Fetches a foreign repo's <c>README.md</c> and strips its leading H1 plus any consecutive
-	///     badge block, returning the body. Used by <see cref="DocsSource.ExtraReadmes"/>; unlike
-	///     <see cref="FetchReadmeIntro"/>, this does not require a <c>##</c> heading to be present.
-	/// </summary>
-	async Task<string> FetchReadmeBody(HttpClient client, string organization, string repository)
-	{
-		using JsonDocument? document = await GetGithubJsonAsync(client,
-			$"https://api.github.com/repos/{organization}/{repository}/contents/README.md");
-		if (document is null)
+		AbsolutePath readme = CloneRepository(clonesRoot, organization, repository) / "README.md";
+		if (!readme.FileExists())
 		{
 			Log.Warning($"No README.md in {organization}/{repository}.");
 			return string.Empty;
 		}
 
-		string readme = Base64Decode(document.RootElement.GetProperty("content").GetString()!);
-		return StripReadmeFront(readme);
+		return ReadDocsFile(readme);
+	}
+
+	static string ReadReadmeIntro(string readme)
+	{
+		int indexOfFirstH2 = readme.IndexOf("\n##", StringComparison.Ordinal);
+		return indexOfFirstH2 > 0 ? readme.Substring(indexOfFirstH2) : string.Empty;
 	}
 
 	/// <summary>
@@ -271,63 +258,59 @@ partial class Build
 		return string.Join('\n', lines, i, lines.Length - i);
 	}
 
-	async Task DownloadFileOrDirectory(HttpClient client, DocsSource source, string subPath,
-		JsonElement fileOrDirectory, AbsolutePath targetDirectory, Func<string, string, string>? transformer = null)
+	void CopyDirectory(DocsSource source, AbsolutePath sourceDirectory, string relativeDirectory,
+		AbsolutePath targetDirectory, Func<string, string, string>? transformer)
 	{
-		string name = fileOrDirectory.GetProperty("name").GetString()!;
-		string relativePath = subPath.TrimStart('/') + name;
-		if (source.ExcludedFiles != null &&
-		    fileOrDirectory.GetProperty("type").GetString() == "file" &&
-		    Array.IndexOf(source.ExcludedFiles, relativePath) >= 0)
+		// Git tree order (a directory sorts as if its name ended in `/`), as the GitHub API used to
+		// list it, because the substitute-once README semantics depend on which file comes first.
+		foreach (string entry in Directory.EnumerateFileSystemEntries(sourceDirectory)
+			         .OrderBy(e => Directory.Exists(e) ? Path.GetFileName(e) + "/" : Path.GetFileName(e), StringComparer.Ordinal))
 		{
-			Log.Information($"  Skipped excluded {relativePath}");
-			return;
-		}
-		// Many sibling repos prefix their landing page with a sort key (e.g. `00-index.md`)
-		// so it renders first in autogenerated sidebars. Docusaurus strips the `NN-` prefix
-		// from the URL, leaving the slug as `…/index` — which 404s in our setup. Rename to a
-		// literal `index.md`/`index.mdx`, which Docusaurus treats as the directory's landing
-		// page and serves at the bare directory URL. The numeric prefix carries the upstream's
-		// intended sort position, so we re-inject it as `sidebar_position` front-matter to keep
-		// the page at the top of the sidebar after the rename strips the prefix.
-		Match indexMatch = IndexPrefixRegex.Match(name);
-		string targetName = indexMatch.Success ? "index" + indexMatch.Groups[2].Value : name;
-		int? sidebarPosition = indexMatch.Success ? int.Parse(indexMatch.Groups[1].Value) : null;
-		string filePath = targetDirectory / targetName;
-		using JsonDocument? document = await GetGithubJsonAsync(client,
-			$"https://api.github.com/repos/{source.Organization}/{source.Repository}/contents/{source.SourcePath}{subPath}{name}");
-		if (document is null)
-		{
-			// The parent directory listing just named this entry, so a 404 here is not a
-			// legitimate "missing" case but a real error (renamed/removed between calls, or a
-			// bad response) — fail loudly rather than silently dropping the page.
-			throw new Exception(
-				$"GitHub returned 404 for '{source.SourcePath}{subPath}{name}', which its parent directory listing referenced.");
-		}
-		if (document.RootElement.ValueKind == JsonValueKind.Array)
-		{
-			AbsolutePath subDirectory = targetDirectory / name;
-			subDirectory.CreateDirectory();
-			foreach (JsonElement subFileOrDirectory in document.RootElement.EnumerateArray())
+			string name = Path.GetFileName(entry);
+			string relativePath = relativeDirectory + name;
+			if (Directory.Exists(entry))
 			{
-				await DownloadFileOrDirectory(client, source, subPath + name + "/", subFileOrDirectory, subDirectory, transformer);
+				AbsolutePath subDirectory = targetDirectory / name;
+				subDirectory.CreateDirectory();
+				CopyDirectory(source, entry, relativePath + "/", subDirectory, transformer);
+				continue;
 			}
-		}
-		else
-		{
-			string content = Base64Decode(document.RootElement.GetProperty("content").GetString()!);
+			if (source.ExcludedFiles != null &&
+			    Array.IndexOf(source.ExcludedFiles, relativePath) >= 0)
+			{
+				Log.Information($"  Skipped excluded {relativePath}");
+				continue;
+			}
+			// Many sibling repos prefix their landing page with a sort key (e.g. `00-index.md`)
+			// so it renders first in autogenerated sidebars. Docusaurus strips the `NN-` prefix
+			// from the URL, leaving the slug as `…/index` — which 404s in our setup. Rename to a
+			// literal `index.md`/`index.mdx`, which Docusaurus treats as the directory's landing
+			// page and serves at the bare directory URL. The numeric prefix carries the upstream's
+			// intended sort position, so we re-inject it as `sidebar_position` front-matter to keep
+			// the page at the top of the sidebar after the rename strips the prefix.
+			Match indexMatch = IndexPrefixRegex.Match(name);
+			string targetName = indexMatch.Success ? "index" + indexMatch.Groups[2].Value : name;
+			string filePath = targetDirectory / targetName;
+			string content = ReadDocsFile(entry);
 			if (transformer != null)
 			{
 				content = transformer(name, content);
 			}
-			if (sidebarPosition.HasValue)
+			if (indexMatch.Success)
 			{
-				content = EnsureSidebarPosition(content, sidebarPosition.Value);
+				content = EnsureSidebarPosition(content, int.Parse(indexMatch.Groups[1].Value));
 			}
-			await File.WriteAllTextAsync(filePath, content);
+			File.WriteAllText(filePath, content);
 			Log.Information($"  {name} under {filePath}");
 		}
 	}
+
+	/// <summary>
+	///     Reads a file as UTF-8 and drops a leading BOM (U+FEFF), which would stop Docusaurus from
+	///     parsing the first markdown heading and break <see cref="StripReadmeFront"/>'s H1 detection.
+	/// </summary>
+	static string ReadDocsFile(string path)
+		=> File.ReadAllText(path, Encoding.UTF8).TrimStart('﻿');
 
 	static readonly Regex IndexPrefixRegex = new(@"^(\d+)-index(\.mdx?)$", RegexOptions.Compiled);
 
@@ -357,77 +340,5 @@ partial class Build
 			}
 		}
 		return $"---\nsidebar_position: {position}\n---\n\n{content}";
-	}
-
-	/// <summary>
-	///     GETs a GitHub API URL and returns the parsed JSON body. Retries transient failures
-	///     (HTTP 5xx, 429, 403 secondary-rate-limit, and truncated/malformed 2xx bodies) with
-	///     backoff, honouring any <c>Retry-After</c> header. Returns <c>null</c> only on a
-	///     definitive 404 so callers can decide whether a missing resource is fatal. Any other
-	///     non-success status, or exhausted retries, throws — so a transient GitHub hiccup fails
-	///     the build loudly instead of silently producing a partial documentation set.
-	/// </summary>
-	async Task<JsonDocument?> GetGithubJsonAsync(HttpClient client, string url)
-	{
-		const int maxAttempts = 5;
-		for (int attempt = 1;; attempt++)
-		{
-			HttpResponseMessage response = await client.GetAsync(url);
-			string body = await response.Content.ReadAsStringAsync();
-
-			if (response.IsSuccessStatusCode)
-			{
-				try
-				{
-					return JsonDocument.Parse(body);
-				}
-				catch (JsonException) when (attempt < maxAttempts)
-				{
-					Log.Warning($"Malformed JSON from '{url}' (attempt {attempt}/{maxAttempts}); retrying.");
-				}
-			}
-			else if (response.StatusCode == HttpStatusCode.NotFound)
-			{
-				return null;
-			}
-			else if (!IsTransientStatus(response.StatusCode) || attempt >= maxAttempts)
-			{
-				throw new Exception(
-					$"GitHub request '{url}' failed with {(int)response.StatusCode} {response.StatusCode} after {attempt} attempt(s): {body}");
-			}
-			else
-			{
-				Log.Warning(
-					$"Transient {(int)response.StatusCode} from '{url}' (attempt {attempt}/{maxAttempts}); retrying.");
-			}
-
-			await Task.Delay(RetryDelay(response, attempt));
-		}
-	}
-
-	static bool IsTransientStatus(HttpStatusCode status)
-		=> (int)status >= 500 ||
-		   status == HttpStatusCode.TooManyRequests ||
-		   status == HttpStatusCode.Forbidden;
-
-	static TimeSpan RetryDelay(HttpResponseMessage response, int attempt)
-	{
-		if (response.Headers.RetryAfter?.Delta is { } delta && delta > TimeSpan.Zero)
-		{
-			return delta < TimeSpan.FromMinutes(2) ? delta : TimeSpan.FromMinutes(2);
-		}
-		double seconds = Math.Min(30, Math.Pow(2, attempt));
-		return TimeSpan.FromSeconds(seconds);
-	}
-
-	static string Base64Decode(string base64EncodedData)
-	{
-		byte[] base64EncodedBytes = Convert.FromBase64String(base64EncodedData);
-		// The GitHub API returns file bytes verbatim, so a UTF-8 BOM survives into the
-		// decoded string. A leading BOM (U+FEFF) before the first markdown heading stops
-		// Docusaurus from parsing it (the heading renders as a literal paragraph) and also
-		// breaks StripReadmeFront's H1 detection, since char.IsWhiteSpace('﻿') is false
-		// and TrimStart() leaves it in place. Drop it once at the single decode chokepoint.
-		return Encoding.UTF8.GetString(base64EncodedBytes).TrimStart('﻿');
 	}
 }
