@@ -27,12 +27,11 @@ jobs:
         uses: actions/setup-dotnet@v5
         with:
           dotnet-version: |
-            10.0.x
+            10.0.3xx
       - name: Aggregate documentation from sibling repositories
         run: ./build.sh Pages
         env:
           GithubToken: ${{ secrets.GITHUB_TOKEN }}
-          NUKE_TELEMETRY_OPTOUT: 1
       - uses: actions/setup-node@v6
         with:
           node-version: 20

@@ -1,8 +1,8 @@
-using Nuke.Common;
+using Fallout.Common;
 
 namespace Build;
 
-partial class Build : NukeBuild
+partial class Build : FalloutBuild
 {
 	[Parameter("Github Token")] readonly string? GithubToken;
 

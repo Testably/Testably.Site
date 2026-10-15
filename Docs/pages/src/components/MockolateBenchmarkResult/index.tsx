@@ -2,7 +2,7 @@
  * Renders the latest Mockolate-vs-other-mocking-libraries snapshot for a
  * single benchmark scenario (e.g. "Method", "Property", "Callback").
  * Reads from `src/data/mockolate/benchmarks.json` — refreshed at deploy
- * time by Testably.Site's docs pipeline (the `MockolateBenchmarks` Nuke
+ * time by Testably.Site's docs pipeline (the `MockolateBenchmarks` Fallout
  * target) from the `Testably/Mockolate` benchmarks branch. The committed
  * file doubles as a fallback so `npm start`/`npm run build` work in a
  * clean checkout.
