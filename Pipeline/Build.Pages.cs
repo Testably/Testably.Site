@@ -85,10 +85,13 @@ partial class Build
 		new("Testably", "aweXpect.Migration",              "Docs/pages",      "aweXpect/10-migration",
 			InlineReadme: true, CleanTarget: false),
 		new("Testably", "aweXpect.Json",         "Docs/pages",      "aweXpect/07-extensions/aweXpect.Json",       InlineReadme: true),
+		new("Testably", "aweXpect.Logging",      "Docs/pages",      "aweXpect/07-extensions/aweXpect.Logging",    InlineReadme: true),
 		new("Testably", "aweXpect.Mockolate",    "Docs/pages",      "aweXpect/07-extensions/aweXpect.Mockolate",  InlineReadme: true),
 		new("Testably", "aweXpect.Reflection",   "Docs/pages",      "aweXpect/07-extensions/aweXpect.Reflection", InlineReadme: true),
+		new("Testably", "aweXpect.Snapshots",    "Docs/pages",      "aweXpect/07-extensions/aweXpect.Snapshots",  InlineReadme: true),
 		new("Testably", "aweXpect.Testably",     "Docs/pages",      "aweXpect/07-extensions/aweXpect.Testably",   InlineReadme: true),
 		new("Testably", "aweXpect.Web",          "Docs/pages",      "aweXpect/07-extensions/aweXpect.Web",        InlineReadme: true),
+		new("Testably", "aweXpect.Xml",          "Docs/pages",      "aweXpect/07-extensions/aweXpect.Xml",        InlineReadme: true),
 		new("Testably", "aweXpect.Chronology",   "Docs/pages",      "Chronology",                     InlineReadme: true),
 		new("Testably", "Mockolate",             "Docs/pages",      "Mockolate",
 			ExtraReadmes:
