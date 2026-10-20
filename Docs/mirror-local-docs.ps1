@@ -40,14 +40,14 @@ $Sources = @(
     [pscustomobject]@{ Repo="Testably.Abstractions.Migration"; SourcePath="Docs/pages";      Target="Abstractions/migration-from-testableio/Migration"; InlineReadme=$true;  ExtraReadmes=@() }
     [pscustomobject]@{ Repo="aweXpect";                        SourcePath="Docs/pages";      Target="aweXpect";               InlineReadme=$false; ExtraReadmes=@(); ExcludedFiles=@("10-migration.md") }
     [pscustomobject]@{ Repo="aweXpect.Migration";              SourcePath="Docs/pages";      Target="aweXpect/10-migration";  InlineReadme=$true;  ExtraReadmes=@(); CleanTarget=$false }
-    [pscustomobject]@{ Repo="aweXpect.Json";         SourcePath="Docs/pages";      Target="aweXpect/07-extensions/aweXpect.Json";       InlineReadme=$true;  ExtraReadmes=@() }
+    [pscustomobject]@{ Repo="aweXpect";              SourcePath="Docs/extensions/aweXpect.Json";       Target="aweXpect/07-extensions/aweXpect.Json";       InlineReadme=$false; ExtraReadmes=@() }
     [pscustomobject]@{ Repo="aweXpect.Logging";      SourcePath="Docs/pages";      Target="aweXpect/07-extensions/aweXpect.Logging";    InlineReadme=$true;  ExtraReadmes=@() }
     [pscustomobject]@{ Repo="aweXpect.Mockolate";    SourcePath="Docs/pages";      Target="aweXpect/07-extensions/aweXpect.Mockolate";  InlineReadme=$true;  ExtraReadmes=@() }
-    [pscustomobject]@{ Repo="aweXpect.Reflection";   SourcePath="Docs/pages";      Target="aweXpect/07-extensions/aweXpect.Reflection"; InlineReadme=$true;  ExtraReadmes=@() }
-    [pscustomobject]@{ Repo="aweXpect.Snapshots";    SourcePath="Docs/pages";      Target="aweXpect/07-extensions/aweXpect.Snapshots";  InlineReadme=$true;  ExtraReadmes=@() }
+    [pscustomobject]@{ Repo="aweXpect";              SourcePath="Docs/extensions/aweXpect.Reflection"; Target="aweXpect/07-extensions/aweXpect.Reflection"; InlineReadme=$false; ExtraReadmes=@() }
+    [pscustomobject]@{ Repo="aweXpect";              SourcePath="Docs/extensions/aweXpect.Snapshots";  Target="aweXpect/07-extensions/aweXpect.Snapshots";  InlineReadme=$false; ExtraReadmes=@() }
     [pscustomobject]@{ Repo="aweXpect.Testably";     SourcePath="Docs/pages";      Target="aweXpect/07-extensions/aweXpect.Testably";   InlineReadme=$true;  ExtraReadmes=@() }
-    [pscustomobject]@{ Repo="aweXpect.Web";          SourcePath="Docs/pages";      Target="aweXpect/07-extensions/aweXpect.Web";        InlineReadme=$true;  ExtraReadmes=@() }
-    [pscustomobject]@{ Repo="aweXpect.Xml";          SourcePath="Docs/pages";      Target="aweXpect/07-extensions/aweXpect.Xml";        InlineReadme=$true;  ExtraReadmes=@() }
+    [pscustomobject]@{ Repo="aweXpect";              SourcePath="Docs/extensions/aweXpect.Web";        Target="aweXpect/07-extensions/aweXpect.Web";        InlineReadme=$false; ExtraReadmes=@() }
+    [pscustomobject]@{ Repo="aweXpect";              SourcePath="Docs/extensions/aweXpect.Xml";        Target="aweXpect/07-extensions/aweXpect.Xml";        InlineReadme=$false; ExtraReadmes=@() }
     [pscustomobject]@{ Repo="aweXpect.Chronology";   SourcePath="Docs/pages";      Target="Chronology";                     InlineReadme=$true;  ExtraReadmes=@() }
     [pscustomobject]@{ Repo="Mockolate";             SourcePath="Docs/pages";      Target="Mockolate";                      InlineReadme=$false; ExtraReadmes=@(
         [pscustomobject]@{ Repo="Mockolate.Migration"; TargetFile="11-migration.md" }
