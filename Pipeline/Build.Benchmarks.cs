@@ -19,9 +19,10 @@ namespace Build;
 partial class Build
 {
 	/// <summary>
-	///     Fetches the latest aweXpect benchmark snapshot from the long-lived
-	///     <c>benchmarks</c> branch of <c>Testably/aweXpect</c> and reduces it
-	///     to the shape consumed by the <c>BenchmarkResult</c> React component.
+	///     Fetches the latest benchmark snapshot of aweXpect and of each extension
+	///     package from the long-lived <c>benchmarks</c> branch of
+	///     <c>Testably/aweXpect</c> and reduces it to the shape consumed by the
+	///     <c>BenchmarkResult</c> React component.
 	///     Pulled from the same <c>limited-data.js</c> file the legacy benchmarks
 	///     page used; the source is kept up-to-date by aweXpect's own CI on every
 	///     push to <c>main</c> (see <c>Pipeline/Build.Benchmarks.cs</c> in that
@@ -30,13 +31,7 @@ partial class Build
 	Target Benchmarks => _ => _
 		.Executes(async () =>
 		{
-			AbsolutePath outputDirectory = RootDirectory / "Docs" / "pages" / "src" / "data" / "awexpect";
-			outputDirectory.CreateDirectory();
-			AbsolutePath outputPath = outputDirectory / "benchmarks.json";
-
-			Log.Information(
-				"Fetching benchmark snapshot from {Repo} branch {Branch}",
-				BenchmarksRepo, BenchmarksBranch);
+			AbsolutePath dataDirectory = RootDirectory / "Docs" / "pages" / "src" / "data" / "awexpect";
 
 			using HttpClient client = new();
 			client.DefaultRequestHeaders.UserAgent.ParseAdd("Testably.Site");
@@ -46,35 +41,63 @@ partial class Build
 					new AuthenticationHeaderValue("Bearer", GithubToken);
 			}
 
-			string raw = await client.GetStringAsync(
-				$"https://raw.githubusercontent.com/{BenchmarksRepo}/refs/heads/{BenchmarksBranch}/Docs/pages/static/js/{BenchmarksFile}");
-			if (!raw.StartsWith(BenchmarksJsPrefix, StringComparison.Ordinal))
+			foreach ((string package, string sourceDirectory) in BenchmarkPackages)
 			{
-				throw new NotSupportedException(
-					$"{BenchmarksFile} does not start with '{BenchmarksJsPrefix}' — upstream format changed?");
+				AbsolutePath outputDirectory = package == "aweXpect" ? dataDirectory : dataDirectory / package;
+				outputDirectory.CreateDirectory();
+				AbsolutePath outputPath = outputDirectory / "benchmarks.json";
+
+				Log.Information(
+					"Fetching benchmark snapshot of {Package} from {Repo} branch {Branch}",
+					package, BenchmarksRepo, BenchmarksBranch);
+
+				string raw = await client.GetStringAsync(
+					$"https://raw.githubusercontent.com/{BenchmarksRepo}/refs/heads/{BenchmarksBranch}/{sourceDirectory}/{BenchmarksFile}");
+				if (!raw.StartsWith(BenchmarksJsPrefix, StringComparison.Ordinal))
+				{
+					throw new NotSupportedException(
+						$"{sourceDirectory}/{BenchmarksFile} does not start with '{BenchmarksJsPrefix}' — upstream format changed?");
+				}
+				string json = raw.Substring(BenchmarksJsPrefix.Length).TrimEnd(';', '\r', '\n', ' ', '\t');
+
+				Dictionary<string, RawBenchmark> rawData =
+					JsonSerializer.Deserialize<Dictionary<string, RawBenchmark>>(json, RawJsonOptions)
+					?? throw new NotSupportedException($"Could not deserialize {sourceDirectory}/{BenchmarksFile}");
+
+				Snapshot snapshot = ReduceToSnapshot(rawData, BenchmarkHistoryLength);
+
+				// The versions of the compared libraries at the measured commit, so that they always match the numbers.
+				// The extension packages are not compared with TUnit, so its version would only be noise there.
+				bool hasTUnit = snapshot.Benchmarks.Values.Any(b => b.TUnit is not null);
+				string props = await client.GetStringAsync(
+					$"https://raw.githubusercontent.com/{BenchmarksRepo}/{snapshot.CapturedAt.Sha}/Directory.Packages.props");
+				snapshot.Versions = XDocument.Parse(props).Descendants("PackageVersion")
+					.Where(p => (string?)p.Attribute("Include") is "FluentAssertions" ||
+					            (hasTUnit && (string?)p.Attribute("Include") is "TUnit"))
+					.ToDictionary(p => (string)p.Attribute("Include")!, p => (string?)p.Attribute("Version") ?? "");
+
+				string pretty = JsonSerializer.Serialize(snapshot, OutputJsonOptions);
+				await File.WriteAllTextAsync(outputPath, pretty + Environment.NewLine);
+
+				Log.Information(
+					"Wrote {BenchmarkCount} benchmarks to {Path} (captured commit {Sha} on {Date})",
+					snapshot.Benchmarks.Count, outputPath, snapshot.CapturedAt.ShortSha, snapshot.CapturedAt.Date);
 			}
-			string json = raw.Substring(BenchmarksJsPrefix.Length).TrimEnd(';', '\r', '\n', ' ', '\t');
-
-			Dictionary<string, RawBenchmark> rawData =
-				JsonSerializer.Deserialize<Dictionary<string, RawBenchmark>>(json, RawJsonOptions)
-				?? throw new NotSupportedException($"Could not deserialize {BenchmarksFile}");
-
-			Snapshot snapshot = ReduceToSnapshot(rawData, BenchmarkHistoryLength);
-
-			// The versions of the compared libraries at the measured commit, so that they always match the numbers.
-			string props = await client.GetStringAsync(
-				$"https://raw.githubusercontent.com/{BenchmarksRepo}/{snapshot.CapturedAt.Sha}/Directory.Packages.props");
-			snapshot.Versions = XDocument.Parse(props).Descendants("PackageVersion")
-				.Where(p => (string?)p.Attribute("Include") is "FluentAssertions" or "TUnit")
-				.ToDictionary(p => (string)p.Attribute("Include")!, p => (string?)p.Attribute("Version") ?? "");
-
-			string pretty = JsonSerializer.Serialize(snapshot, OutputJsonOptions);
-			await File.WriteAllTextAsync(outputPath, pretty + Environment.NewLine);
-
-			Log.Information(
-				"Wrote {BenchmarkCount} benchmarks to {Path} (captured commit {Sha} on {Date})",
-				snapshot.Benchmarks.Count, outputPath, snapshot.CapturedAt.ShortSha, snapshot.CapturedAt.Date);
 		});
+
+	/// <summary>
+	///     The packages with benchmarks and the directory of their data on the benchmarks branch
+	///     (<c>GetBenchmarkDataDirectory</c> in aweXpect's <c>Pipeline/Build.Benchmarks.cs</c>).
+	///     aweXpect.Snapshots has no benchmarks.
+	/// </summary>
+	static readonly (string Package, string SourceDirectory)[] BenchmarkPackages =
+	[
+		("aweXpect", "Docs/pages/static/js"),
+		("aweXpect.Json", "Docs/extensions/aweXpect.Json/static/js"),
+		("aweXpect.Reflection", "Docs/extensions/aweXpect.Reflection/static/js"),
+		("aweXpect.Web", "Docs/extensions/aweXpect.Web/static/js"),
+		("aweXpect.Xml", "Docs/extensions/aweXpect.Xml/static/js"),
+	];
 
 	const string BenchmarksRepo = "Testably/aweXpect";
 	const string BenchmarksBranch = "benchmarks";
