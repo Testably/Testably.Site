@@ -1,0 +1,301 @@
+{
+  "capturedAt": {
+    "sha": "f8bfa2a95dcd676c83965667eb45d8760cd3714f",
+    "shortSha": "f8bfa2a9",
+    "date": "2026-10-20",
+    "message": "fix: honor comparison predicates for primitive members of registered types (#1898)"
+  },
+  "environment": {
+    "runner": "ubuntu-latest",
+    "toolchain": "BenchmarkDotNet MediumRun (in-process)"
+  },
+  "benchmarks": {
+    "JsonArrayElements": {
+      "aweXpect": {
+        "timeNs": 4858.6,
+        "memoryBytes": 3584,
+        "history": {
+          "timeNs": [
+            5381.5,
+            2517,
+            4858.6
+          ],
+          "memoryBytes": [
+            6104,
+            3584,
+            3584
+          ]
+        }
+      },
+      "FluentAssertions": {
+        "timeNs": 48681.8,
+        "memoryBytes": 61926,
+        "history": {
+          "timeNs": [
+            47792.5,
+            23825.7,
+            48681.8
+          ],
+          "memoryBytes": [
+            61926,
+            61921,
+            61926
+          ]
+        }
+      }
+    },
+    "JsonArrayInAnyOrder": {
+      "aweXpect": {
+        "timeNs": 36529.3,
+        "memoryBytes": 29944,
+        "history": {
+          "timeNs": [
+            40482.6,
+            23649.7,
+            36529.3
+          ],
+          "memoryBytes": [
+            40368,
+            29944,
+            29944
+          ]
+        }
+      },
+      "FluentAssertions": {
+        "timeNs": 311952.8,
+        "memoryBytes": 521594,
+        "history": {
+          "timeNs": [
+            296766.3,
+            175284.5,
+            311952.8
+          ],
+          "memoryBytes": [
+            521594,
+            521542,
+            521594
+          ]
+        }
+      }
+    },
+    "JsonEquality": {
+      "aweXpect": {
+        "timeNs": 2898.3,
+        "memoryBytes": 1600,
+        "history": {
+          "timeNs": [
+            3517.2,
+            1869.7,
+            2898.3
+          ],
+          "memoryBytes": [
+            3288,
+            1600,
+            1600
+          ]
+        }
+      },
+      "FluentAssertions": {
+        "timeNs": 1950.7,
+        "memoryBytes": 2624,
+        "history": {
+          "timeNs": [
+            1881.7,
+            1298.1,
+            1950.7
+          ],
+          "memoryBytes": [
+            2624,
+            2624,
+            2624
+          ]
+        }
+      }
+    },
+    "JsonProperty": {
+      "aweXpect": {
+        "timeNs": 2739.6,
+        "memoryBytes": 3984,
+        "history": {
+          "timeNs": [
+            3573.9,
+            1689.9,
+            2739.6
+          ],
+          "memoryBytes": [
+            5528,
+            3984,
+            3984
+          ]
+        }
+      },
+      "FluentAssertions": {
+        "timeNs": 1886,
+        "memoryBytes": 6224,
+        "history": {
+          "timeNs": [
+            1825.1,
+            1361.7,
+            1886
+          ],
+          "memoryBytes": [
+            6224,
+            6224,
+            6224
+          ]
+        }
+      }
+    },
+    "JsonString": {
+      "aweXpect": {
+        "timeNs": 2129.6,
+        "memoryBytes": 1344,
+        "history": {
+          "timeNs": [
+            43654.3,
+            44267.4,
+            42254.9,
+            2442.3,
+            1307.5,
+            1930,
+            2074,
+            2446,
+            2389.7,
+            2357.9,
+            2373.6,
+            1398,
+            2129.6
+          ],
+          "memoryBytes": [
+            14531,
+            14541,
+            14530,
+            2520,
+            2520,
+            2520,
+            2520,
+            2520,
+            2520,
+            2520,
+            2520,
+            1344,
+            1344
+          ]
+        }
+      },
+      "FluentAssertions": {
+        "timeNs": 16532.3,
+        "memoryBytes": 26144,
+        "history": {
+          "timeNs": [
+            16047.2,
+            16217.2,
+            14543.2,
+            14057.2,
+            6657.4,
+            10324,
+            12149.8,
+            13051.4,
+            14724,
+            14506.1,
+            16132.4,
+            8778.6,
+            16532.3
+          ],
+          "memoryBytes": [
+            26144,
+            26144,
+            26144,
+            26144,
+            26144,
+            26144,
+            26144,
+            26144,
+            26144,
+            26144,
+            26144,
+            26144,
+            26144
+          ]
+        }
+      }
+    },
+    "ParsedJson": {
+      "aweXpect": {
+        "timeNs": 1541.6,
+        "memoryBytes": 1280,
+        "history": {
+          "timeNs": [
+            41626.6,
+            41643.6,
+            40511.5,
+            1803.8,
+            1007.3,
+            1453.7,
+            1594.2,
+            1746.6,
+            1910.2,
+            1887.9,
+            1825.8,
+            1096.3,
+            1541.6
+          ],
+          "memoryBytes": [
+            14342,
+            14341,
+            14342,
+            2328,
+            2328,
+            2328,
+            2328,
+            2328,
+            2328,
+            2328,
+            2328,
+            1280,
+            1280
+          ]
+        }
+      },
+      "FluentAssertions": {
+        "timeNs": 14925.5,
+        "memoryBytes": 25312,
+        "history": {
+          "timeNs": [
+            14571.5,
+            14555,
+            13392.4,
+            12604.8,
+            6120.5,
+            9715.2,
+            11165.3,
+            12008.9,
+            13795.8,
+            13295.8,
+            14596.1,
+            8251.3,
+            14925.5
+          ],
+          "memoryBytes": [
+            25312,
+            25312,
+            25312,
+            25312,
+            25312,
+            25312,
+            25312,
+            25312,
+            25312,
+            25312,
+            25312,
+            25312,
+            25312
+          ]
+        }
+      }
+    }
+  },
+  "versions": {
+    "FluentAssertions": "8.11.0"
+  }
+}

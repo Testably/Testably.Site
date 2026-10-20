@@ -1,0 +1,233 @@
+{
+  "capturedAt": {
+    "sha": "f8bfa2a95dcd676c83965667eb45d8760cd3714f",
+    "shortSha": "f8bfa2a9",
+    "date": "2026-10-20",
+    "message": "fix: honor comparison predicates for primitive members of registered types (#1898)"
+  },
+  "environment": {
+    "runner": "ubuntu-latest",
+    "toolchain": "BenchmarkDotNet MediumRun (in-process)"
+  },
+  "benchmarks": {
+    "Attribute": {
+      "aweXpect": {
+        "timeNs": 933.6,
+        "memoryBytes": 1312,
+        "history": {
+          "timeNs": [
+            1097.9,
+            1078.9,
+            806.6,
+            915.2,
+            1148.4,
+            1154,
+            1014.9,
+            900.9,
+            900.7,
+            865,
+            698.1,
+            658.8,
+            933.6
+          ],
+          "memoryBytes": [
+            1816,
+            1816,
+            1816,
+            1816,
+            1816,
+            1816,
+            1488,
+            1312,
+            1312,
+            1312,
+            1312,
+            1312,
+            1312
+          ]
+        }
+      },
+      "FluentAssertions": {
+        "timeNs": 773.9,
+        "memoryBytes": 2776,
+        "history": {
+          "timeNs": [
+            730.8,
+            668.8,
+            528.3,
+            596.1,
+            780.4,
+            781.9,
+            727.8,
+            751,
+            682.8,
+            723.1,
+            674.3,
+            659.3,
+            773.9
+          ],
+          "memoryBytes": [
+            2776,
+            2776,
+            2776,
+            2776,
+            2776,
+            2776,
+            2776,
+            2776,
+            2776,
+            2776,
+            2776,
+            2776,
+            2776
+          ]
+        }
+      }
+    },
+    "ElementMatches": {
+      "aweXpect": {
+        "timeNs": 2810.1,
+        "memoryBytes": 13032,
+        "history": {
+          "timeNs": [
+            2657.7,
+            2424.2,
+            2810.1
+          ],
+          "memoryBytes": [
+            13032,
+            13032,
+            13032
+          ]
+        }
+      },
+      "FluentAssertions": {
+        "timeNs": 3757.2,
+        "memoryBytes": 14443,
+        "history": {
+          "timeNs": [
+            3306.3,
+            2855.8,
+            3757.2
+          ],
+          "memoryBytes": [
+            14443,
+            14443,
+            14443
+          ]
+        }
+      }
+    },
+    "ElementOrder": {
+      "aweXpect": {
+        "timeNs": 48146.7,
+        "memoryBytes": 99704,
+        "history": {
+          "timeNs": [
+            37174.5,
+            36258.4,
+            48146.7
+          ],
+          "memoryBytes": [
+            99704,
+            99704,
+            99704
+          ]
+        }
+      },
+      "FluentAssertions": {
+        "timeNs": 369120,
+        "memoryBytes": 544335,
+        "history": {
+          "timeNs": [
+            222737,
+            218628.2,
+            369120
+          ],
+          "memoryBytes": [
+            544246,
+            544245,
+            544335
+          ]
+        }
+      }
+    },
+    "XmlString": {
+      "aweXpect": {
+        "timeNs": 4906.3,
+        "memoryBytes": 24486,
+        "history": {
+          "timeNs": [
+            12670.1,
+            12171.4,
+            8267.1,
+            9192.5,
+            13008.3,
+            13387.3,
+            11934.8,
+            5255.9,
+            4890.6,
+            4768.7,
+            4462,
+            3918.2,
+            4906.3
+          ],
+          "memoryBytes": [
+            34880,
+            34885,
+            34885,
+            34885,
+            34880,
+            34885,
+            34661,
+            24487,
+            24487,
+            24487,
+            24487,
+            24487,
+            24486
+          ]
+        }
+      },
+      "FluentAssertions": {
+        "timeNs": 5322.5,
+        "memoryBytes": 25758,
+        "history": {
+          "timeNs": [
+            5336.8,
+            5097.1,
+            3744.9,
+            4400.3,
+            6438.5,
+            6425.8,
+            5026.1,
+            5954.2,
+            5368.2,
+            5186.3,
+            4998.1,
+            4951.6,
+            5322.5
+          ],
+          "memoryBytes": [
+            25758,
+            25758,
+            25758,
+            25758,
+            25758,
+            25758,
+            25758,
+            25758,
+            25758,
+            25758,
+            25758,
+            25758,
+            25758
+          ]
+        }
+      }
+    }
+  },
+  "versions": {
+    "FluentAssertions": "8.11.0"
+  }
+}

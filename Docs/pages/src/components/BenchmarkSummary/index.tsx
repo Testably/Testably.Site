@@ -1,10 +1,10 @@
 /**
- * Summarises the latest aweXpect benchmark snapshot in one tile per other library:
+ * Summarises the latest benchmark snapshot of a package (`aweXpect` by default) in one tile per other library:
  * its version and the median factor of its time and memory relative to aweXpect,
- * worded as "as long" so that 1.1× cannot be misread as 110% slower. Reads the same `src/data/awexpect/benchmarks.json` as `BenchmarkResult`.
+ * worded as "as long" so that 1.1× cannot be misread as 110% slower. Reads the same data as `BenchmarkResult`.
  */
 import React, {type ReactElement} from 'react';
-import benchmarks from '@site/src/data/awexpect/benchmarks.json';
+import benchmarksByPackage from '@site/src/data/awexpect';
 import styles from './styles.module.css';
 
 type Sample = {
@@ -18,8 +18,7 @@ type BenchmarkEntry = {
   TUnit?: Sample;
 };
 
-const data = benchmarks as {benchmarks: Record<string, BenchmarkEntry>; versions?: Record<string, string>};
-const entries = Object.values(data.benchmarks);
+type Snapshot = {benchmarks: Record<string, BenchmarkEntry>; versions?: Record<string, string>};
 
 const OTHER_LIBRARIES = [
   {name: 'FluentAssertions', accent: '#ff671b'},
@@ -37,7 +36,11 @@ function median(values: number[]): number {
   return sorted.length % 2 === 0 ? (sorted[middle - 1] + sorted[middle]) / 2 : sorted[middle];
 }
 
-function ratiosOf(library: (typeof OTHER_LIBRARIES)[number]['name'], metric: (typeof METRICS)[number]): number[] {
+function ratiosOf(
+  entries: BenchmarkEntry[],
+  library: (typeof OTHER_LIBRARIES)[number]['name'],
+  metric: (typeof METRICS)[number],
+): number[] {
   return entries.flatMap((entry) => {
     const awe = entry.aweXpect[metric.key];
     const other = entry[library]?.[metric.key];
@@ -47,12 +50,22 @@ function ratiosOf(library: (typeof OTHER_LIBRARIES)[number]['name'], metric: (ty
   });
 }
 
-export default function BenchmarkSummary(): ReactElement {
+type Props = {
+  package?: string;
+};
+
+// `package` is a reserved word in strict mode, so it cannot be destructured under its own name.
+export default function BenchmarkSummary({package: packageName = 'aweXpect'}: Props): ReactElement | null {
+  const data = benchmarksByPackage[packageName] as Snapshot | undefined;
+  if (!data) return null;
+  const entries = Object.values(data.benchmarks);
   return (
     <div className={styles.tiles}>
       {OTHER_LIBRARIES.map((library) => {
         const version = data.versions?.[library.name];
-        const count = ratiosOf(library.name, METRICS[0]).length;
+        const count = ratiosOf(entries, library.name, METRICS[0]).length;
+        // The extension packages are only compared with FluentAssertions.
+        if (count === 0) return null;
         return (
           <div key={library.name} className={styles.tile} style={{borderTopColor: library.accent}}>
             <div className={styles.title}>
@@ -60,7 +73,7 @@ export default function BenchmarkSummary(): ReactElement {
               {version && <span className={styles.muted}> v{version}</span>}
             </div>
             {METRICS.map((metric) => {
-              const ratios = ratiosOf(library.name, metric);
+              const ratios = ratiosOf(entries, library.name, metric);
               if (ratios.length === 0) return null;
               const factor = median(ratios);
               return (

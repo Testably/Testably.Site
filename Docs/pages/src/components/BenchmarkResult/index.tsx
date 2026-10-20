@@ -1,13 +1,15 @@
 /**
  * Renders the latest aweXpect vs FluentAssertions and TUnit snapshot for a single
- * benchmark name (e.g. "Bool", "String", "Int_GreaterThan"). Reads from
- * `src/data/awexpect/benchmarks.json` — refreshed at deploy time by
+ * benchmark name (e.g. "Bool", "String", "Int_GreaterThan") of a package
+ * (`aweXpect` by default, or an extension package such as `aweXpect.Json`).
+ * Reads from `src/data/awexpect/benchmarks.json` (or
+ * `src/data/awexpect/<package>/benchmarks.json`) — refreshed at deploy time by
  * Testably.Server's docs pipeline (the `Benchmarks` Fallout target) from the
  * `Testably/aweXpect` benchmarks branch. The committed file doubles as a
  * fallback so `npm start`/`npm run build` work in a clean checkout.
  */
 import React, {type ReactElement} from 'react';
-import benchmarks from '@site/src/data/awexpect/benchmarks.json';
+import benchmarksByPackage from '@site/src/data/awexpect';
 import styles from './styles.module.css';
 
 type Sample = {
@@ -38,8 +40,6 @@ type Snapshot = {
   };
   benchmarks: Record<string, BenchmarkEntry>;
 };
-
-const data = benchmarks as Snapshot;
 
 function formatNs(ns: number): string {
   if (ns < 1_000) return `${ns.toFixed(1)} ns`;
@@ -229,15 +229,18 @@ function MetricRow({label, entry, metric, format}: MetricRowProps): ReactElement
 }
 
 type Props = {
+  package?: string;
   name: string;
 };
 
-export default function BenchmarkResult({name}: Props): ReactElement {
-  const entry = data.benchmarks[name];
-  if (!entry) {
+// `package` is a reserved word in strict mode, so it cannot be destructured under its own name.
+export default function BenchmarkResult({package: packageName = 'aweXpect', name}: Props): ReactElement {
+  const data = benchmarksByPackage[packageName] as Snapshot | undefined;
+  const entry = data?.benchmarks[name];
+  if (!data || !entry) {
     return (
       <div className={styles.error}>
-        No benchmark data for <code>{name}</code>.
+        No benchmark data for <code>{name}</code> of <code>{packageName}</code>.
       </div>
     );
   }
