@@ -82,6 +82,7 @@ const config: Config = {
           'Testably.Abstractions.MemoryMappedFiles',
           'Testably.Abstractions.Migration',
           'aweXpect',
+          'aweXpect.Core',
           'aweXpect.Chronology',
           'aweXpect.Json',
           'aweXpect.Logging',
