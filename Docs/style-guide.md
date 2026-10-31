@@ -28,7 +28,7 @@ description: Verify how often and in which order a mock was called.
 
 ## Links
 
-- Within a repository, link to the file with a relative path, so the link also works on GitHub: `[Parameter matching](./06-parameter-matching.md#custom-matchers)`.
+- Within a repository, link to the file with a relative path, so the link also works on GitHub: `[Parameter matching](./06-parameter-matching.md#custom-matchers)`. This includes a folder's landing page (`./05-setup/00-index.md`); the site adjusts the link when it renames the page to `index.md`.
 - Across libraries, link with the site-absolute path: `[aweXpect.Mockolate](/aweXpect/extensions/aweXpect.Mockolate/)`. The build checks it; a full `https://docs.testably.org/...` URL it does not.
 - A page that is published inside another repository's section (e.g. Mockolate.Migration's page in the Mockolate migration section) links to its neighbors with relative paths as they are on the site.
 
@@ -161,8 +161,7 @@ Show a failure message in a `text` block with the title "Failure message", direc
 
 ````markdown
 ```text title="Failure message"
-Expected that mock invoked method Dispense(Milk, It.IsAny<int>()) exactly once,
-but it never did.
+Expected that mock invoked method Dispense("Milk", It.IsAny<int>()) exactly once, but it never did.
 ```
 ````
 
@@ -176,7 +175,7 @@ Use Docusaurus admonitions, never italic "*Note:*" paragraphs. Each type has one
 | `:::tip`     | A recommendation: the better way to do something.             |
 | `:::info`    | A requirement: framework, language version or package.         |
 | `:::warning` | A pitfall that leads to wrong results or confusing failures.   |
-| `:::danger`  | Something that loses data or breaks consumers.                 |
+| `:::danger`  | Something that loses data or breaks consumers, and analyzer diagnostics with error severity. |
 
 Add a title in brackets when it carries information, e.g. `:::info[.NET 8 or later]`. Put long background explanations into `<details>` instead of a callout.
 
