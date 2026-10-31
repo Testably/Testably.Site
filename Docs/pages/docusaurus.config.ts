@@ -56,6 +56,7 @@ const config: Config = {
         docsRouteBasePath: '/',
         indexBlog: false,
         highlightSearchTermsOnTargetPage: true,
+        explicitSearchResultPath: true,
         searchContextByPaths: [
           {label: 'Abstractions', path: 'Abstractions'},
           {label: 'aweXpect', path: 'aweXpect'},
