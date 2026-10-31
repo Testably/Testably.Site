@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Fallout.Common;
@@ -19,7 +20,11 @@ partial class Build
 	/// <param name="Organization">GitHub organization that owns the source repo.</param>
 	/// <param name="Repository">Source repository name.</param>
 	/// <param name="SourcePath">Path inside the source repo whose contents should be aggregated (e.g. <c>Docs/pages/docs</c>).</param>
-	/// <param name="TargetSubDirectory">Sub-directory under this site's <c>Docs/pages/docs/</c> where the slice lands.</param>
+	/// <param name="TargetSubDirectory">
+	///     Sub-directory under this site's <c>Docs/pages/docs/</c> where the slice lands, without the
+	///     <c>NN-</c> ordering prefixes: each segment resolves to an existing folder with any prefix, so a
+	///     library can reorder its folders without a change here.
+	/// </param>
 	/// <param name="ExcludedFiles">
 	///     Optional file paths, relative to <paramref name="SourcePath"/> and matched exactly
 	///     (case-sensitive, <c>/</c>-separated), that are not aggregated. Lets the site drop an
@@ -54,17 +59,17 @@ partial class Build
 		new("Testably", "Testably.Abstractions.Migration", "Docs/pages",      "Abstractions/migration-from-testableio/Migration"),
 		new("Testably", "aweXpect",                        "Docs/pages",      "aweXpect",
 			ExcludedFiles: ["10-migration.md"]),
-		new("Testably", "aweXpect.Migration",              "Docs/pages",      "aweXpect/10-migration",
+		new("Testably", "aweXpect.Migration",              "Docs/pages",      "aweXpect/migration",
 			CleanTarget: false),
-		new("Testably", "aweXpect",              "Docs/extensions/aweXpect.Json",       "aweXpect/07-extensions/aweXpect.Json"),
-		new("Testably", "aweXpect.Logging",      "Docs/pages",      "aweXpect/07-extensions/aweXpect.Logging"),
-		new("Testably", "aweXpect.Mockolate",    "Docs/pages",      "aweXpect/07-extensions/aweXpect.Mockolate"),
-		new("Testably", "aweXpect",              "Docs/extensions/aweXpect.Reflection", "aweXpect/07-extensions/aweXpect.Reflection"),
-		new("Testably", "aweXpect",              "Docs/extensions/aweXpect.Snapshots",  "aweXpect/07-extensions/aweXpect.Snapshots"),
-		new("Testably", "aweXpect.Testably",     "Docs/pages",      "aweXpect/07-extensions/aweXpect.Testably"),
-		new("Testably", "aweXpect",              "Docs/extensions/aweXpect.Web",        "aweXpect/07-extensions/aweXpect.Web"),
-		new("Testably", "aweXpect",              "Docs/extensions/aweXpect.Xml",        "aweXpect/07-extensions/aweXpect.Xml"),
-		new("Testably", "aweXpect.Chronology",   "Docs/pages",      "aweXpect/07-extensions/aweXpect.Chronology"),
+		new("Testably", "aweXpect",              "Docs/extensions/aweXpect.Json",       "aweXpect/extensions/aweXpect.Json"),
+		new("Testably", "aweXpect.Logging",      "Docs/pages",      "aweXpect/extensions/aweXpect.Logging"),
+		new("Testably", "aweXpect.Mockolate",    "Docs/pages",      "aweXpect/extensions/aweXpect.Mockolate"),
+		new("Testably", "aweXpect",              "Docs/extensions/aweXpect.Reflection", "aweXpect/extensions/aweXpect.Reflection"),
+		new("Testably", "aweXpect",              "Docs/extensions/aweXpect.Snapshots",  "aweXpect/extensions/aweXpect.Snapshots"),
+		new("Testably", "aweXpect.Testably",     "Docs/pages",      "aweXpect/extensions/aweXpect.Testably"),
+		new("Testably", "aweXpect",              "Docs/extensions/aweXpect.Web",        "aweXpect/extensions/aweXpect.Web"),
+		new("Testably", "aweXpect",              "Docs/extensions/aweXpect.Xml",        "aweXpect/extensions/aweXpect.Xml"),
+		new("Testably", "aweXpect.Chronology",   "Docs/pages",      "aweXpect/extensions/aweXpect.Chronology"),
 		new("Testably", "Mockolate",             "Docs/pages",      "Mockolate"),
 		new("Testably", "Mockolate.Migration",   "Docs/pages",      "Mockolate/migration",
 			CleanTarget: false),
@@ -86,9 +91,7 @@ partial class Build
 			// site-owned overlays committed under docs/ survive the build.
 			foreach (DocsSource source in AggregatedSources)
 			{
-				AbsolutePath targetDirectory = string.IsNullOrEmpty(source.TargetSubDirectory)
-					? docsRoot
-					: docsRoot / source.TargetSubDirectory;
+				AbsolutePath targetDirectory = ResolveTargetDirectory(docsRoot, source.TargetSubDirectory);
 				if (source.CleanTarget)
 				{
 					targetDirectory.CreateOrCleanDirectory();
@@ -101,6 +104,20 @@ partial class Build
 				CopyDocsContent(source, clonesRoot, targetDirectory);
 			}
 		});
+
+	static AbsolutePath ResolveTargetDirectory(AbsolutePath docsRoot, string subDirectory)
+	{
+		AbsolutePath directory = docsRoot;
+		foreach (string segment in subDirectory.Split('/', StringSplitOptions.RemoveEmptyEntries))
+		{
+			string? prefixed = directory.DirectoryExists()
+				? Directory.EnumerateDirectories(directory)
+					.FirstOrDefault(d => Regex.IsMatch(Path.GetFileName(d), $@"^\d+-{Regex.Escape(segment)}$"))
+				: null;
+			directory = prefixed != null ? (AbsolutePath)prefixed : directory / segment;
+		}
+		return directory;
+	}
 
 	/// <summary>
 	///     Shallow-clones the repository's default branch into <paramref name="clonesRoot"/>, once per run.
