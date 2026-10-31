@@ -103,6 +103,10 @@ const config: Config = {
       },
     ],
     [
+      './src/plugins/llms-txt/index.ts',
+      {libraries: ['Abstractions', 'aweXpect', 'Mockolate', 'Awaiten']},
+    ],
+    [
       '@docusaurus/plugin-client-redirects',
       {
         // Pages moved by the aweXpect documentation restructuring.
@@ -117,6 +121,11 @@ const config: Config = {
           {from: '/aweXpect/advanced/ref-struct', to: '/aweXpect/how-it-works/'},
           {from: '/category/common-types', to: '/aweXpect/values/'},
           {from: '/Chronology', to: '/aweXpect/extensions/aweXpect.Chronology/'},
+          {from: '/aweXpect/behaviour', to: '/aweXpect/behavior/'},
+          {from: '/aweXpect/behaviour/delegates', to: '/aweXpect/behavior/delegates'},
+          {from: '/aweXpect/behaviour/tasks', to: '/aweXpect/behavior/tasks'},
+          {from: '/aweXpect/behaviour/events', to: '/aweXpect/behavior/events'},
+          {from: '/aweXpect/behaviour/callbacks', to: '/aweXpect/behavior/callbacks'},
           ...[
             'boolean', 'string', 'char', 'number', 'enum', 'object', 'timespan',
             'datetime-offset', 'date-time-only', 'guid', 'version', 'stream',
