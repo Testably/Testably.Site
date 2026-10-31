@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Fallout.Common;
@@ -22,18 +20,6 @@ partial class Build
 	/// <param name="Repository">Source repository name.</param>
 	/// <param name="SourcePath">Path inside the source repo whose contents should be aggregated (e.g. <c>Docs/pages/docs</c>).</param>
 	/// <param name="TargetSubDirectory">Sub-directory under this site's <c>Docs/pages/docs/</c> where the slice lands.</param>
-	/// <param name="InlineReadme">
-	///     When true, read <c>README.md</c> from the source repo, drop everything before the first
-	///     <c>##</c> heading, and substitute the result into any <c>{README}</c> placeholder found in
-	///     a <c>00-*</c> file. Lets extension repos keep their public README and their first docs page
-	///     in sync without duplicating content.
-	/// </param>
-	/// <param name="ExtraReadmes">
-	///     Optional cross-repo README substitutions. Each entry pulls the named foreign repo's
-	///     <c>README.md</c>, strips the leading H1 plus any badge block, and substitutes it into the
-	///     placeholder of the named file inside this slice. Lets a docs page own its scaffolding while
-	///     sourcing its body from a different repo's README.
-	/// </param>
 	/// <param name="ExcludedFiles">
 	///     Optional file paths, relative to <paramref name="SourcePath"/> and matched exactly
 	///     (case-sensitive, <c>/</c>-separated), that are not aggregated. Lets the site drop an
@@ -50,21 +36,8 @@ partial class Build
 		string Repository,
 		string SourcePath,
 		string TargetSubDirectory,
-		bool InlineReadme = false,
-		ReadmeSubstitution[]? ExtraReadmes = null,
 		string[]? ExcludedFiles = null,
 		bool CleanTarget = true);
-
-	/// <summary>
-	///     A cross-repo README substitution. Reads <c>README.md</c> from <paramref name="Organization"/>/<paramref name="Repository"/>,
-	///     strips its leading H1 and any consecutive badge lines, and replaces <paramref name="Placeholder"/>
-	///     in the docs file named <paramref name="TargetFileName"/>.
-	/// </summary>
-	record ReadmeSubstitution(
-		string Organization,
-		string Repository,
-		string TargetFileName,
-		string Placeholder = "{README}");
 
 	/// <summary>
 	///     The slices that compose the testably.org documentation portal. Order matters:
@@ -78,26 +51,23 @@ partial class Build
 	static readonly DocsSource[] AggregatedSources =
 	[
 		new("Testably", "Testably.Abstractions",           "Docs/pages/docs", "Abstractions"),
-		new("Testably", "Testably.Abstractions.Migration", "Docs/pages",      "Abstractions/migration-from-testableio/Migration",
-			InlineReadme: true),
+		new("Testably", "Testably.Abstractions.Migration", "Docs/pages",      "Abstractions/migration-from-testableio/Migration"),
 		new("Testably", "aweXpect",                        "Docs/pages",      "aweXpect",
 			ExcludedFiles: ["10-migration.md"]),
 		new("Testably", "aweXpect.Migration",              "Docs/pages",      "aweXpect/10-migration",
-			InlineReadme: true, CleanTarget: false),
+			CleanTarget: false),
 		new("Testably", "aweXpect",              "Docs/extensions/aweXpect.Json",       "aweXpect/07-extensions/aweXpect.Json"),
-		new("Testably", "aweXpect.Logging",      "Docs/pages",      "aweXpect/07-extensions/aweXpect.Logging",    InlineReadme: true),
-		new("Testably", "aweXpect.Mockolate",    "Docs/pages",      "aweXpect/07-extensions/aweXpect.Mockolate",  InlineReadme: true),
+		new("Testably", "aweXpect.Logging",      "Docs/pages",      "aweXpect/07-extensions/aweXpect.Logging"),
+		new("Testably", "aweXpect.Mockolate",    "Docs/pages",      "aweXpect/07-extensions/aweXpect.Mockolate"),
 		new("Testably", "aweXpect",              "Docs/extensions/aweXpect.Reflection", "aweXpect/07-extensions/aweXpect.Reflection"),
 		new("Testably", "aweXpect",              "Docs/extensions/aweXpect.Snapshots",  "aweXpect/07-extensions/aweXpect.Snapshots"),
-		new("Testably", "aweXpect.Testably",     "Docs/pages",      "aweXpect/07-extensions/aweXpect.Testably",   InlineReadme: true),
+		new("Testably", "aweXpect.Testably",     "Docs/pages",      "aweXpect/07-extensions/aweXpect.Testably"),
 		new("Testably", "aweXpect",              "Docs/extensions/aweXpect.Web",        "aweXpect/07-extensions/aweXpect.Web"),
 		new("Testably", "aweXpect",              "Docs/extensions/aweXpect.Xml",        "aweXpect/07-extensions/aweXpect.Xml"),
-		new("Testably", "aweXpect.Chronology",   "Docs/pages",      "aweXpect/07-extensions/aweXpect.Chronology", InlineReadme: true),
-		new("Testably", "Mockolate",             "Docs/pages",      "Mockolate",
-			ExtraReadmes:
-			[
-				new("Testably", "Mockolate.Migration", "11-migration.md"),
-			]),
+		new("Testably", "aweXpect.Chronology",   "Docs/pages",      "aweXpect/07-extensions/aweXpect.Chronology"),
+		new("Testably", "Mockolate",             "Docs/pages",      "Mockolate"),
+		new("Testably", "Mockolate.Migration",   "Docs/pages",      "Mockolate/migration",
+			CleanTarget: false),
 		new("Testably", "Awaiten",               "Docs/pages",      "Awaiten"),
 	];
 
@@ -159,129 +129,13 @@ partial class Build
 				$"'{source.SourcePath}' does not exist in {source.Organization}/{source.Repository}; the aggregated source no longer exists at the configured path.");
 		}
 
-		// README inlining: read once, then a stateful transformer substitutes the
-		// stripped README content into the first 00-* file containing {README}.
-		string readmeContent = source.InlineReadme
-			? ReadReadmeIntro(ReadReadme(clonesRoot, source.Organization, source.Repository))
-			: string.Empty;
-
-		// Cross-repo README substitutions: each entry's README is read once, then
-		// substituted into the named target file. Stored as a mutable list so the
-		// transformer can clear an entry after it fires (substitute-once semantics).
-		List<(ReadmeSubstitution Config, string Body)> extraReadmes = new();
-		if (source.ExtraReadmes != null)
-		{
-			foreach (ReadmeSubstitution sub in source.ExtraReadmes)
-			{
-				string body = StripReadmeFront(ReadReadme(clonesRoot, sub.Organization, sub.Repository));
-				extraReadmes.Add((sub, body));
-			}
-		}
-
-		Func<string, string, string>? transformer = (source.InlineReadme || extraReadmes.Count > 0)
-			? (name, content) =>
-			{
-				if (source.InlineReadme &&
-				    name.StartsWith("00-", StringComparison.Ordinal) &&
-				    content.Contains("{README}", StringComparison.Ordinal))
-				{
-					string substitution = readmeContent.Replace("Docs/pages/", "./", StringComparison.Ordinal);
-					content = content.Replace("{README}", substitution, StringComparison.Ordinal);
-					readmeContent = string.Empty; // substitute into the first match only
-					Log.Information($"  Inlined README.md into {name}");
-				}
-				for (int i = 0; i < extraReadmes.Count; i++)
-				{
-					(ReadmeSubstitution cfg, string body) = extraReadmes[i];
-					if (string.IsNullOrEmpty(body))
-					{
-						continue;
-					}
-					if (string.Equals(name, cfg.TargetFileName, StringComparison.Ordinal) &&
-					    content.Contains(cfg.Placeholder, StringComparison.Ordinal))
-					{
-						content = content.Replace(cfg.Placeholder, body, StringComparison.Ordinal);
-						extraReadmes[i] = (cfg, string.Empty); // substitute once
-						Log.Information($"  Inlined {cfg.Organization}/{cfg.Repository} README.md into {name}");
-					}
-				}
-				return content;
-			}
-			: null;
-
-		CopyDirectory(source, sourceDirectory, "", baseDirectory, transformer);
-	}
-
-	static string ReadReadme(AbsolutePath clonesRoot, string organization, string repository)
-	{
-		AbsolutePath readme = CloneRepository(clonesRoot, organization, repository) / "README.md";
-		if (!readme.FileExists())
-		{
-			Log.Warning($"No README.md in {organization}/{repository}.");
-			return string.Empty;
-		}
-
-		return ReadDocsFile(readme);
-	}
-
-	/// <summary>
-	///     Drops everything before the first <c>##</c> heading. On the site, the README's pointer to the full
-	///     documentation would link to the page itself, so it is removed and links to the site become site-relative.
-	/// </summary>
-	static string ReadReadmeIntro(string readme)
-	{
-		int indexOfFirstH2 = readme.IndexOf("\n##", StringComparison.Ordinal);
-		if (indexOfFirstH2 <= 0)
-		{
-			return string.Empty;
-		}
-
-		string content = FullDocumentationSentenceRegex.Replace(readme.Substring(indexOfFirstH2), string.Empty);
-		return content.Replace("https://docs.testably.org/", "/", StringComparison.Ordinal);
-	}
-
-	static readonly Regex FullDocumentationSentenceRegex = new(
-		@"The full documentation is available at\s+\[docs\.testably\.org\]\([^)]*\):\s*",
-		RegexOptions.Compiled);
-
-	/// <summary>
-	///     Drops the leading H1 line, any consecutive badge lines that follow, and the resulting
-	///     leading blank lines. Leaves the rest of the README intact.
-	/// </summary>
-	static string StripReadmeFront(string readme)
-	{
-		string[] lines = readme.Split('\n');
-		int i = 0;
-		while (i < lines.Length && string.IsNullOrWhiteSpace(lines[i]))
-		{
-			i++;
-		}
-		if (i < lines.Length && lines[i].TrimStart().StartsWith("# ", StringComparison.Ordinal))
-		{
-			i++;
-		}
-		while (i < lines.Length && string.IsNullOrWhiteSpace(lines[i]))
-		{
-			i++;
-		}
-		while (i < lines.Length && lines[i].TrimStart().StartsWith("[!", StringComparison.Ordinal))
-		{
-			i++;
-		}
-		while (i < lines.Length && string.IsNullOrWhiteSpace(lines[i]))
-		{
-			i++;
-		}
-		return string.Join('\n', lines, i, lines.Length - i);
+		CopyDirectory(source, sourceDirectory, "", baseDirectory);
 	}
 
 	void CopyDirectory(DocsSource source, AbsolutePath sourceDirectory, string relativeDirectory,
-		AbsolutePath targetDirectory, Func<string, string, string>? transformer)
+		AbsolutePath targetDirectory)
 	{
-		// Git tree order (a directory sorts as if its name ended in `/`), as the GitHub API used to
-		// list it, because the substitute-once README semantics depend on which file comes first.
-		foreach (string entry in Directory.EnumerateFileSystemEntries(sourceDirectory)
-			         .OrderBy(e => Directory.Exists(e) ? Path.GetFileName(e) + "/" : Path.GetFileName(e), StringComparer.Ordinal))
+		foreach (string entry in Directory.EnumerateFileSystemEntries(sourceDirectory))
 		{
 			string name = Path.GetFileName(entry);
 			string relativePath = relativeDirectory + name;
@@ -289,7 +143,7 @@ partial class Build
 			{
 				AbsolutePath subDirectory = targetDirectory / name;
 				subDirectory.CreateDirectory();
-				CopyDirectory(source, entry, relativePath + "/", subDirectory, transformer);
+				CopyDirectory(source, entry, relativePath + "/", subDirectory);
 				continue;
 			}
 			if (source.ExcludedFiles != null &&
@@ -309,10 +163,6 @@ partial class Build
 			string targetName = indexMatch.Success ? "index" + indexMatch.Groups[2].Value : name;
 			string filePath = targetDirectory / targetName;
 			string content = ReadDocsFile(entry);
-			if (transformer != null)
-			{
-				content = transformer(name, content);
-			}
 			if (indexMatch.Success)
 			{
 				content = EnsureSidebarPosition(content, int.Parse(indexMatch.Groups[1].Value));
@@ -324,7 +174,7 @@ partial class Build
 
 	/// <summary>
 	///     Reads a file as UTF-8 and drops a leading BOM (U+FEFF), which would stop Docusaurus from
-	///     parsing the first markdown heading and break <see cref="StripReadmeFront"/>'s H1 detection.
+	///     parsing the first markdown heading.
 	/// </summary>
 	static string ReadDocsFile(string path)
 		=> File.ReadAllText(path, Encoding.UTF8).TrimStart('﻿');
