@@ -191,6 +191,16 @@ const config: Config = {
           position: 'left',
           label: 'Awaiten',
         },
+        {
+          href: 'https://github.com/Testably',
+          label: 'GitHub',
+          position: 'right',
+        },
+        {
+          href: 'https://github.com/sponsors/vbreuss',
+          label: '❤️ Sponsor',
+          position: 'right',
+        },
       ],
     },
     footer: {
