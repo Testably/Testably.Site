@@ -80,7 +80,7 @@ partial class Build
 		.DependsOn(Benchmarks)
 		.DependsOn(MockolateBenchmarks)
 		.DependsOn(AwaitenBenchmarks)
-		.Executes(() =>
+		.Executes(async () =>
 		{
 			AbsolutePath docsRoot = RootDirectory / "Docs" / "pages" / "docs";
 			docsRoot.CreateDirectory();
@@ -103,6 +103,8 @@ partial class Build
 
 				CopyDocsContent(source, clonesRoot, targetDirectory);
 			}
+
+			await WriteChangelogs(docsRoot);
 		});
 
 	static AbsolutePath ResolveTargetDirectory(AbsolutePath docsRoot, string subDirectory)

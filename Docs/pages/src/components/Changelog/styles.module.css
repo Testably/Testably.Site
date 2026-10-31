@@ -1,0 +1,71 @@
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.release {
+  margin-bottom: 1rem;
+  box-shadow: none;
+  border: 1px solid var(--ifm-color-emphasis-300);
+}
+
+.header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding-bottom: 0;
+}
+
+.version {
+  font-size: 1.25rem;
+  font-weight: var(--ifm-font-weight-bold);
+}
+
+.date {
+  margin-left: auto;
+  font-size: 0.875rem;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.items {
+  list-style: none;
+  margin: 0;
+}
+
+.items li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.label {
+  flex-shrink: 0;
+  min-width: 5.5rem;
+  padding: 0 0.375rem;
+  border: 1px solid currentColor;
+  border-radius: var(--ifm-global-radius);
+  font-size: 0.7rem;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  opacity: 0.8;
+}
+
+.breaking {
+  color: var(--ifm-color-danger-dark);
+}
+
+.feature {
+  color: var(--ifm-color-success-dark);
+}
+
+.fix {
+  color: var(--ifm-color-emphasis-700);
+}
+
+.performance {
+  color: var(--ifm-color-info-dark);
+}
