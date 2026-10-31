@@ -72,6 +72,37 @@ const config: Config = {
 
   plugins: [
     [
+      './src/plugins/nuget-versions/index.ts',
+      {
+        packages: [
+          'Testably.Abstractions',
+          'Testably.Abstractions.Testing',
+          'Testably.Abstractions.Compression',
+          'Testably.Abstractions.AccessControl',
+          'Testably.Abstractions.MemoryMappedFiles',
+          'Testably.Abstractions.Migration',
+          'aweXpect',
+          'aweXpect.Core',
+          'aweXpect.Chronology',
+          'aweXpect.Json',
+          'aweXpect.Logging',
+          'aweXpect.Migration',
+          'aweXpect.Mockolate',
+          'aweXpect.Reflection',
+          'aweXpect.Snapshots',
+          'aweXpect.Snapshots.DiffEngine',
+          'aweXpect.Snapshots.PublicApi',
+          'aweXpect.Testably',
+          'aweXpect.Web',
+          'aweXpect.Xml',
+          'Mockolate',
+          'Mockolate.Migration',
+          'Awaiten',
+          'Awaiten.Extensions.DependencyInjection',
+        ],
+      },
+    ],
+    [
       '@docusaurus/plugin-client-redirects',
       {
         // Pages moved by the aweXpect documentation restructuring.
