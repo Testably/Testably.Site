@@ -1,0 +1,220 @@
+# Testably
+
+> Testing libraries that get out of your way.
+
+## Abstractions
+
+- [Testably.Abstractions](https://docs.testably.org/Abstractions/): Injectable abstractions for the file system, time and randomness in .NET, with in-memory mocks for tests.
+- [Getting started](https://docs.testably.org/Abstractions/getting-started): Install the packages, register the real implementations and replace them with mocks in tests.
+- [A complete example](https://docs.testably.org/Abstractions/complete-example): One gallery service, tested with the mocked file system, time system and random system together.
+- [File system](https://docs.testably.org/Abstractions/file-system/): IFileSystem abstracts System.IO; MockFileSystem is its in-memory implementation for tests.
+- [Initialization](https://docs.testably.org/Abstractions/file-system/initialization): Seed a MockFileSystem declaratively, fluently, from a real directory or from embedded resources.
+- [Simulating other operating systems](https://docs.testably.org/Abstractions/file-system/simulating-os): Run the MockFileSystem with Linux, macOS or Windows semantics, independent of the host.
+- [Drives](https://docs.testably.org/Abstractions/file-system/drives): Add drives with size limits, UNC shares and removable drives to the MockFileSystem.
+- [FileSystemWatcher](https://docs.testably.org/Abstractions/file-system/file-system-watcher): Use the mocked FileSystemWatcher, which raises the same OS-specific events as the real one.
+- [Intercept & notify](https://docs.testably.org/Abstractions/file-system/intercept-and-notify): Abort file system operations before they complete, or wait for them after they completed.
+- [Statistics](https://docs.testably.org/Abstractions/file-system/statistics): Assert which file system methods and properties the code under test used.
+- [Simulating access denial (ACL)](https://docs.testably.org/Abstractions/file-system/access-control): Deny access to selected paths in the MockFileSystem to test how code handles missing Windows permissions.
+- [Unix file mode](https://docs.testably.org/Abstractions/file-system/unix-file-mode): Simulate POSIX users, groups and permissions in the MockFileSystem.
+- [SafeFileHandle](https://docs.testably.org/Abstractions/file-system/safe-file-handles): Use SafeFileHandle overloads against the MockFileSystem, including handles that come from outside the mock.
+- [RandomAccess](https://docs.testably.org/Abstractions/file-system/random-access): Read and write files at explicit offsets through a SafeFileHandle, on the real and the mocked file system.
+- [FileVersionInfo](https://docs.testably.org/Abstractions/file-system/file-version-info): Return deterministic FileVersionInfo values for files in the MockFileSystem.
+- [Extensibility](https://docs.testably.org/Abstractions/file-system/extensibility): Attach custom metadata to entries of the MockFileSystem when writing strategies or extension methods.
+- [Time system](https://docs.testably.org/Abstractions/time-system/): ITimeSystem abstracts the clock, timers and waiting; MockTimeSystem lets tests fast-forward time.
+- [Configuring time](https://docs.testably.org/Abstractions/time-system/configuring-time): Choose the start time and the local time zone of the MockTimeSystem, or plug in a custom time provider.
+- [Auto-advance](https://docs.testably.org/Abstractions/time-system/auto-advance): How MockTimeSystem moves its clock when the code under test waits, and how to drive the clock yourself.
+- [Stopwatch](https://docs.testably.org/Abstractions/time-system/stopwatch): Measure simulated elapsed time with the mocked Stopwatch, independent of changes to the wall clock.
+- [Timer](https://docs.testably.org/Abstractions/time-system/timers): Wait for a mocked System.Threading.Timer to fire a given number of times instead of sleeping.
+- [PeriodicTimer](https://docs.testably.org/Abstractions/time-system/periodic-timer): Test loops built on PeriodicTimer without waiting for real time to pass.
+- [Notifications](https://docs.testably.org/Abstractions/time-system/notifications): Observe and wait for sleeps, delays, clock reads and timer ticks of the code under test.
+- [Thread-aware time provider](https://docs.testably.org/Abstractions/time-system/thread-aware-provider): Give each async context its own simulated clock with a custom ITimeProvider.
+- [Random system](https://docs.testably.org/Abstractions/random-system/): IRandomSystem abstracts Random and Guid; MockRandomSystem makes them predictable in tests.
+- [Deterministic randomness](https://docs.testably.org/Abstractions/random-system/deterministic-randomness): Drive Random and Guid from fixed values, sequences or callbacks for reproducible tests.
+- [Companion libraries](https://docs.testably.org/Abstractions/companion-libraries/): Optional packages that add compression, access control and memory-mapped files to IFileSystem.
+- [Testably.Abstractions.Compression](https://docs.testably.org/Abstractions/companion-libraries/compression): ZipFile and ZipArchive on IFileSystem, so zip code runs against the real and the mocked file system.
+- [Testably.Abstractions.AccessControl](https://docs.testably.org/Abstractions/companion-libraries/access-control): GetAccessControl and SetAccessControl on IFileSystem, so ACL code runs against the real and the mocked file system.
+- [Testably.Abstractions.MemoryMappedFiles](https://docs.testably.org/Abstractions/companion-libraries/memory-mapped-files): MemoryMappedFile on IFileSystem, so memory-mapped file code can be tested against the MockFileSystem.
+- [Migration from TestableIO](https://docs.testably.org/Abstractions/migration-from-testableio/): Switch the tests from TestableIO.System.IO.Abstractions.TestingHelpers to Testably.Abstractions.Testing.
+- [Testably.Abstractions.Migration](https://docs.testably.org/Abstractions/migration-from-testableio/Migration/): A Roslyn analyzer and code fix that rewrites TestableIO MockFileSystem tests to the Testably.Abstractions MockFileSystem.
+
+## aweXpect
+
+- [aweXpect](https://docs.testably.org/aweXpect/): aweXpect is a fluent, async-first assertion library for .NET whose failure messages explain in plain English what was expected and what happened.
+- [Getting started](https://docs.testably.org/aweXpect/getting-started): Install aweXpect, write your first test with an expectation and find the expectations for your subject.
+- [Concepts](https://docs.testably.org/aweXpect/how-it-works/): The concepts that all expectations share, and how an expectation is built, evaluated and awaited.
+- [Negation](https://docs.testably.org/aweXpect/how-it-works/negation): How expectations are negated with their named counterparts or with DoesNotComplyWith.
+- [Combining expectations](https://docs.testably.org/aweXpect/how-it-works/combining): Combine expectations on the same subject, on its members, on a new subject or on different subjects.
+- [null subjects](https://docs.testably.org/aweXpect/how-it-works/null-subjects): How expectations and their negations treat a null subject.
+- [Options](https://docs.testably.org/aweXpect/how-it-works/options): The options that many expectations share, such as a reason, string options, comparers, equivalency, tolerances and timeouts.
+- [Time and cancellation](https://docs.testably.org/aweXpect/how-it-works/time-and-cancellation): Limit how long an expectation may take with timeouts and cancellation, wait for conditions, events and callbacks, and measure execution time.
+- [Configuration](https://docs.testably.org/aweXpect/how-it-works/configuration): Customize the behavior and the default values of aweXpect for a single test or globally.
+- [Setup and integration](https://docs.testably.org/aweXpect/setup/): How aweXpect fits into your test project, with its test frameworks, target frameworks and Native AOT.
+- [Test frameworks](https://docs.testably.org/aweXpect/setup/test-frameworks): How aweXpect fails, skips and ends tests as inconclusive in MSTest, NUnit, TUnit and xUnit, and what it knows about the running test.
+- [Target frameworks](https://docs.testably.org/aweXpect/setup/target-frameworks): The target frameworks that aweXpect supports and the features that need .NET 8 or later.
+- [Native AOT and trimming](https://docs.testably.org/aweXpect/setup/native-aot): How aweXpect supports equivalency and event recording when a project is published with trimming or Native AOT.
+- [Values](https://docs.testably.org/aweXpect/values/): Overview of the expectations for single values, from booleans and numbers to strings, streams and any object.
+- [Boolean](https://docs.testably.org/aweXpect/values/boolean): Verify that a `bool` or `bool?` is true, false or null, or that it implies another value.
+- [Number](https://docs.testably.org/aweXpect/values/number): Verify numbers for equality, ordering, ranges, sign, NaN and infinity, with an optional tolerance.
+- [String](https://docs.testably.org/aweXpect/values/string): Verify strings for equality, patterns, length, lines, prefixes, substrings, casing and parsing, with options for casing and whitespace.
+- [Char](https://docs.testably.org/aweXpect/values/char): Verify that a `char` equals an expected character or belongs to a category such as letter, digit or whitespace.
+- [Enum](https://docs.testably.org/aweXpect/values/enum): Verify `enum` values for equality, their underlying numeric value, whether they are defined and which flags they have.
+- [Guid](https://docs.testably.org/aweXpect/values/guid): Verify that a `Guid` equals an expected value or is empty.
+- [Version](https://docs.testably.org/aweXpect/values/version): Verify a `Version` for equality, ordering, ranges and its individual components.
+- [Stream](https://docs.testably.org/aweXpect/values/stream): Verify the capabilities, length, position and buffer size of a `Stream`.
+- [TimeSpan](https://docs.testably.org/aweXpect/values/timespan): Verify a `TimeSpan` for equality, ordering, ranges and sign, with an optional tolerance.
+- [DateTime / DateTimeOffset](https://docs.testably.org/aweXpect/values/datetime-offset): Verify `DateTime` and `DateTimeOffset` values for equality, ordering, ranges and their properties, with an optional tolerance.
+- [DateOnly / TimeOnly](https://docs.testably.org/aweXpect/values/date-time-only): Verify `DateOnly` and `TimeOnly` values for equality, ordering, ranges and their properties, with an optional tolerance.
+- [Object](https://docs.testably.org/aweXpect/values/object): Verify any object for equality, reference equality, type, null, a predicate, a nested expectation or garbage collection.
+- [Equivalency](https://docs.testably.org/aweXpect/values/equivalency): Verify that two objects are structurally equivalent and configure which members are compared and how.
+- [Collections](https://docs.testably.org/aweXpect/collections/): Overview of the expectations for collections such as arrays, lists, sets and any other `IEnumerable<T>`.
+- [Equality and containment](https://docs.testably.org/aweXpect/collections/equality): Compare a collection with another collection and verify that it contains, starts with or ends with items.
+- [Items](https://docs.testably.org/aweXpect/collections/items): Verify the number of items, how many items meet an expectation, a single item or the item at an index.
+- [Sort order](https://docs.testably.org/aweXpect/collections/order): Verify that the items of a collection are sorted in ascending or descending order.
+- [Dictionaries](https://docs.testably.org/aweXpect/collections/dictionaries): Verify dictionaries by their entries, keys and values, and compare them with other dictionaries.
+- [Behavior](https://docs.testably.org/aweXpect/behavior/): Overview of the expectations for code that runs, such as delegates, tasks, events and callbacks.
+- [Delegates](https://docs.testably.org/aweXpect/behavior/delegates): Verify that a delegate throws or does not throw, the details of the thrown exception, its execution time, its allocations and memory leaks.
+- [Tasks](https://docs.testably.org/aweXpect/behavior/tasks): Verify a running Task or ValueTask like a delegate, and the result of a Task<T> like any other value.
+- [Events](https://docs.testably.org/aweXpect/behavior/events): Record the events of an object and verify how often they were triggered, with which parameters, and PropertyChanged notifications.
+- [Callbacks](https://docs.testably.org/aweXpect/behavior/callbacks): Verify with a Signaler that a callback was called, how often and with which parameters, or wait for it without an expectation.
+- [Extension packages](https://docs.testably.org/aweXpect/extensions/): The extension packages that add expectations for JSON, XML, HTTP, reflection, snapshots, logging, file systems and mocks.
+- [aweXpect.Chronology](https://docs.testably.org/aweXpect/extensions/aweXpect.Chronology/): Extension methods that create TimeSpan, DateTime, DateTimeOffset, DateOnly and TimeOnly values in a readable way, e.g. 5.Seconds() or 24.December(2024).
+- [aweXpect.Json](https://docs.testably.org/aweXpect/extensions/aweXpect.Json/): Verify JSON strings, JsonElement and JsonNode values and the System.Text.Json serialization of objects with aweXpect.
+- [JSON strings](https://docs.testably.org/aweXpect/extensions/aweXpect.Json/strings): Compare strings as JSON by their structure and verify that a string is valid JSON.
+- [Matching JSON](https://docs.testably.org/aweXpect/extensions/aweXpect.Json/matching): Match a JsonElement or JsonNode with an expected value and relax the comparison with the JSON options.
+- [Objects, arrays and value kinds](https://docs.testably.org/aweXpect/extensions/aweXpect.Json/objects-and-arrays): Verify the properties, values at a path, array elements and value kinds of a JsonElement or JsonNode.
+- [JsonNode](https://docs.testably.org/aweXpect/extensions/aweXpect.Json/json-nodes): Use the JSON expectations on a JsonNode and its subtypes JsonObject, JsonArray and JsonValue.
+- [Serialization](https://docs.testably.org/aweXpect/extensions/aweXpect.Json/serialization): Verify that an object survives a round trip through System.Text.Json and that it is serialized as the expected JSON.
+- [Customization](https://docs.testably.org/aweXpect/extensions/aweXpect.Json/customization): Change the default JsonDocumentOptions and JsonSerializerOptions that aweXpect.Json uses to parse, format and serialize JSON.
+- [Benchmarks](https://docs.testably.org/aweXpect/extensions/aweXpect.Json/benchmarks): Benchmarks of passing aweXpect.Json expectations compared with the equivalent FluentAssertions calls.
+- [aweXpect.Logging](https://docs.testably.org/aweXpect/extensions/aweXpect.Logging/): Expectations for the log records that are written with Microsoft.Extensions.Logging and collected by a FakeLogCollector or FakeLogger.
+- [Log records](https://docs.testably.org/aweXpect/extensions/aweXpect.Logging/log-records): Verify the level, message, exception, category, properties, count, order and timing of the log records of a FakeLogCollector or FakeLogger.
+- [aweXpect.Mockolate](https://docs.testably.org/aweXpect/extensions/aweXpect.Mockolate/): Expectations to verify how often and in which order the methods of a Mockolate mock were invoked, and that all interactions and setups were covered.
+- [Interaction count](https://docs.testably.org/aweXpect/extensions/aweXpect.Mockolate/interaction-count): Verify how often an interaction with a Mockolate mock happened, also for interactions that happen in the background.
+- [Interaction order](https://docs.testably.org/aweXpect/extensions/aweXpect.Mockolate/interaction-order): Verify with Then that the interactions with a Mockolate mock happened in the given order, also while waiting for them.
+- [All interactions and setups](https://docs.testably.org/aweXpect/extensions/aweXpect.Mockolate/interactions-and-setups): Verify that every interaction with a Mockolate mock was verified and every setup of it was used.
+- [HTTP content matchers](https://docs.testably.org/aweXpect/extensions/aweXpect.Mockolate/http-content-matchers): JSON matchers for It.IsHttpContent() in setups and verifications of a mocked HttpClient.
+- [aweXpect.Reflection](https://docs.testably.org/aweXpect/extensions/aweXpect.Reflection/): aweXpect.Reflection extends aweXpect with expectations for assemblies, types and members, for architecture and convention tests.
+- [Selecting types and members](https://docs.testably.org/aweXpect/extensions/aweXpect.Reflection/sources): Select the assemblies, types and members a rule applies to with the In and Types sources, and navigate between them.
+- [Filters and expectations](https://docs.testably.org/aweXpect/extensions/aweXpect.Reflection/filters/): How the filters and expectations of aweXpect.Reflection pair up, how to combine them and how to use custom predicates and quantifiers.
+- [Common filters](https://docs.testably.org/aweXpect/extensions/aweXpect.Reflection/filters/common-filters): The filters and expectations that all types and members share, for access modifiers, attributes, the obsolete marker, names and namespaces.
+- [Assemblies](https://docs.testably.org/aweXpect/extensions/aweXpect.Reflection/filters/assemblies): Filter and verify assemblies by name, target framework, version, strong name, attributes and dependencies.
+- [Types and inheritance](https://docs.testably.org/aweXpect/extensions/aweXpect.Reflection/filters/types): Filter and verify types by kind, modifiers, relations and contained members, and how inherited members, attributes and relations count.
+- [Methods, operators and constructors](https://docs.testably.org/aweXpect/extensions/aweXpect.Reflection/filters/methods): Filter and verify methods, operators and constructors by modifiers, return types and parameters.
+- [Properties, fields and events](https://docs.testably.org/aweXpect/extensions/aweXpect.Reflection/filters/properties-fields-and-events): Filter and verify properties, fields and events by type, nullability, modifiers and accessors.
+- [Architecture rules](https://docs.testably.org/aweXpect/extensions/aweXpect.Reflection/architecture-rules): Restrict the dependencies between types and namespaces, detect dependency cycles and define layers as reusable type selections.
+- [Customization](https://docs.testably.org/aweXpect/extensions/aweXpect.Reflection/customization): Customize the assembly exclusions, the compiler-generated members and the dependency resolver of aweXpect.Reflection.
+- [Feature comparison with FluentAssertions](https://docs.testably.org/aweXpect/extensions/aweXpect.Reflection/comparison/fluentassertions-comparison): Map the reflection assertions of FluentAssertions to aweXpect.Reflection for assemblies, types and members.
+- [Feature comparison with NetArchTest and ArchUnitNET](https://docs.testably.org/aweXpect/extensions/aweXpect.Reflection/comparison/architecture-comparison): Compare architecture tests with aweXpect.Reflection, NetArchTest and ArchUnitNET, from dependency rules to cycle detection and failure messages.
+- [Benchmarks](https://docs.testably.org/aweXpect/extensions/aweXpect.Reflection/benchmarks): Benchmarks comparing the happy-path overhead of aweXpect.Reflection with the equivalent FluentAssertions calls.
+- [aweXpect.Snapshots](https://docs.testably.org/aweXpect/extensions/aweXpect.Snapshots/): aweXpect.Snapshots extends aweXpect with snapshot tests that compare strings and objects with reviewed snapshots.
+- [Matching snapshots](https://docs.testably.org/aweXpect/extensions/aweXpect.Snapshots/matching-snapshots): Compare strings, objects, exceptions, binary data and files with a snapshot, and how the snapshot files are named, encoded and compared.
+- [Accepting snapshots](https://docs.testably.org/aweXpect/extensions/aweXpect.Snapshots/accepting-snapshots): Review and accept pending snapshots, accept many snapshots at once with AWEXPECT_ACCEPT_SNAPSHOTS and handle snapshots on a build server.
+- [Diff tools](https://docs.testably.org/aweXpect/extensions/aweXpect.Snapshots/diff-tools): Open a diff tool for a missing or different snapshot with the aweXpect.Snapshots.DiffEngine package.
+- [Naming snapshots](https://docs.testably.org/aweXpect/extensions/aweXpect.Snapshots/naming-snapshots): Name snapshots per test case, per argument or per environment, and nest them under their test file in the IDE.
+- [Masking and ignoring values](https://docs.testably.org/aweXpect/extensions/aweXpect.Snapshots/masking-values): Mask, convert or leave out members, lines and text that change from run to run, per expectation or for all snapshots.
+- [Orphaned snapshots](https://docs.testably.org/aweXpect/extensions/aweXpect.Snapshots/orphaned-snapshots): Find and delete the snapshots that no test uses any more with OrphanedSnapshots.CheckAsync() after the test run.
+- [Public API](https://docs.testably.org/aweXpect/extensions/aweXpect.Snapshots/public-api): Verify the public API of an assembly against a reviewed snapshot with the aweXpect.Snapshots.PublicApi package.
+- [Storing snapshots elsewhere](https://docs.testably.org/aweXpect/extensions/aweXpect.Snapshots/advanced/storing-snapshots): Keep snapshots in a shared folder, a database or another place by deriving from SnapshotStore.
+- [Comparers](https://docs.testably.org/aweXpect/extensions/aweXpect.Snapshots/advanced/comparers): Decide with a SnapshotComparer whether a value matches its snapshot, e.g. to tolerate small differences in images.
+- [Reporters](https://docs.testably.org/aweXpect/extensions/aweXpect.Snapshots/advanced/reporters): Get told about every missing, different or matching snapshot with a SnapshotReporter, e.g. to open a diff tool.
+- [Deterministic builds](https://docs.testably.org/aweXpect/extensions/aweXpect.Snapshots/advanced/deterministic-builds): How aweXpect.Snapshots finds the snapshots when a deterministic build replaces the path of the repository with /_/.
+- [aweXpect.Testably](https://docs.testably.org/aweXpect/extensions/aweXpect.Testably/): Expectations for the file system and time system mocks from Testably.Abstractions, from files and directories to notifications, recorded calls and timers.
+- [File system](https://docs.testably.org/aweXpect/extensions/aweXpect.Testably/file-system): Verify the files, directories and drives of a MockFileSystem, and the properties of IFileInfo, IDirectoryInfo, IDriveInfo and IFileVersionInfo.
+- [Notifications and recorded calls](https://docs.testably.org/aweXpect/extensions/aweXpect.Testably/notifications): Verify the notifications a MockFileSystem raised, the events of a file system watcher, change descriptions and the calls recorded in its statistics.
+- [Time system](https://docs.testably.org/aweXpect/extensions/aweXpect.Testably/time-system): Verify how often the callback of a timer from a MockTimeSystem was executed.
+- [aweXpect.Web](https://docs.testably.org/aweXpect/extensions/aweXpect.Web/): Verify HttpRequestMessage, HttpResponseMessage, Uri and IPAddress values with aweXpect.
+- [HTTP requests and responses](https://docs.testably.org/aweXpect/extensions/aweXpect.Web/http-messages): Verify the method, request URI, headers and content of an HttpRequestMessage and the status code, headers, content and problem details of an HttpResponseMessage.
+- [URIs](https://docs.testably.org/aweXpect/extensions/aweXpect.Web/uri): Verify the kind, port, scheme, host, path, fragment, base URI and query parameters of a Uri.
+- [IP addresses](https://docs.testably.org/aweXpect/extensions/aweXpect.Web/ip-address): Verify the address family, loopback, subnet membership and equality of an IPAddress.
+- [Customization](https://docs.testably.org/aweXpect/extensions/aweXpect.Web/customization): Change how aweXpect.Web formats the content of requests and responses in failure messages.
+- [Benchmarks](https://docs.testably.org/aweXpect/extensions/aweXpect.Web/benchmarks): Benchmarks of passing aweXpect.Web expectations compared with the equivalent FluentAssertions calls.
+- [aweXpect.Xml](https://docs.testably.org/aweXpect/extensions/aweXpect.Xml/): Verify XML strings and the XElement and XDocument types of System.Xml.Linq with aweXpect.
+- [XML strings](https://docs.testably.org/aweXpect/extensions/aweXpect.Xml/strings): Compare strings as XML by their content and verify that a string is a well-formed XML document.
+- [Matching XML](https://docs.testably.org/aweXpect/extensions/aweXpect.Xml/matching): Match an XElement or XDocument with an expected XML and relax the comparison with the XML options.
+- [Attributes and child elements](https://docs.testably.org/aweXpect/extensions/aweXpect.Xml/navigation): Verify the attributes, child elements and values of an XElement or XDocument.
+- [Benchmarks](https://docs.testably.org/aweXpect/extensions/aweXpect.Xml/benchmarks): Benchmarks of passing aweXpect.Xml expectations compared with the equivalent FluentAssertions calls.
+- [Analyzers](https://docs.testably.org/aweXpect/analyzers): The analyzers, suppressors and source generator diagnostics that ship with aweXpect, and how to fix what they report.
+- [Migration](https://docs.testably.org/aweXpect/migration/): Migrate the assertions of FluentAssertions and xUnit to aweXpect with the analyzers and code fixes of aweXpect.Migration.
+- [FluentAssertions](https://docs.testably.org/aweXpect/migration/fluentassertions): The FluentAssertions assertions that aweXpect.Migration rewrites to aweXpect, and the cases in which the rewrite behaves differently.
+- [xUnit](https://docs.testably.org/aweXpect/migration/xunit): The xUnit assertions that aweXpect.Migration rewrites to aweXpect, and the cases in which the rewrite behaves differently.
+- [What's new in v3](https://docs.testably.org/aweXpect/migration/from-awexpect-2): What changed in aweXpect v3 and how to upgrade from aweXpect 2.x.
+- [What's new in v4](https://docs.testably.org/aweXpect/migration/from-awexpect-3): What changed in aweXpect v4 and how to upgrade from aweXpect 3.x.
+- [Extending aweXpect](https://docs.testably.org/aweXpect/extending/): Write your own expectations on top of aweXpect.Core and publish them as an extension package.
+- [Generated expectations](https://docs.testably.org/aweXpect/extending/generated-expectations): Generate an expectation, its negation and its collection variants from a static method that checks a condition.
+- [Constraints and results](https://docs.testably.org/aweXpect/extending/constraints-and-results): Write the constraints and results of an expectation, and handle negation, null subjects, code of the caller and side effects.
+- [Message conventions](https://docs.testably.org/aweXpect/extending/message-conventions): Write the expectation and result texts of a constraint so that its failure message reads like those of the built-in expectations.
+- [Formatting](https://docs.testably.org/aweXpect/extending/formatting): Format values in failure messages like the built-in expectations and register value formatters for the types of your extension.
+- [Options](https://docs.testably.org/aweXpect/extending/options): Offer options on your expectations, set the options of aweXpect.Core in your own code and write options types of your own.
+- [Comparisons](https://docs.testably.org/aweXpect/extending/comparisons): Use the equality, custom match types and property comparisons of aweXpect, so that callers choose the comparison with the built-in options.
+- [Collections](https://docs.testably.org/aweXpect/extending/collections): Write expectations on collections and their items that read the subject only once and use the quantifiers of aweXpect.
+- [Nested expectations](https://docs.testably.org/aweXpect/extending/nested-expectations): Let the caller continue with expectations on a member or a new subject, and evaluate expectations inside expected values.
+- [Repeated checks and synchronous boundaries](https://docs.testably.org/aweXpect/extending/repeated-checks): Wait for a condition with repeated checks, and call asynchronous code from code that has to answer synchronously.
+- [Customization values](https://docs.testably.org/aweXpect/extending/customization-values): Add customizable values and groups of values to Customize.aweXpect, and skip the assemblies that the user excluded.
+- [Test frameworks and initialization](https://docs.testably.org/aweXpect/extending/initialization): Run code before the first expectation, support another test framework, read the running test and register values from the test project.
+- [Native AOT for extensions](https://docs.testably.org/aweXpect/extending/native-aot): Make an extension work under trimming and Native AOT by marking generic parameters and registering the metadata of its own types.
+- [Benchmarks](https://docs.testably.org/aweXpect/benchmarks): Benchmarks that compare the overhead of passing aweXpect expectations with the equivalent FluentAssertions and TUnit assertions.
+
+## Mockolate
+
+- [Mockolate](https://docs.testably.org/Mockolate/): Mockolate is a source-generated, strongly-typed and AOT-compatible mocking library for .NET.
+- [Getting started](https://docs.testably.org/Mockolate/getting-started): Install Mockolate and write your first test with a mock.
+- [Core concepts](https://docs.testably.org/Mockolate/core-concepts/): How mocks, setups, verifications and the Mock accessor fit together in Mockolate.
+- [A complete example](https://docs.testably.org/Mockolate/core-concepts/complete-example): An end-to-end Mockolate example that combines properties, indexers, events, methods and verification.
+- [Cheat sheet](https://docs.testably.org/Mockolate/core-concepts/cheat-sheet): The most common Mockolate calls on one page.
+- [Create mocks](https://docs.testably.org/Mockolate/create-mocks): Create mocks of interfaces and classes, customize their default behavior, add interfaces and wrap real instances.
+- [Setup](https://docs.testably.org/Mockolate/setup/): Decide how the methods, properties, indexers and events of a Mockolate mock behave.
+- [Methods](https://docs.testably.org/Mockolate/setup/methods): Set up return values, exceptions and callbacks for methods of a Mockolate mock.
+- [Properties](https://docs.testably.org/Mockolate/setup/properties): Initialize properties, set up return values and register getter and setter callbacks on a Mockolate mock.
+- [Indexers](https://docs.testably.org/Mockolate/setup/indexers): Initialize indexers, set up return values and register getter and setter callbacks on a Mockolate mock.
+- [Events](https://docs.testably.org/Mockolate/setup/events): Raise events on a Mockolate mock and react to event subscriptions.
+- [Parameter matching](https://docs.testably.org/Mockolate/parameter-matching): Match method, indexer and delegate parameters in setups and verifications with the It and Match classes.
+- [Verify interactions](https://docs.testably.org/Mockolate/verify-interactions): Verify how often methods, properties, indexers and events of a Mockolate mock were used, and in which order.
+- [Advanced features](https://docs.testably.org/Mockolate/advanced-features/): Advanced Mockolate features for protected and static members, callbacks, monitors, strict checks and scenarios.
+- [Protected members](https://docs.testably.org/Mockolate/advanced-features/protected-members): Set up, raise and verify protected virtual members of class mocks.
+- [Static interface members](https://docs.testably.org/Mockolate/advanced-features/static-interface-members): Mock static abstract and static virtual interface members with Mockolate.
+- [Advanced callback features](https://docs.testably.org/Mockolate/advanced-features/advanced-callback-features): Control when and how often Mockolate callbacks and return values apply with When, Only, For, Forever and InParallel.
+- [Monitor interactions](https://docs.testably.org/Mockolate/advanced-features/monitor-interactions): Limit Mockolate verifications to the interactions within a scope, or clear recorded interactions.
+- [Check for unexpected interactions](https://docs.testably.org/Mockolate/advanced-features/check-for-unexpected-interactions): Check that all interactions with a Mockolate mock were verified and all setups were used.
+- [Scenarios](https://docs.testably.org/Mockolate/advanced-features/scenarios): Define multiple sets of setups on a Mockolate mock and switch between them at runtime.
+- [Special types](https://docs.testably.org/Mockolate/special-types/): How Mockolate handles HttpClient and delegates.
+- [HttpClient](https://docs.testably.org/Mockolate/special-types/httpclient): Mock HttpClient and IHttpClientFactory with Mockolate and match URIs, content and headers.
+- [Delegates](https://docs.testably.org/Mockolate/special-types/delegates): Mock Action, Func and custom delegates with Mockolate.
+- [Analyzers](https://docs.testably.org/Mockolate/analyzers): The Roslyn analyzers that ship with Mockolate and catch mocking mistakes at compile time.
+- [Migrating to Mockolate](https://docs.testably.org/Mockolate/migration/): Migrate from Moq, NSubstitute or FakeItEasy to Mockolate, automatically or with a side-by-side translation table.
+- [Automated migration](https://docs.testably.org/Mockolate/migration/automated/): Migrate existing Moq and NSubstitute tests to Mockolate automatically with the Mockolate.Migration code fixes.
+- [Migrating from Moq](https://docs.testably.org/Mockolate/migration/automated/moq): How the Mockolate.Migration code fix rewrites Moq mocks, setups and verifications to Mockolate.
+- [Migrating from NSubstitute](https://docs.testably.org/Mockolate/migration/automated/nsubstitute): How the Mockolate.Migration code fix rewrites NSubstitute substitutes, setups, verifications and CallInfo callbacks to Mockolate.
+- [Benchmarks](https://docs.testably.org/Mockolate/benchmarks): Benchmarks that compare the runtime overhead of Mockolate with Moq, NSubstitute, FakeItEasy, TUnit.Mocks and Imposter.
+
+## Awaiten
+
+- [Awaiten](https://docs.testably.org/Awaiten/): Awaiten is an async-first, compile-time dependency injection container for .NET that wires your object graph with a source generator.
+- [Getting started](https://docs.testably.org/Awaiten/getting-started): Install Awaiten, declare your first container, resolve services and let the compiler check your wiring.
+- [Complete example](https://docs.testably.org/Awaiten/complete-example): A full coffee-shop container that combines async initialization, scopes, keyed services, decorators and modules.
+- [Lifetimes](https://docs.testably.org/Awaiten/core-concepts/lifetimes): Choose between singleton, scoped and transient lifetimes and see how Awaiten keeps them consistent.
+- [Scopes](https://docs.testably.org/Awaiten/core-concepts/scopes): Open scopes for units of work, share singletons across them and initialize async scoped services up front.
+- [Async initialization](https://docs.testably.org/Awaiten/core-concepts/async-initialization): Give services asynchronous setup with IAsyncInitializable and let the compiler stop you from using them too early.
+- [Disposal](https://docs.testably.org/Awaiten/core-concepts/disposal): Learn which instances Awaiten disposes, in which order, and how to suppress or handle a failing teardown.
+- [Factories and instances](https://docs.testably.org/Awaiten/registration/factories-and-instances): Build a service with a factory method or register an object you already have as an instance.
+- [Decorators](https://docs.testably.org/Awaiten/registration/decorators): Wrap a service in decorators that share its interface, for closed, keyed and open generic registrations.
+- [Composites](https://docs.testably.org/Awaiten/registration/composites): Expose many implementations of a service as one composite that fans each call out to all of them.
+- [Keyed services](https://docs.testably.org/Awaiten/registration/keyed-services): Register several implementations of one service under keys and choose one per consumer.
+- [Open generics](https://docs.testably.org/Awaiten/registration/open-generics): Register an open generic type once and let Awaiten close it for every type argument the graph uses.
+- [Scanning](https://docs.testably.org/Awaiten/registration/scanning): Register every type that matches a marker or a naming convention with one compile-time scan.
+- [Modules](https://docs.testably.org/Awaiten/registration/modules): Bundle registrations into reusable modules, import them into a container and ship self-compiled scans from a library.
+- [Resolving services](https://docs.testably.org/Awaiten/resolution/resolving-services): Resolve services from a container with Resolve, TryResolve and ResolveAsync, with or without a key.
+- [Relationships](https://docs.testably.org/Awaiten/resolution/relationships): Depend on Func<T>, Lazy<T> or Task<T> to get a service on demand, once on first use, or asynchronously.
+- [Collections](https://docs.testably.org/Awaiten/resolution/collections): Resolve every implementation of a service as a collection, synchronously or as an async collection.
+- [Keyed dictionaries](https://docs.testably.org/Awaiten/resolution/keyed-dictionaries): Resolve every keyed implementation of a service as a dictionary by key, including dispatch by runtime type.
+- [Property injection](https://docs.testably.org/Awaiten/resolution/property-injection): Fill settable properties after construction with [InjectProperty<T>] on the container, or [Inject] on the property as an escape hatch.
+- [Runtime arguments](https://docs.testably.org/Awaiten/resolution/runtime-arguments): Pass values known only at resolve time to a service through [Arg] parameters and a matching Func.
+- [Context-aware factories](https://docs.testably.org/Awaiten/resolution/context-aware-factories): Give a factory the type of the consumer it builds for with a [RequestingType] parameter.
+- [Generic variance](https://docs.testably.org/Awaiten/resolution/generic-variance): Resolve covariant and contravariant generic interfaces from registrations of a base or derived type argument.
+- [Owned](https://docs.testably.org/Awaiten/lifetime/owned): Rent a disposable service with Owned<T> and dispose everything its resolution built when you are done.
+- [Lifetime safety](https://docs.testably.org/Awaiten/lifetime/lifetime-safety): Understand how strict lifetime safety keeps disposable transients from leaking on the root, and when to opt into loose mode.
+- [Lifecycle hooks](https://docs.testably.org/Awaiten/lifetime/lifecycle-hooks): Run container-side code when an instance is activated or released, and build singletons eagerly.
+- [MS.DI bridge](https://docs.testably.org/Awaiten/hosting/msdi-bridge): Run an Awaiten container under ASP.NET Core and the generic host through Microsoft.Extensions.DependencyInjection.
+- [External services](https://docs.testably.org/Awaiten/hosting/external-services): Pull services that live in the host's provider into an Awaiten graph with [ImportService] and [ImportServices].
+- [Design principles & the composition root](https://docs.testably.org/Awaiten/design-principles): The design that Awaiten's mechanics serve, from the composition root and volatile dependencies to the four DI anti-patterns.
+- [Diagnostics](https://docs.testably.org/Awaiten/diagnostics): Every AWT diagnostic that Awaiten reports at compile time, with an example that triggers it.
+- [Benchmarks](https://docs.testably.org/Awaiten/benchmarks): Benchmarks that compare Awaiten with other .NET dependency injection containers on build, resolve and per-request workloads.
