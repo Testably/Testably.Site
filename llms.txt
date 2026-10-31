@@ -185,6 +185,7 @@
 - [Migrating from Moq](https://docs.testably.org/Mockolate/migration/automated/moq): How the Mockolate.Migration code fix rewrites Moq mocks, setups and verifications to Mockolate.
 - [Migrating from NSubstitute](https://docs.testably.org/Mockolate/migration/automated/nsubstitute): How the Mockolate.Migration code fix rewrites NSubstitute substitutes, setups, verifications and CallInfo callbacks to Mockolate.
 - [Benchmarks](https://docs.testably.org/Mockolate/benchmarks): Benchmarks that compare the runtime overhead of Mockolate with Moq, NSubstitute, FakeItEasy, TUnit.Mocks and Imposter.
+- [Troubleshooting](https://docs.testably.org/Mockolate/troubleshooting): Answers to common problems with Mockolate, and the types and members that cannot be mocked.
 
 ## Awaiten
 
