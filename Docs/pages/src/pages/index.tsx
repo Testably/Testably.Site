@@ -119,7 +119,9 @@ function LibraryCards() {
         <div className="text--center" style={{marginTop: '2rem'}}>
           <p>
             Looking for add-ons? See the{' '}
-            <Link to="/aweXpect/extensions/">extension packages</Link> for aweXpect.
+            <Link to="/aweXpect/extensions/">extension packages</Link> for aweXpect, or{' '}
+            <Link to="/aweXpect/extensions/aweXpect.Chronology/">aweXpect.Chronology</Link> for readable{' '}
+            <code>TimeSpan</code> and <code>DateTime</code> values.
           </p>
         </div>
       </div>
