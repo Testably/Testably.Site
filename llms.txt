@@ -21,7 +21,7 @@
 - [FileVersionInfo](https://docs.testably.org/Abstractions/file-system/file-version-info): Return deterministic FileVersionInfo values for files in the MockFileSystem.
 - [Extensibility](https://docs.testably.org/Abstractions/file-system/extensibility): Attach custom metadata to entries of the MockFileSystem when writing strategies or extension methods.
 - [Time system](https://docs.testably.org/Abstractions/time-system/): ITimeSystem abstracts the clock, timers and waiting; MockTimeSystem lets tests fast-forward time.
-- [Configuring time](https://docs.testably.org/Abstractions/time-system/configuring-time): Choose the start time and the local time zone of the MockTimeSystem, or plug in a custom time provider.
+- [Configuring time](https://docs.testably.org/Abstractions/time-system/configuring-time): Choose the start time and the local time zone of the MockTimeSystem, plug in a custom time provider, or use it as a .NET TimeProvider.
 - [Auto-advance](https://docs.testably.org/Abstractions/time-system/auto-advance): How MockTimeSystem moves its clock when the code under test waits, and how to drive the clock yourself.
 - [Stopwatch](https://docs.testably.org/Abstractions/time-system/stopwatch): Measure simulated elapsed time with the mocked Stopwatch, independent of changes to the wall clock.
 - [Timer](https://docs.testably.org/Abstractions/time-system/timers): Wait for a mocked System.Threading.Timer to fire a given number of times instead of sleeping.
@@ -215,6 +215,7 @@
 - [Lifecycle hooks](https://docs.testably.org/Awaiten/lifetime/lifecycle-hooks): Run container-side code when an instance is activated or released, and build singletons eagerly.
 - [MS.DI bridge](https://docs.testably.org/Awaiten/hosting/msdi-bridge): Run an Awaiten container under ASP.NET Core and the generic host through Microsoft.Extensions.DependencyInjection.
 - [External services](https://docs.testably.org/Awaiten/hosting/external-services): Pull services that live in the host's provider into an Awaiten graph with [ImportService] and [ImportServices].
+- [Migrating from Microsoft.Extensions.DependencyInjection](https://docs.testably.org/Awaiten/hosting/migrate-from-msdi): Move an IServiceCollection setup to Awaiten, all at once or one service at a time through the MS.DI bridge.
 - [Design principles & the composition root](https://docs.testably.org/Awaiten/design-principles): The design that Awaiten's mechanics serve, from the composition root and volatile dependencies to the four DI anti-patterns.
 - [Diagnostics](https://docs.testably.org/Awaiten/diagnostics): Every AWT diagnostic that Awaiten reports at compile time, with an example that triggers it.
 - [Benchmarks](https://docs.testably.org/Awaiten/benchmarks): Benchmarks that compare Awaiten with other .NET dependency injection containers on build, resolve and per-request workloads.
