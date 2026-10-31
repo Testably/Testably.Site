@@ -135,6 +135,7 @@
 - [Attributes and child elements](https://docs.testably.org/aweXpect/extensions/aweXpect.Xml/navigation): Verify the attributes, child elements and values of an XElement or XDocument.
 - [Benchmarks](https://docs.testably.org/aweXpect/extensions/aweXpect.Xml/benchmarks): Benchmarks of passing aweXpect.Xml expectations compared with the equivalent FluentAssertions calls.
 - [Analyzers](https://docs.testably.org/aweXpect/analyzers): The analyzers, suppressors and source generator diagnostics that ship with aweXpect, and how to fix what they report.
+- [Troubleshooting](https://docs.testably.org/aweXpect/troubleshooting): Short answers to the problems that come up most often with aweXpect, from an expectation that never fails to compiler errors and test framework questions.
 - [Migration](https://docs.testably.org/aweXpect/migration/): Migrate the assertions of FluentAssertions and xUnit to aweXpect with the analyzers and code fixes of aweXpect.Migration.
 - [FluentAssertions](https://docs.testably.org/aweXpect/migration/fluentassertions): The FluentAssertions assertions that aweXpect.Migration rewrites to aweXpect, and the cases in which the rewrite behaves differently.
 - [xUnit](https://docs.testably.org/aweXpect/migration/xunit): The xUnit assertions that aweXpect.Migration rewrites to aweXpect, and the cases in which the rewrite behaves differently.
