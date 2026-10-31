@@ -14,6 +14,7 @@ The site build fails on broken links and anchors, so every rule that the build c
 ## Files and front matter
 
 - Order pages and folders with a two-digit prefix that is unique within its folder: `04-create-mocks.md`, `05-setup/`. The landing page of a folder is `00-index.md`. Leave gaps so new pages can slot in. The site strips the prefix from the URL.
+- A folder's `_category_.json` sets only its `label` (and a `link`, if needed): no `position`, because the prefix orders it, and no `collapsed`, so every category starts collapsed.
 - Every page has a `description` in its front matter. Search engines, link previews and generated category pages show it.
 - The H1 is the page title. Add `title` only to pages without an H1, such as MDX pages that start with a component, and `sidebar_label` only when the sidebar needs a shorter name.
 
