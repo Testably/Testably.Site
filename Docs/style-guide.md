@@ -83,7 +83,7 @@ description: Verify how often and in which order a mock was called.
 
 <PackageInstall package="aweXpect.Logging" />
 
-<that it also needs aweXpect, and the namespace to import if it is not `aweXpect`>
+<that it does not include aweXpect itself, and the namespace to import if it is not `aweXpect`>
 
 ## At a glance
 
