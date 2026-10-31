@@ -36,6 +36,7 @@
 - [Testably.Abstractions.MemoryMappedFiles](https://docs.testably.org/Abstractions/companion-libraries/memory-mapped-files): MemoryMappedFile on IFileSystem, so memory-mapped file code can be tested against the MockFileSystem.
 - [Migration from TestableIO](https://docs.testably.org/Abstractions/migration-from-testableio/): Switch the tests from TestableIO.System.IO.Abstractions.TestingHelpers to Testably.Abstractions.Testing.
 - [Testably.Abstractions.Migration](https://docs.testably.org/Abstractions/migration-from-testableio/Migration/): A Roslyn analyzer and code fix that rewrites TestableIO MockFileSystem tests to the Testably.Abstractions MockFileSystem.
+- [Changelog](https://docs.testably.org/Abstractions/changelog): The user-facing changes in each release of Testably.Abstractions, generated from the GitHub releases.
 
 ## aweXpect
 
@@ -153,6 +154,7 @@
 - [Test frameworks and initialization](https://docs.testably.org/aweXpect/extending/initialization): Run code before the first expectation, support another test framework, read the running test and register values from the test project.
 - [Native AOT for extensions](https://docs.testably.org/aweXpect/extending/native-aot): Make an extension work under trimming and Native AOT by marking generic parameters and registering the metadata of its own types.
 - [Benchmarks](https://docs.testably.org/aweXpect/benchmarks): Benchmarks that compare the overhead of passing aweXpect expectations with the equivalent FluentAssertions and TUnit assertions.
+- [Changelog](https://docs.testably.org/aweXpect/changelog): The user-facing changes in each release of aweXpect, generated from the GitHub releases.
 
 ## Mockolate
 
@@ -186,6 +188,7 @@
 - [Migrating from NSubstitute](https://docs.testably.org/Mockolate/migration/automated/nsubstitute): How the Mockolate.Migration code fix rewrites NSubstitute substitutes, setups, verifications and CallInfo callbacks to Mockolate.
 - [Benchmarks](https://docs.testably.org/Mockolate/benchmarks): Benchmarks that compare the runtime overhead of Mockolate with Moq, NSubstitute, FakeItEasy, TUnit.Mocks and Imposter.
 - [Troubleshooting](https://docs.testably.org/Mockolate/troubleshooting): Answers to common problems with Mockolate, and the types and members that cannot be mocked.
+- [Changelog](https://docs.testably.org/Mockolate/changelog): The user-facing changes in each release of Mockolate, generated from the GitHub releases.
 
 ## Awaiten
 
@@ -220,3 +223,4 @@
 - [Design principles & the composition root](https://docs.testably.org/Awaiten/design-principles): The design that Awaiten's mechanics serve, from the composition root and volatile dependencies to the four DI anti-patterns.
 - [Diagnostics](https://docs.testably.org/Awaiten/diagnostics): Every AWT diagnostic that Awaiten reports at compile time, with an example that triggers it.
 - [Benchmarks](https://docs.testably.org/Awaiten/benchmarks): Benchmarks that compare Awaiten with other .NET dependency injection containers on build, resolve and per-request workloads.
+- [Changelog](https://docs.testably.org/Awaiten/changelog): The user-facing changes in each release of Awaiten, generated from the GitHub releases.
