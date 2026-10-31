@@ -10,8 +10,22 @@ export type PackageVersions = Record<string, PackageVersion>;
 
 type Options = {packages: string[]};
 
+// A single network hiccup on the build runner should not fail the deployment.
+async function fetchWithRetry(url: string, attempts = 3): Promise<Response> {
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return await fetch(url);
+    } catch (error) {
+      if (attempt >= attempts) {
+        throw error;
+      }
+      await new Promise((resolve) => setTimeout(resolve, attempt * 5000));
+    }
+  }
+}
+
 async function readVersions(id: string): Promise<PackageVersion> {
-  const response = await fetch(`https://api.nuget.org/v3-flatcontainer/${id.toLowerCase()}/index.json`);
+  const response = await fetchWithRetry(`https://api.nuget.org/v3-flatcontainer/${id.toLowerCase()}/index.json`);
   if (!response.ok) {
     throw new Error(`Could not read the versions of '${id}' from NuGet (HTTP ${response.status}).`);
   }
