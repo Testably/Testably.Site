@@ -66,6 +66,8 @@ partial class Build
 		new("Testably", "aweXpect",              "Docs/extensions/aweXpect.Xml",        "aweXpect/07-extensions/aweXpect.Xml"),
 		new("Testably", "aweXpect.Chronology",   "Docs/pages",      "aweXpect/07-extensions/aweXpect.Chronology"),
 		new("Testably", "Mockolate",             "Docs/pages",      "Mockolate"),
+		new("Testably", "Mockolate.Migration",   "Docs/pages",      "Mockolate/migration",
+			CleanTarget: false),
 		new("Testably", "Awaiten",               "Docs/pages",      "Awaiten"),
 	];
 
