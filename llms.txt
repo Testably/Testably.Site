@@ -41,7 +41,7 @@
 
 - [aweXpect](https://docs.testably.org/aweXpect/): aweXpect is a fluent, async-first assertion library for .NET whose failure messages explain in plain English what was expected and what happened.
 - [Getting started](https://docs.testably.org/aweXpect/getting-started): Install aweXpect, write your first test with an expectation and find the expectations for your subject.
-- [Concepts](https://docs.testably.org/aweXpect/how-it-works/): The concepts that all expectations share, and how an expectation is built, evaluated and awaited.
+- [How it works](https://docs.testably.org/aweXpect/how-it-works/): The concepts that all expectations share, and how an expectation is built, evaluated and awaited.
 - [Negation](https://docs.testably.org/aweXpect/how-it-works/negation): How expectations are negated with their named counterparts or with DoesNotComplyWith.
 - [Combining expectations](https://docs.testably.org/aweXpect/how-it-works/combining): Combine expectations on the same subject, on its members, on a new subject or on different subjects.
 - [null subjects](https://docs.testably.org/aweXpect/how-it-works/null-subjects): How expectations and their negations treat a null subject.
