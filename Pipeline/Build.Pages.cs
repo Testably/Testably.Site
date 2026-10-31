@@ -92,7 +92,7 @@ partial class Build
 		new("Testably", "aweXpect.Testably",     "Docs/pages",      "aweXpect/07-extensions/aweXpect.Testably",   InlineReadme: true),
 		new("Testably", "aweXpect",              "Docs/extensions/aweXpect.Web",        "aweXpect/07-extensions/aweXpect.Web"),
 		new("Testably", "aweXpect",              "Docs/extensions/aweXpect.Xml",        "aweXpect/07-extensions/aweXpect.Xml"),
-		new("Testably", "aweXpect.Chronology",   "Docs/pages",      "Chronology",                     InlineReadme: true),
+		new("Testably", "aweXpect.Chronology",   "Docs/pages",      "aweXpect/07-extensions/aweXpect.Chronology", InlineReadme: true),
 		new("Testably", "Mockolate",             "Docs/pages",      "Mockolate",
 			ExtraReadmes:
 			[
@@ -224,11 +224,25 @@ partial class Build
 		return ReadDocsFile(readme);
 	}
 
+	/// <summary>
+	///     Drops everything before the first <c>##</c> heading. On the site, the README's pointer to the full
+	///     documentation would link to the page itself, so it is removed and links to the site become site-relative.
+	/// </summary>
 	static string ReadReadmeIntro(string readme)
 	{
 		int indexOfFirstH2 = readme.IndexOf("\n##", StringComparison.Ordinal);
-		return indexOfFirstH2 > 0 ? readme.Substring(indexOfFirstH2) : string.Empty;
+		if (indexOfFirstH2 <= 0)
+		{
+			return string.Empty;
+		}
+
+		string content = FullDocumentationSentenceRegex.Replace(readme.Substring(indexOfFirstH2), string.Empty);
+		return content.Replace("https://docs.testably.org/", "/", StringComparison.Ordinal);
 	}
+
+	static readonly Regex FullDocumentationSentenceRegex = new(
+		@"The full documentation is available at\s+\[docs\.testably\.org\]\([^)]*\):\s*",
+		RegexOptions.Compiled);
 
 	/// <summary>
 	///     Drops the leading H1 line, any consecutive badge lines that follow, and the resulting

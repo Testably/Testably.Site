@@ -19,13 +19,11 @@ const config: Config = {
 
   clientModules: ['./src/clientModules/sectionTheme.ts'],
 
-  // Relaxed for the multi-library preview — links across sections from the
-  // original single-library sites have not yet been fixed up.
-  onBrokenLinks: 'warn',
-  onBrokenAnchors: 'warn',
+  onBrokenLinks: 'throw',
+  onBrokenAnchors: 'throw',
   markdown: {
     hooks: {
-      onBrokenMarkdownLinks: 'warn',
+      onBrokenMarkdownLinks: 'throw',
     },
   },
 
@@ -41,14 +39,31 @@ const config: Config = {
         docs: {
           routeBasePath: '/',
           sidebarPath: './sidebars.ts',
-          editUrl:
-            'https://github.com/Testably/Testably.Site/tree/main/Docs/pages/',
         },
         blog: false,
         theme: {
           customCss: './src/css/custom.css',
         },
       } satisfies Preset.Options,
+    ],
+  ],
+
+  themes: [
+    [
+      '@easyops-cn/docusaurus-search-local',
+      {
+        hashed: true,
+        docsRouteBasePath: '/',
+        indexBlog: false,
+        highlightSearchTermsOnTargetPage: true,
+        searchContextByPaths: [
+          {label: 'Abstractions', path: 'Abstractions'},
+          {label: 'aweXpect', path: 'aweXpect'},
+          {label: 'Mockolate', path: 'Mockolate'},
+          {label: 'Awaiten', path: 'Awaiten'},
+        ],
+        useAllContextsWithNoSearchContext: true,
+      },
     ],
   ],
 
@@ -70,6 +85,7 @@ const config: Config = {
           {from: '/aweXpect/advanced/callbacks', to: '/aweXpect/behaviour/callbacks'},
           {from: '/aweXpect/advanced/ref-struct', to: '/aweXpect/how-it-works/'},
           {from: '/category/common-types', to: '/aweXpect/values/'},
+          {from: '/Chronology', to: '/aweXpect/extensions/aweXpect.Chronology/'},
           ...[
             'boolean', 'string', 'char', 'number', 'enum', 'object', 'timespan',
             'datetime-offset', 'date-time-only', 'guid', 'version', 'stream',
@@ -93,7 +109,6 @@ const config: Config = {
   ],
 
   themeConfig: {
-    image: 'img/social-preview.png',
     colorMode: {
       respectPrefersColorScheme: true,
     },
@@ -130,12 +145,6 @@ const config: Config = {
           sidebarId: 'awaitenSidebar',
           position: 'left',
           label: 'Awaiten',
-        },
-        {
-          type: 'docSidebar',
-          sidebarId: 'chronologySidebar',
-          position: 'right',
-          label: 'Chronology',
         },
       ],
     },
