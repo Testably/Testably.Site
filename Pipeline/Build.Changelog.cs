@@ -16,14 +16,44 @@ namespace Build;
 partial class Build
 {
 	/// <summary>
-	///     The libraries that get a changelog page, generated from the GitHub releases of their repository.
+	///     A library that gets a changelog page, generated from the GitHub releases of its repository.
 	/// </summary>
-	static readonly (string Repository, string TargetSubDirectory)[] ChangelogSources =
+	/// <param name="Repository">The repository whose releases make up the main changelog.</param>
+	/// <param name="TargetSubDirectory">The library's directory under <c>Docs/pages/docs/</c>.</param>
+	/// <param name="Packages">
+	///     The repositories of the extension and migration packages, in sidebar order. Each one gets a subpage of the
+	///     main changelog.
+	/// </param>
+	/// <param name="MigrationGuides">
+	///     The upgrade guide to each major version, as its path below <paramref name="TargetSubDirectory"/> without the
+	///     <c>NN-</c> ordering prefixes. The changelog links them, so they are hidden from the sidebar.
+	/// </param>
+	/// <param name="MergedPackages">
+	///     The repositories of packages that are released together with the library from the given major version on.
+	///     Their earlier releases get a subpage that is hidden from the sidebar and linked from that major version.
+	/// </param>
+	sealed record ChangelogSource(
+		string Repository,
+		string TargetSubDirectory,
+		string[]? Packages = null,
+		(int Major, string Page)[]? MigrationGuides = null,
+		(int Major, string Repository)[]? MergedPackages = null);
+
+	static readonly ChangelogSource[] ChangelogSources =
 	[
-		("Testably.Abstractions", "Abstractions"),
-		("aweXpect", "aweXpect"),
-		("Mockolate", "Mockolate"),
-		("Awaiten", "Awaiten"),
+		new("Testably.Abstractions", "Abstractions",
+			Packages: ["Testably.Abstractions.Migration"]),
+		new("aweXpect", "aweXpect",
+			Packages: ["aweXpect.Chronology", "aweXpect.Logging", "aweXpect.Mockolate", "aweXpect.Testably", "aweXpect.Migration"],
+			MigrationGuides: [(3, "migration/from-awexpect-2"), (4, "migration/from-awexpect-3")],
+			MergedPackages:
+			[
+				(4, "aweXpect.Json"), (4, "aweXpect.Reflection"), (4, "aweXpect.Snapshots"), (4, "aweXpect.Web"),
+				(4, "aweXpect.Xml"),
+			]),
+		new("Mockolate", "Mockolate",
+			Packages: ["Mockolate.Migration"]),
+		new("Awaiten", "Awaiten"),
 	];
 
 	/// <summary>
@@ -59,14 +89,80 @@ partial class Build
 			client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GithubToken);
 		}
 
-		foreach ((string repository, string targetSubDirectory) in ChangelogSources)
+		foreach (ChangelogSource source in ChangelogSources)
 		{
-			List<ChangelogRelease> releases = await ReadReleases(client, repository);
-			AbsolutePath directory = ResolveTargetDirectory(docsRoot, targetSubDirectory);
-			await File.WriteAllTextAsync(directory / "changelog.json", JsonSerializer.Serialize(releases, ChangelogJsonOptions));
-			await File.WriteAllTextAsync(directory / "99-changelog.mdx", CreateChangelogPage(repository));
-			Log.Information($"Wrote the changelog of {repository} with {releases.Count} releases to {directory}");
+			AbsolutePath directory = ResolveTargetDirectory(docsRoot, source.TargetSubDirectory);
+			List<ChangelogMigrationGuide> migrationGuides = (source.MigrationGuides ?? [])
+				.Select(guide => HideMigrationGuide(docsRoot, source.TargetSubDirectory, guide.Major, guide.Page))
+				.ToList();
+			List<ChangelogRelease> releases = await ReadReleases(client, source.Repository);
+			string[] packages = source.Packages ?? [];
+			(int Major, string Repository)[] mergedPackages = source.MergedPackages ?? [];
+			if (packages.Length == 0 && mergedPackages.Length == 0)
+			{
+				await WriteChangelog(directory, "99-changelog", new ChangelogData(migrationGuides, [], releases),
+					CreateChangelogPage(source.Repository, "99-changelog", []));
+				continue;
+			}
+
+			// The packages turn the changelog into a sidebar category whose landing page is the library's changelog.
+			directory /= "99-changelog";
+			directory.CreateOrCleanDirectory();
+			await File.WriteAllTextAsync(directory / "_category_.json", "{\"label\": \"Changelog\"}\n");
+			for (int index = 0; index < packages.Length; index++)
+			{
+				await WriteChangelog(directory, packages[index], new ChangelogData([], [], await ReadReleases(client, packages[index])),
+					CreatePackageChangelogPage(packages[index], $"sidebar_position: {index + 1}", ""));
+			}
+
+			List<ChangelogMergedPackage> merged = [];
+			foreach ((int major, string repository) in mergedPackages)
+			{
+				List<ChangelogRelease> packageReleases = await ReadReleases(client, repository);
+				await WriteChangelog(directory, repository, new ChangelogData([], [], packageReleases),
+					CreatePackageChangelogPage(repository,
+						$"sidebar_hidden: true\ndisplayed_sidebar: {SidebarId(source.TargetSubDirectory)}",
+						$"\nSince {source.Repository} {major}.0, {repository} is released together with {source.Repository}, and its changes are part of the [{source.Repository} changelog](./index.mdx).\n"));
+				merged.Add(new ChangelogMergedPackage(major, repository, $"/{source.TargetSubDirectory}/changelog/{repository}",
+					packageReleases.FirstOrDefault()?.Version));
+			}
+
+			await WriteChangelog(directory, "index", new ChangelogData(migrationGuides, merged, releases),
+				CreateChangelogPage(source.Repository, "index", packages));
 		}
+	}
+
+	static string SidebarId(string library)
+		=> $"{library.ToLowerInvariant()}Sidebar";
+
+	static async Task WriteChangelog(AbsolutePath directory, string name, ChangelogData changelog, string page)
+	{
+		await File.WriteAllTextAsync(directory / $"{name}.changelog.json", JsonSerializer.Serialize(changelog, ChangelogJsonOptions));
+		await File.WriteAllTextAsync(directory / $"{name}.mdx", page);
+		Log.Information($"Wrote the changelog {name} with {changelog.Releases.Count} releases to {directory}");
+	}
+
+	/// <summary>
+	///     Marks the aggregated upgrade guide as hidden from the sidebar (see <c>sidebarItemsGenerator</c> in
+	///     <c>docusaurus.config.ts</c>), while it keeps showing the library's sidebar, and returns its link.
+	/// </summary>
+	static ChangelogMigrationGuide HideMigrationGuide(AbsolutePath docsRoot, string library, int major, string page)
+	{
+		int separator = page.LastIndexOf('/');
+		AbsolutePath directory = ResolveTargetDirectory(docsRoot, $"{library}/{page[..Math.Max(separator, 0)]}");
+		Regex fileName = new($@"^(\d+-)?{Regex.Escape(page[(separator + 1)..])}\.mdx?$");
+		string file = (directory.DirectoryExists() ? Directory.EnumerateFiles(directory) : [])
+			.FirstOrDefault(path => fileName.IsMatch(Path.GetFileName(path)))
+			?? throw new Exception($"The migration guide to v{major} '{library}/{page}' was not aggregated.");
+		string content = ReadDocsFile(file);
+		if (!content.StartsWith("---\n", StringComparison.Ordinal) && !content.StartsWith("---\r\n", StringComparison.Ordinal))
+		{
+			content = $"---\n---\n\n{content}";
+		}
+		int frontMatterEnd = content.IndexOf("\n---", 3, StringComparison.Ordinal);
+		File.WriteAllText(file, content.Insert(frontMatterEnd,
+			$"\nsidebar_hidden: true\ndisplayed_sidebar: {SidebarId(library)}"));
+		return new ChangelogMigrationGuide(major, $"/{library}/{page}");
 	}
 
 	/// <summary>
@@ -94,10 +190,18 @@ partial class Build
 				release.PublishedAt.ToString("yyyy-MM-dd"),
 				release.Prerelease,
 				$"https://github.com/Testably/{repository}/releases/tag/{release.TagName}",
+				CountCommits(release.Body ?? ""),
 				ReadChangelogItems(release.Body ?? "")))
 			.Where(release => release.Items.Count > 0)
 			.ToList();
 	}
+
+	/// <summary>
+	///     Counts all pull requests in the generated release notes, including the ones that are not user-facing.
+	///     They are squash-merged, so this is the number of commits in the release.
+	/// </summary>
+	static int CountCommits(string body)
+		=> body.Split('\n').Count(line => ReleaseItemRegex.IsMatch(line.TrimEnd('\r')));
 
 	/// <summary>
 	///     Reads the pull requests that GitHub lists in generated release notes, in category order. The
@@ -126,29 +230,63 @@ partial class Build
 	}
 
 	/// <summary>
-	///     The page that renders the <c>changelog.json</c> next to it with the <c>Changelog</c> component.
+	///     The page that renders the <c>&lt;name&gt;.changelog.json</c> next to it with the <c>Changelog</c> component
+	///     and links the changelogs of the packages.
 	/// </summary>
-	static string CreateChangelogPage(string repository)
+	static string CreateChangelogPage(string repository, string name, string[] packages)
+	{
+		string packageLinks = packages.Length == 0
+			? ""
+			: $"\nThe packages have their own changelogs: {string.Join(", ", packages.Select(package => $"[{package}](./{package}.mdx)"))}.\n";
+		return $$"""
+		         ---
+		         description: The user-facing changes in each release of {{repository}}, generated from the GitHub releases.
+		         ---
+
+		         import Changelog from '@site/src/components/Changelog';
+		         import changelog from './{{name}}.changelog.json';
+
+		         # Changelog
+
+		         The breaking changes, features, bug fixes and performance improvements of each release, generated from the [GitHub releases](https://github.com/Testably/{{repository}}/releases). Dependency updates and internal changes are left out.
+		         {{packageLinks}}
+		         <Changelog changelog={changelog} />
+
+		         """;
+	}
+
+	static string CreatePackageChangelogPage(string repository, string sidebarFrontMatter, string note)
 		=> $$"""
 		    ---
 		    description: The user-facing changes in each release of {{repository}}, generated from the GitHub releases.
+		    sidebar_label: {{repository}}
+		    {{sidebarFrontMatter}}
 		    ---
 
 		    import Changelog from '@site/src/components/Changelog';
-		    import releases from './changelog.json';
+		    import changelog from './{{repository}}.changelog.json';
 
-		    # Changelog
+		    # {{repository}}
 
-		    The breaking changes, features, bug fixes and performance improvements of each release, generated from the [GitHub releases](https://github.com/Testably/{{repository}}/releases). Dependency updates and internal changes are left out.
-
-		    <Changelog releases={releases} />
+		    The breaking changes, features, bug fixes and performance improvements of each release of {{repository}}, generated from the [GitHub releases](https://github.com/Testably/{{repository}}/releases). Dependency updates and internal changes are left out.
+		    {{note}}
+		    <Changelog changelog={changelog} />
 
 		    """;
 
 	static string Capitalize(string text)
 		=> text.Length > 0 ? char.ToUpperInvariant(text[0]) + text[1..] : text;
 
-	sealed record ChangelogRelease(string Version, string Date, bool Prerelease, string Url, List<ChangelogItem> Items);
+	sealed record ChangelogData(
+		List<ChangelogMigrationGuide> MigrationGuides,
+		List<ChangelogMergedPackage> MergedPackages,
+		List<ChangelogRelease> Releases);
+
+	sealed record ChangelogMigrationGuide(int Major, string Url);
+
+	sealed record ChangelogMergedPackage(int Major, string Name, string Url, string? LastVersion);
+
+	sealed record ChangelogRelease(string Version, string Date, bool Prerelease, string Url, int Commits, List<ChangelogItem> Items);
 
 	sealed record ChangelogItem(string Category, string Text, int Number, string Url);
 
