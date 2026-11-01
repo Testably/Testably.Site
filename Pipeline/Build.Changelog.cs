@@ -76,6 +76,10 @@ partial class Build
 
 	static readonly Regex MigrationGuideRegex = new(@"^migration-to-v(?<major>\d+)(?<extension>\.mdx?)$", RegexOptions.Compiled);
 
+	static readonly Regex FrontMatterTitleRegex = new(@"^title:\s*(?<q>[""']?)(?<title>.+?)\k<q>\s*$", RegexOptions.Compiled | RegexOptions.Multiline);
+
+	static readonly Regex HeadingRegex = new(@"^# (?<title>.+?)\s*$", RegexOptions.Compiled | RegexOptions.Multiline);
+
 	async Task WriteChangelogs(AbsolutePath docsRoot, AbsolutePath clonesRoot)
 	{
 		using HttpClient client = new();
@@ -189,11 +193,18 @@ partial class Build
 				content = $"---\n---\n\n{content}";
 			}
 			int frontMatterEnd = content.IndexOf("\n---", 3, StringComparison.Ordinal);
+			Match title = FrontMatterTitleRegex.Match(content[..frontMatterEnd]) is {Success: true,} frontMatterTitle
+				? frontMatterTitle
+				: HeadingRegex.Match(content, frontMatterEnd);
+			if (!title.Success)
+			{
+				throw new Exception($"The upgrade guide '{file}' has neither a title in its front matter nor an H1.");
+			}
 			string name = $"{prefix}migration-to-v{major}";
 			File.WriteAllText(directory / (name + Path.GetExtension(file)), content.Insert(frontMatterEnd,
 				$"\nsidebar_hidden: true\ndisplayed_sidebar: {SidebarId(library)}"));
 			Log.Information($"Wrote the upgrade guide to v{major} under {directory / name}");
-			links.Add(new ChangelogMigrationGuide(major, $"/{library}/changelog/{name}"));
+			links.Add(new ChangelogMigrationGuide(major, $"/{library}/changelog/{name}", title.Groups["title"].Value));
 		}
 
 		return links;
@@ -316,7 +327,7 @@ partial class Build
 		List<ChangelogMergedPackage> MergedPackages,
 		List<ChangelogRelease> Releases);
 
-	sealed record ChangelogMigrationGuide(int Major, string Url);
+	sealed record ChangelogMigrationGuide(int Major, string Url, string Title);
 
 	sealed record ChangelogMergedPackage(int Major, string Name, string Url, string? LastVersion);
 
