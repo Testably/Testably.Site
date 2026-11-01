@@ -104,7 +104,7 @@ partial class Build
 				CopyDocsContent(source, clonesRoot, targetDirectory);
 			}
 
-			await WriteChangelogs(docsRoot);
+			await WriteChangelogs(docsRoot, clonesRoot);
 		});
 
 	static AbsolutePath ResolveTargetDirectory(AbsolutePath docsRoot, string subDirectory)
