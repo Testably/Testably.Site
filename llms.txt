@@ -137,11 +137,6 @@
 - [Benchmarks](https://docs.testably.org/aweXpect/extensions/aweXpect.Xml/benchmarks): Benchmarks of passing aweXpect.Xml expectations compared with the equivalent FluentAssertions calls.
 - [Analyzers](https://docs.testably.org/aweXpect/analyzers): The analyzers, suppressors and source generator diagnostics that ship with aweXpect, and how to fix what they report.
 - [Troubleshooting](https://docs.testably.org/aweXpect/troubleshooting): Short answers to the problems that come up most often with aweXpect, from an expectation that never fails to compiler errors and test framework questions.
-- [Migration](https://docs.testably.org/aweXpect/migration/): Migrate the assertions of FluentAssertions and xUnit to aweXpect with the analyzers and code fixes of aweXpect.Migration.
-- [FluentAssertions](https://docs.testably.org/aweXpect/migration/fluentassertions): The FluentAssertions assertions that aweXpect.Migration rewrites to aweXpect, and the cases in which the rewrite behaves differently.
-- [xUnit](https://docs.testably.org/aweXpect/migration/xunit): The xUnit assertions that aweXpect.Migration rewrites to aweXpect, and the cases in which the rewrite behaves differently.
-- [What's new in v3](https://docs.testably.org/aweXpect/migration/from-awexpect-2): What changed in aweXpect v3 and how to upgrade from aweXpect 2.x.
-- [What's new in v4](https://docs.testably.org/aweXpect/migration/from-awexpect-3): What changed in aweXpect v4 and how to upgrade from aweXpect 3.x.
 - [Extending aweXpect](https://docs.testably.org/aweXpect/extending/): Write your own expectations on top of aweXpect.Core and publish them as an extension package.
 - [Generated expectations](https://docs.testably.org/aweXpect/extending/generated-expectations): Generate an expectation, its negation and its collection variants from a static method that checks a condition.
 - [Constraints and results](https://docs.testably.org/aweXpect/extending/constraints-and-results): Write the constraints and results of an expectation, and handle negation, null subjects, code of the caller and side effects.
@@ -167,6 +162,11 @@
 - [aweXpect.Testably](https://docs.testably.org/aweXpect/changelog/aweXpect.Testably): The user-facing changes in each release of aweXpect.Testably, generated from the GitHub releases.
 - [aweXpect.Web](https://docs.testably.org/aweXpect/changelog/aweXpect.Web): The user-facing changes in each release of aweXpect.Web, generated from the GitHub releases.
 - [aweXpect.Xml](https://docs.testably.org/aweXpect/changelog/aweXpect.Xml): The user-facing changes in each release of aweXpect.Xml, generated from the GitHub releases.
+- [What's new in v3](https://docs.testably.org/aweXpect/changelog/migration-to-v3): What changed in aweXpect v3 and how to upgrade from aweXpect 2.x.
+- [What's new in v4](https://docs.testably.org/aweXpect/changelog/migration-to-v4): What changed in aweXpect v4 and how to upgrade from aweXpect 3.x.
+- [Migration](https://docs.testably.org/aweXpect/migration/): Migrate the assertions of FluentAssertions and xUnit to aweXpect with the analyzers and code fixes of aweXpect.Migration.
+- [FluentAssertions](https://docs.testably.org/aweXpect/migration/fluentassertions): The FluentAssertions assertions that aweXpect.Migration rewrites to aweXpect, and the cases in which the rewrite behaves differently.
+- [xUnit](https://docs.testably.org/aweXpect/migration/xunit): The xUnit assertions that aweXpect.Migration rewrites to aweXpect, and the cases in which the rewrite behaves differently.
 
 ## Mockolate
 
