@@ -209,7 +209,7 @@ const config: Config = {
           position: 'right',
         },
         {
-          href: 'https://github.com/sponsors/vbreuss',
+          href: 'https://github.com/sponsors/Testably',
           label: '❤️ Sponsor',
           position: 'right',
         },
