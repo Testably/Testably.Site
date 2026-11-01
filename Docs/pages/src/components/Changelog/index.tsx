@@ -213,6 +213,8 @@ export default function Changelog({changelog: {migrationGuides, mergedPackages, 
           const first = majorReleases[majorReleases.length - 1];
           const last = majorReleases[0];
           const guide = migrationGuides.find((migrationGuide) => migrationGuide.major === major);
+          const from = formatDate(first.date, {month: 'short', year: 'numeric'});
+          const to = formatDate(last.date, {month: 'short', year: 'numeric'});
           return (
             <React.Fragment key={major}>
               <div className={clsx(styles.when, styles.chapterWhen)}>{last.date.substring(0, 4)}</div>
@@ -220,9 +222,7 @@ export default function Changelog({changelog: {migrationGuides, mergedPackages, 
                 <span className={styles.medal} aria-hidden="true">v{major}</span>
                 <h2 id={`version-${major}`}>Version {major}</h2>
                 <p className={styles.span}>
-                  {plural(majorReleases.length, 'release', 'releases')} ·{' '}
-                  {formatDate(first.date, {month: 'short', year: 'numeric'})} to{' '}
-                  {formatDate(last.date, {month: 'short', year: 'numeric'})}
+                  {plural(majorReleases.length, 'release', 'releases')} · {from === to ? from : `${from} to ${to}`}
                 </p>
                 <Bar summary={summary} thick />
                 <Stats summary={summary} />
