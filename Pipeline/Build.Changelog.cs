@@ -24,10 +24,6 @@ partial class Build
 	///     The repositories of the extension and migration packages, in sidebar order. Each one gets a subpage of the
 	///     main changelog.
 	/// </param>
-	/// <param name="MigrationGuides">
-	///     The upgrade guide to each major version, as its path below <paramref name="TargetSubDirectory"/> without the
-	///     <c>NN-</c> ordering prefixes. The changelog links them, so they are hidden from the sidebar.
-	/// </param>
 	/// <param name="MergedPackages">
 	///     The repositories of packages that are released together with the library from the given major version on.
 	///     Their earlier releases get a subpage that is hidden from the sidebar and linked from that major version.
@@ -36,7 +32,6 @@ partial class Build
 		string Repository,
 		string TargetSubDirectory,
 		string[]? Packages = null,
-		(int Major, string Page)[]? MigrationGuides = null,
 		(int Major, string Repository)[]? MergedPackages = null);
 
 	static readonly ChangelogSource[] ChangelogSources =
@@ -45,7 +40,6 @@ partial class Build
 			Packages: ["Testably.Abstractions.Migration"]),
 		new("aweXpect", "aweXpect",
 			Packages: ["aweXpect.Chronology", "aweXpect.Logging", "aweXpect.Mockolate", "aweXpect.Testably", "aweXpect.Migration"],
-			MigrationGuides: [(3, "migration/from-awexpect-2"), (4, "migration/from-awexpect-3")],
 			MergedPackages:
 			[
 				(4, "aweXpect.Json"), (4, "aweXpect.Reflection"), (4, "aweXpect.Snapshots"), (4, "aweXpect.Web"),
@@ -80,7 +74,9 @@ partial class Build
 		WriteIndented = true,
 	};
 
-	async Task WriteChangelogs(AbsolutePath docsRoot)
+	static readonly Regex MigrationGuideRegex = new(@"^migration-to-v(?<major>\d+)(?<extension>\.mdx?)$", RegexOptions.Compiled);
+
+	async Task WriteChangelogs(AbsolutePath docsRoot, AbsolutePath clonesRoot)
 	{
 		using HttpClient client = new();
 		client.DefaultRequestHeaders.UserAgent.ParseAdd("Testably.Site");
@@ -92,26 +88,26 @@ partial class Build
 		foreach (ChangelogSource source in ChangelogSources)
 		{
 			AbsolutePath directory = ResolveTargetDirectory(docsRoot, source.TargetSubDirectory);
-			List<ChangelogMigrationGuide> migrationGuides = (source.MigrationGuides ?? [])
-				.Select(guide => HideMigrationGuide(docsRoot, source.TargetSubDirectory, guide.Major, guide.Page))
-				.ToList();
 			List<ChangelogRelease> releases = await ReadReleases(client, source.Repository);
+			List<(int Major, string File)> guides = ReadMigrationGuides(clonesRoot, source.Repository);
 			string[] packages = source.Packages ?? [];
 			(int Major, string Repository)[] mergedPackages = source.MergedPackages ?? [];
-			if (packages.Length == 0 && mergedPackages.Length == 0)
+			if (packages.Length == 0 && mergedPackages.Length == 0 && guides.Count == 0)
 			{
-				await WriteChangelog(directory, "99-changelog", new ChangelogData(migrationGuides, [], releases),
+				await WriteChangelog(directory, "99-changelog", new ChangelogData([], [], releases),
 					CreateChangelogPage(source.Repository, "99-changelog", []));
 				continue;
 			}
 
-			// The packages turn the changelog into a sidebar category whose landing page is the library's changelog.
+			// The packages and upgrade guides turn the changelog into a sidebar category whose landing page is the library's changelog.
 			directory /= "99-changelog";
 			directory.CreateOrCleanDirectory();
 			await File.WriteAllTextAsync(directory / "_category_.json", "{\"label\": \"Changelog\"}\n");
 			for (int index = 0; index < packages.Length; index++)
 			{
-				await WriteChangelog(directory, packages[index], new ChangelogData([], [], await ReadReleases(client, packages[index])),
+				List<ChangelogMigrationGuide> packageGuides = WriteMigrationGuides(directory, source.TargetSubDirectory,
+					$"{packages[index]}.", ReadMigrationGuides(clonesRoot, packages[index]));
+				await WriteChangelog(directory, packages[index], new ChangelogData(packageGuides, [], await ReadReleases(client, packages[index])),
 					CreatePackageChangelogPage(packages[index], $"sidebar_position: {index + 1}", ""));
 			}
 
@@ -127,7 +123,7 @@ partial class Build
 					packageReleases.FirstOrDefault()?.Version));
 			}
 
-			await WriteChangelog(directory, "index", new ChangelogData(migrationGuides, merged, releases),
+			await WriteChangelog(directory, "index", new ChangelogData(WriteMigrationGuides(directory, source.TargetSubDirectory, "", guides), merged, releases),
 				CreateChangelogPage(source.Repository, "index", packages));
 		}
 	}
@@ -143,26 +139,64 @@ partial class Build
 	}
 
 	/// <summary>
-	///     Marks the aggregated upgrade guide as hidden from the sidebar (see <c>sidebarItemsGenerator</c> in
-	///     <c>docusaurus.config.ts</c>), while it keeps showing the library's sidebar, and returns its link.
+	///     Reads the upgrade guides of the repository: the files <c>migration-to-v&lt;major&gt;.md</c> or <c>.mdx</c> in
+	///     its <c>Docs/changelogs</c> folder. Any other file there fails the build, so that a misnamed guide is not
+	///     silently left out.
 	/// </summary>
-	static ChangelogMigrationGuide HideMigrationGuide(AbsolutePath docsRoot, string library, int major, string page)
+	static List<(int Major, string File)> ReadMigrationGuides(AbsolutePath clonesRoot, string repository)
 	{
-		int separator = page.LastIndexOf('/');
-		AbsolutePath directory = ResolveTargetDirectory(docsRoot, $"{library}/{page[..Math.Max(separator, 0)]}");
-		Regex fileName = new($@"^(\d+-)?{Regex.Escape(page[(separator + 1)..])}\.mdx?$");
-		string file = (directory.DirectoryExists() ? Directory.EnumerateFiles(directory) : [])
-			.FirstOrDefault(path => fileName.IsMatch(Path.GetFileName(path)))
-			?? throw new Exception($"The migration guide to v{major} '{library}/{page}' was not aggregated.");
-		string content = ReadDocsFile(file);
-		if (!content.StartsWith("---\n", StringComparison.Ordinal) && !content.StartsWith("---\r\n", StringComparison.Ordinal))
+		AbsolutePath directory = CloneRepository(clonesRoot, "Testably", repository) / "Docs" / "changelogs";
+		if (!directory.DirectoryExists())
 		{
-			content = $"---\n---\n\n{content}";
+			return [];
 		}
-		int frontMatterEnd = content.IndexOf("\n---", 3, StringComparison.Ordinal);
-		File.WriteAllText(file, content.Insert(frontMatterEnd,
-			$"\nsidebar_hidden: true\ndisplayed_sidebar: {SidebarId(library)}"));
-		return new ChangelogMigrationGuide(major, $"/{library}/{page}");
+
+		List<(int Major, string File)> guides = [];
+		foreach (string entry in Directory.EnumerateFileSystemEntries(directory).OrderBy(entry => entry, StringComparer.Ordinal))
+		{
+			Match match = MigrationGuideRegex.Match(Path.GetFileName(entry));
+			if (!match.Success || Directory.Exists(entry))
+			{
+				throw new Exception(
+					$"'{Path.GetFileName(entry)}' in {repository}/Docs/changelogs is not an upgrade guide named 'migration-to-v<major>.md' or '.mdx'.");
+			}
+
+			int major = int.Parse(match.Groups["major"].Value);
+			if (guides.Any(guide => guide.Major == major))
+			{
+				throw new Exception($"{repository}/Docs/changelogs contains more than one upgrade guide to v{major}.");
+			}
+
+			guides.Add((major, entry));
+		}
+
+		return guides;
+	}
+
+	/// <summary>
+	///     Writes the upgrade guides next to the changelog, hidden from the sidebar (see <c>sidebarItemsGenerator</c> in
+	///     <c>docusaurus.config.ts</c>) while they keep showing the library's sidebar, and returns their links.
+	/// </summary>
+	static List<ChangelogMigrationGuide> WriteMigrationGuides(AbsolutePath directory, string library, string prefix,
+		List<(int Major, string File)> guides)
+	{
+		List<ChangelogMigrationGuide> links = [];
+		foreach ((int major, string file) in guides)
+		{
+			string content = ReadDocsFile(file);
+			if (!content.StartsWith("---\n", StringComparison.Ordinal) && !content.StartsWith("---\r\n", StringComparison.Ordinal))
+			{
+				content = $"---\n---\n\n{content}";
+			}
+			int frontMatterEnd = content.IndexOf("\n---", 3, StringComparison.Ordinal);
+			string name = $"{prefix}migration-to-v{major}";
+			File.WriteAllText(directory / (name + Path.GetExtension(file)), content.Insert(frontMatterEnd,
+				$"\nsidebar_hidden: true\ndisplayed_sidebar: {SidebarId(library)}"));
+			Log.Information($"Wrote the upgrade guide to v{major} under {directory / name}");
+			links.Add(new ChangelogMigrationGuide(major, $"/{library}/changelog/{name}"));
+		}
+
+		return links;
 	}
 
 	/// <summary>

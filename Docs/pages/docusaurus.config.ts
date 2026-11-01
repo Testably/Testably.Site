@@ -126,7 +126,6 @@ const config: Config = {
           {from: '/aweXpect/concepts', to: '/aweXpect/how-it-works/'},
           {from: '/aweXpect/equivalency', to: '/aweXpect/values/equivalency'},
           {from: '/aweXpect/write-extension', to: '/aweXpect/extending/'},
-          {from: '/aweXpect/changelog-v3', to: '/aweXpect/migration/from-awexpect-2'},
           {from: '/aweXpect/advanced/multiple-expectations', to: '/aweXpect/how-it-works/combining'},
           {from: '/aweXpect/advanced/customization', to: '/aweXpect/how-it-works/configuration'},
           {from: '/aweXpect/advanced/cancellation', to: '/aweXpect/how-it-works/time-and-cancellation'},
@@ -144,6 +143,15 @@ const config: Config = {
           ].map((page) => ({from: `/aweXpect/common-types/${page}`, to: `/aweXpect/values/${page}`})),
         ],
         createRedirects(existingPath: string) {
+          // Derived from the existing path, so they hold whether the upgrade guides are still in the migration section or already in the changelog.
+          if (existingPath === '/aweXpect/migration/from-awexpect-2') {
+            return ['/aweXpect/changelog-v3'];
+          }
+          const upgradeMajor = existingPath.match(/^\/aweXpect\/changelog\/migration-to-v([34])$/)?.[1];
+          if (upgradeMajor) {
+            const from = `/aweXpect/migration/from-awexpect-${Number(upgradeMajor) - 1}`;
+            return upgradeMajor === '3' ? [from, '/aweXpect/changelog-v3'] : [from];
+          }
           // Derived from the existing path, so they hold whether the folder is spelled "behaviour" or "behavior".
           const behaviorPage = existingPath.match(/^\/aweXpect\/behaviou?r\/(delegates|events|callbacks)$/)?.[1];
           if (behaviorPage) {

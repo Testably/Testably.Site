@@ -32,6 +32,12 @@ description: Verify how often and in which order a mock was called.
 - Across libraries, link with the site-absolute path: `[aweXpect.Mockolate](/aweXpect/extensions/aweXpect.Mockolate/)`. The build checks it; a full `https://docs.testably.org/...` URL it does not.
 - A page that is published inside another repository's section (e.g. Mockolate.Migration's page in the Mockolate migration section) links to its neighbors with relative paths as they are on the site.
 
+## Upgrade guides
+
+An upgrade guide to a new major version is not a docs page: put it into `Docs/changelogs/migration-to-v<major>.md` (or `.mdx`) of the library or package repository. The site publishes it next to the changelog at `/<Library>/changelog/migration-to-v<major>` and links it from that major version in the changelog; a package's guide gets the package name as prefix (`/aweXpect/changelog/aweXpect.Migration.migration-to-v2`). Any other file in `Docs/changelogs` fails the site build.
+
+The guide is published one folder below the library's docs, so it links to the library's pages with relative paths as they are on the site (`../04-values/03-string.md`) and to other pages with site-absolute paths.
+
 ## Page structure
 
 ### Library start page
