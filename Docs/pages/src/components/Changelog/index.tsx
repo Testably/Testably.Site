@@ -21,7 +21,7 @@ type ChangelogRelease = {
   items: ChangelogItem[];
 };
 
-type MigrationGuide = {major: number; url: string};
+type MigrationGuide = {major: number; url: string; title: string};
 
 type MergedPackage = {major: number; name: string; url: string; lastVersion: string | null};
 
@@ -98,10 +98,8 @@ function Stats({summary}: {summary: Summary}): ReactElement {
 function MigrationLink({guide, upcoming}: {guide: MigrationGuide; upcoming?: boolean}): ReactElement {
   return (
     <div className={clsx(styles.migration, upcoming && styles.upcoming)}>
-      <strong>{upcoming ? `Preparing v${guide.major}` : `Upgrading from ${guide.major - 1}.x?`}</strong>
-      <Link to={guide.url}>
-        {upcoming ? `Read what changes in v${guide.major}` : `Migration guide to v${guide.major}`} →
-      </Link>
+      <strong>{upcoming ? `Preparing v${guide.major}…` : `Upgrading from v${guide.major - 1}?`}</strong>
+      <Link to={guide.url}>{guide.title}</Link>
     </div>
   );
 }
