@@ -36,7 +36,8 @@
 - [Testably.Abstractions.MemoryMappedFiles](https://docs.testably.org/Abstractions/companion-libraries/memory-mapped-files): MemoryMappedFile on IFileSystem, so memory-mapped file code can be tested against the MockFileSystem.
 - [Migration from TestableIO](https://docs.testably.org/Abstractions/migration-from-testableio/): Switch the tests from TestableIO.System.IO.Abstractions.TestingHelpers to Testably.Abstractions.Testing.
 - [Testably.Abstractions.Migration](https://docs.testably.org/Abstractions/migration-from-testableio/Migration/): A Roslyn analyzer and code fix that rewrites TestableIO MockFileSystem tests to the Testably.Abstractions MockFileSystem.
-- [Changelog](https://docs.testably.org/Abstractions/changelog): The user-facing changes in each release of Testably.Abstractions, generated from the GitHub releases.
+- [Changelog](https://docs.testably.org/Abstractions/changelog/): The user-facing changes in each release of Testably.Abstractions, generated from the GitHub releases.
+- [Testably.Abstractions.Migration](https://docs.testably.org/Abstractions/changelog/Testably.Abstractions.Migration): The user-facing changes in each release of Testably.Abstractions.Migration, generated from the GitHub releases.
 
 ## aweXpect
 
@@ -155,7 +156,17 @@
 - [Test frameworks and initialization](https://docs.testably.org/aweXpect/extending/initialization): Run code before the first expectation, support another test framework, read the running test and register values from the test project.
 - [Native AOT for extensions](https://docs.testably.org/aweXpect/extending/native-aot): Make an extension work under trimming and Native AOT by marking generic parameters and registering the metadata of its own types.
 - [Benchmarks](https://docs.testably.org/aweXpect/benchmarks): Benchmarks that compare the overhead of passing aweXpect expectations with the equivalent FluentAssertions and TUnit assertions.
-- [Changelog](https://docs.testably.org/aweXpect/changelog): The user-facing changes in each release of aweXpect, generated from the GitHub releases.
+- [Changelog](https://docs.testably.org/aweXpect/changelog/): The user-facing changes in each release of aweXpect, generated from the GitHub releases.
+- [aweXpect.Chronology](https://docs.testably.org/aweXpect/changelog/aweXpect.Chronology): The user-facing changes in each release of aweXpect.Chronology, generated from the GitHub releases.
+- [aweXpect.Json](https://docs.testably.org/aweXpect/changelog/aweXpect.Json): The user-facing changes in each release of aweXpect.Json, generated from the GitHub releases.
+- [aweXpect.Logging](https://docs.testably.org/aweXpect/changelog/aweXpect.Logging): The user-facing changes in each release of aweXpect.Logging, generated from the GitHub releases.
+- [aweXpect.Migration](https://docs.testably.org/aweXpect/changelog/aweXpect.Migration): The user-facing changes in each release of aweXpect.Migration, generated from the GitHub releases.
+- [aweXpect.Mockolate](https://docs.testably.org/aweXpect/changelog/aweXpect.Mockolate): The user-facing changes in each release of aweXpect.Mockolate, generated from the GitHub releases.
+- [aweXpect.Reflection](https://docs.testably.org/aweXpect/changelog/aweXpect.Reflection): The user-facing changes in each release of aweXpect.Reflection, generated from the GitHub releases.
+- [aweXpect.Snapshots](https://docs.testably.org/aweXpect/changelog/aweXpect.Snapshots): The user-facing changes in each release of aweXpect.Snapshots, generated from the GitHub releases.
+- [aweXpect.Testably](https://docs.testably.org/aweXpect/changelog/aweXpect.Testably): The user-facing changes in each release of aweXpect.Testably, generated from the GitHub releases.
+- [aweXpect.Web](https://docs.testably.org/aweXpect/changelog/aweXpect.Web): The user-facing changes in each release of aweXpect.Web, generated from the GitHub releases.
+- [aweXpect.Xml](https://docs.testably.org/aweXpect/changelog/aweXpect.Xml): The user-facing changes in each release of aweXpect.Xml, generated from the GitHub releases.
 
 ## Mockolate
 
@@ -189,7 +200,8 @@
 - [Migrating from NSubstitute](https://docs.testably.org/Mockolate/migration/automated/nsubstitute): How the Mockolate.Migration code fix rewrites NSubstitute substitutes, setups, verifications and CallInfo callbacks to Mockolate.
 - [Benchmarks](https://docs.testably.org/Mockolate/benchmarks): Benchmarks that compare the runtime overhead of Mockolate with Moq, NSubstitute, FakeItEasy, TUnit.Mocks and Imposter.
 - [Troubleshooting](https://docs.testably.org/Mockolate/troubleshooting): Answers to common problems with Mockolate, and the types and members that cannot be mocked.
-- [Changelog](https://docs.testably.org/Mockolate/changelog): The user-facing changes in each release of Mockolate, generated from the GitHub releases.
+- [Changelog](https://docs.testably.org/Mockolate/changelog/): The user-facing changes in each release of Mockolate, generated from the GitHub releases.
+- [Mockolate.Migration](https://docs.testably.org/Mockolate/changelog/Mockolate.Migration): The user-facing changes in each release of Mockolate.Migration, generated from the GitHub releases.
 
 ## Awaiten
 
