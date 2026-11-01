@@ -149,8 +149,8 @@ function Release({release, latest}: {release: ChangelogRelease; latest: boolean}
 }
 
 /**
- * The packages that are released together with the library from this major version on, placed where the major
- * version begins, with links to the changelogs of their earlier releases.
+ * The packages that are released together with the library from this major version on, placed right below the
+ * chapter's summary, with links to the changelogs of their earlier releases.
  */
 function MergedPackages({major, packages}: {major: number; packages: MergedPackage[]}): ReactElement | null {
   if (packages.length === 0) {
@@ -230,10 +230,10 @@ export default function Changelog({changelog: {migrationGuides, mergedPackages, 
               </div>
               {index === 0 || expanded.includes(major) ? (
                 <>
+                  <MergedPackages major={major} packages={mergedPackages.filter((p) => p.major === major)} />
                   {majorReleases.map((release) => (
                     <Release key={release.version} release={release} latest={release === releases[0]} />
                   ))}
-                  <MergedPackages major={major} packages={mergedPackages.filter((p) => p.major === major)} />
                 </>
               ) : (
                 <>
