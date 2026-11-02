@@ -212,7 +212,8 @@ const config: Config = {
           label: 'Awaiten',
         },
         {
-          href: 'https://github.com/Testably',
+          // Links the repository of the current section; see src/components/GithubNavbarItem.
+          type: 'custom-githubLink',
           label: 'GitHub',
           position: 'right',
         },
