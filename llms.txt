@@ -37,6 +37,7 @@
 - [Migration from TestableIO](https://docs.testably.org/Abstractions/migration-from-testableio/): Switch the tests from TestableIO.System.IO.Abstractions.TestingHelpers to Testably.Abstractions.Testing.
 - [Testably.Abstractions.Migration](https://docs.testably.org/Abstractions/migration-from-testableio/Migration/): A Roslyn analyzer and code fix that rewrites TestableIO MockFileSystem tests to the Testably.Abstractions MockFileSystem.
 - [Changelog](https://docs.testably.org/Abstractions/changelog/): The user-facing changes in each release of Testably.Abstractions, generated from the GitHub releases.
+- [Migration to v8](https://docs.testably.org/Abstractions/changelog/migration-to-v8): How to upgrade Testably.Abstractions.Testing from v7 to v8.
 - [Testably.Abstractions.Migration](https://docs.testably.org/Abstractions/changelog/Testably.Abstractions.Migration): The user-facing changes in each release of Testably.Abstractions.Migration, generated from the GitHub releases.
 
 ## aweXpect
