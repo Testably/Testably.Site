@@ -5,6 +5,10 @@ on:
   push:
     branches: [ main ]
 
+concurrency:
+  group: build-${{ github.ref }}
+  queue: max
+
 jobs:
   build:
 

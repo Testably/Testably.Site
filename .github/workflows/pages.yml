@@ -13,6 +13,10 @@ on:
     types: [ extension-documentation-updated-event ]
   workflow_dispatch:
 
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
 jobs:
   build-pages:
     name: Build Pages
