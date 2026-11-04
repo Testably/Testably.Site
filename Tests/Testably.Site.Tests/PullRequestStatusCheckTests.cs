@@ -115,17 +115,43 @@ public class PullRequestStatusCheckTests
 		Assert.Contains("\"state\":\"success\"", sentStatusCheck);
 	}
 
+	[Theory]
+	[InlineData("Testably", "testablyToken")]
+	[InlineData("aweXpect", "aweXpectToken")]
+	[InlineData("TestableIO", "TestableIOToken")]
+	[InlineData("awaiten-dev", "awaitenDevToken")]
+	public async Task ShouldPostTheStatusWithTheTokenOfTheOwner(string owner, string tokenKey)
+	{
+		string? sentAuthorization = null;
+		Uri? sentStatusUri = null;
+		var httpClientFactoryMock = MockGitHub("feat: description",
+			onStatusPosted: (request, _) =>
+			{
+				sentAuthorization = request.Headers.Authorization?.ToString();
+				sentStatusUri = request.RequestUri;
+			});
+		await using var factory = new TestFactory(httpClientFactoryMock.Object,
+			c => c.Add(tokenKey, "foo"));
+
+		var response = await PostWebhook(factory, owner: owner);
+
+		response.EnsureSuccessStatusCode();
+		Assert.Equal("Bearer foo", sentAuthorization);
+		Assert.Equal($"https://api.github.com/repos/{owner}/aweXpect/statuses/884edd06", sentStatusUri?.AbsoluteUri);
+	}
+
 	#region Helpers
 
-	private static async Task<HttpResponseMessage> PostWebhook(TestFactory factory, string action = "opened")
+	private static async Task<HttpResponseMessage> PostWebhook(TestFactory factory, string action = "opened",
+		string owner = "Testably")
 	{
 		using var client = factory.CreateClient();
 		client.DefaultRequestHeaders.Add("x-github-event", "pull_request");
-		using var content = new StringContent(WebhookPayload(action), Encoding.UTF8, "application/json");
+		using var content = new StringContent(WebhookPayload(action, owner), Encoding.UTF8, "application/json");
 		return await client.PostAsync("pr-status-check", content);
 	}
 
-	private static string WebhookPayload(string action)
+	private static string WebhookPayload(string action, string owner)
 		=> $$"""
 		     {
 		       "action": "{{action}}",
@@ -133,7 +159,7 @@ public class PullRequestStatusCheckTests
 		       "repository": {
 		         "name": "aweXpect",
 		         "private": false,
-		         "owner": { "login": "Testably" }
+		         "owner": { "login": "{{owner}}" }
 		       }
 		     }
 		     """;
