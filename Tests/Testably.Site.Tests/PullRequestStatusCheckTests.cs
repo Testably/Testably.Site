@@ -7,19 +7,19 @@ namespace Testably.Site.Tests;
 
 public class PullRequestStatusCheckTests
 {
-	[Theory]
-	[InlineData("fix: description", "success")]
-	[InlineData("feat: description", "success")]
-	[InlineData("release: description", "success")]
-	[InlineData("fix!: description", "success")]
-	[InlineData("fix(deps): description", "success")]
-	[InlineData("fix(deps)!: description", "success")]
-	[InlineData("description", "failure")]
-	[InlineData("unknown: description", "failure")]
-	[InlineData("feature: description", "failure")]
-	[InlineData("fix:description", "failure")]
-	[InlineData("fix(): description", "failure")]
-	[InlineData("fix(deps: description", "failure")]
+	[Test]
+	[Arguments("fix: description", "success")]
+	[Arguments("feat: description", "success")]
+	[Arguments("release: description", "success")]
+	[Arguments("fix!: description", "success")]
+	[Arguments("fix(deps): description", "success")]
+	[Arguments("fix(deps)!: description", "success")]
+	[Arguments("description", "failure")]
+	[Arguments("unknown: description", "failure")]
+	[Arguments("feature: description", "failure")]
+	[Arguments("fix:description", "failure")]
+	[Arguments("fix(): description", "failure")]
+	[Arguments("fix(deps: description", "failure")]
 	public async Task ShouldReportWhetherTheTitleIsConventional(string title, string expectedState)
 	{
 		string? sentStatusCheck = null;
@@ -31,10 +31,10 @@ public class PullRequestStatusCheckTests
 		var response = await PostWebhook(factory);
 
 		response.EnsureSuccessStatusCode();
-		Assert.Contains($"\"state\":\"{expectedState}\"", sentStatusCheck);
+		await That(sentStatusCheck).Contains($"\"state\":\"{expectedState}\"");
 	}
 
-	[Fact]
+	[Test]
 	public async Task WhenTitleEndsWithTheSeparator_ShouldReportFailureInsteadOfThrowing()
 	{
 		string? sentStatusCheck = null;
@@ -46,10 +46,10 @@ public class PullRequestStatusCheckTests
 		var response = await PostWebhook(factory);
 
 		response.EnsureSuccessStatusCode();
-		Assert.Contains("\"state\":\"failure\"", sentStatusCheck);
+		await That(sentStatusCheck).Contains("\"state\":\"failure\"");
 	}
 
-	[Fact]
+	[Test]
 	public async Task ShouldPostTheStatusAsJson()
 	{
 		string? sentMediaType = null;
@@ -61,10 +61,10 @@ public class PullRequestStatusCheckTests
 		var response = await PostWebhook(factory);
 
 		response.EnsureSuccessStatusCode();
-		Assert.Equal("application/json", sentMediaType);
+		await That(sentMediaType).IsEqualTo("application/json");
 	}
 
-	[Fact]
+	[Test]
 	public async Task WhenTheStatusIsRejected_ShouldReportAServerError()
 	{
 		var httpClientFactoryMock = MockGitHub("feat: description",
@@ -74,13 +74,13 @@ public class PullRequestStatusCheckTests
 
 		var response = await PostWebhook(factory);
 
-		Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
+		await That(response.StatusCode).IsEqualTo(HttpStatusCode.InternalServerError);
 	}
 
-	[Theory]
-	[InlineData("closed")]
-	[InlineData("labeled")]
-	[InlineData("assigned")]
+	[Test]
+	[Arguments("closed")]
+	[Arguments("labeled")]
+	[Arguments("assigned")]
 	public async Task WhenTheActionCannotHaveChangedTheTitle_ShouldNotCallGitHub(string action)
 	{
 		var requests = 0;
@@ -91,15 +91,15 @@ public class PullRequestStatusCheckTests
 		var response = await PostWebhook(factory, action);
 
 		response.EnsureSuccessStatusCode();
-		Assert.Equal(0, requests);
+		await That(requests).IsEqualTo(0);
 	}
 
-	[Theory]
-	[InlineData("opened")]
-	[InlineData("edited")]
-	[InlineData("reopened")]
-	[InlineData("synchronize")]
-	[InlineData("ready_for_review")]
+	[Test]
+	[Arguments("opened")]
+	[Arguments("edited")]
+	[Arguments("reopened")]
+	[Arguments("synchronize")]
+	[Arguments("ready_for_review")]
 	public async Task WhenTheActionCanHaveChangedTheTitle_ShouldPostTheStatus(string action)
 	{
 		string? sentStatusCheck = null;
@@ -111,14 +111,14 @@ public class PullRequestStatusCheckTests
 		var response = await PostWebhook(factory, action);
 
 		response.EnsureSuccessStatusCode();
-		Assert.Contains("\"state\":\"success\"", sentStatusCheck);
+		await That(sentStatusCheck).Contains("\"state\":\"success\"");
 	}
 
-	[Theory]
-	[InlineData("Testably", "testablyToken")]
-	[InlineData("aweXpect", "aweXpectToken")]
-	[InlineData("TestableIO", "TestableIOToken")]
-	[InlineData("awaiten-dev", "awaitenDevToken")]
+	[Test]
+	[Arguments("Testably", "testablyToken")]
+	[Arguments("aweXpect", "aweXpectToken")]
+	[Arguments("TestableIO", "TestableIOToken")]
+	[Arguments("awaiten-dev", "awaitenDevToken")]
 	public async Task ShouldPostTheStatusWithTheTokenOfTheOwner(string owner, string tokenKey)
 	{
 		string? sentAuthorization = null;
@@ -135,8 +135,8 @@ public class PullRequestStatusCheckTests
 		var response = await PostWebhook(factory, owner: owner);
 
 		response.EnsureSuccessStatusCode();
-		Assert.Equal("Bearer foo", sentAuthorization);
-		Assert.Equal($"https://api.github.com/repos/{owner}/aweXpect/statuses/884edd06", sentStatusUri?.AbsoluteUri);
+		await That(sentAuthorization).IsEqualTo("Bearer foo");
+		await That(sentStatusUri?.AbsoluteUri).IsEqualTo($"https://api.github.com/repos/{owner}/aweXpect/statuses/884edd06");
 	}
 
 	#region Helpers

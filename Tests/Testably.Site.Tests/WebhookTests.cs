@@ -6,9 +6,9 @@ namespace Testably.Site.Tests;
 
 public class WebhookTests
 {
-	[Theory]
-	[InlineData("feat: foo", "success")]
-	[InlineData("invalid", "failure")]
+	[Test]
+	[Arguments("feat: foo", "success")]
+	[Arguments("invalid", "failure")]
 	public async Task HappyCase_ShouldSucceed(string title, string status)
 	{
 		var webhookPayload =
@@ -42,7 +42,7 @@ public class WebhookTests
 		var response = await client.PostAsync("pr-status-check", content);
 		response.EnsureSuccessStatusCode();
 
-		Assert.Contains($"\"state\":\"{status}\"", sentStatusCheck);
+		await That(sentStatusCheck).Contains($"\"state\":\"{status}\"");
 	}
 
 	#region Helpers
