@@ -47,7 +47,6 @@ partial class Build
 			]),
 		new("Mockolate", "Mockolate",
 			Packages: ["Mockolate.Migration"]),
-		new("Awaiten", "Awaiten"),
 	];
 
 	/// <summary>

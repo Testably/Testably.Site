@@ -75,7 +75,6 @@ const config: Config = {
           {label: 'Abstractions', path: 'Abstractions'},
           {label: 'aweXpect', path: 'aweXpect'},
           {label: 'Mockolate', path: 'Mockolate'},
-          {label: 'Awaiten', path: 'Awaiten'},
         ],
         useAllContextsWithNoSearchContext: true,
       },
@@ -109,14 +108,12 @@ const config: Config = {
           'aweXpect.Xml',
           'Mockolate',
           'Mockolate.Migration',
-          'Awaiten',
-          'Awaiten.Extensions.DependencyInjection',
         ],
       },
     ],
     [
       './src/plugins/llms-txt/index.ts',
-      {libraries: ['Abstractions', 'aweXpect', 'Mockolate', 'Awaiten']},
+      {libraries: ['Abstractions', 'aweXpect', 'Mockolate']},
     ],
     [
       '@docusaurus/plugin-client-redirects',
@@ -206,12 +203,6 @@ const config: Config = {
           label: 'Mockolate',
         },
         {
-          type: 'docSidebar',
-          sidebarId: 'awaitenSidebar',
-          position: 'left',
-          label: 'Awaiten',
-        },
-        {
           // Links the repository of the current section; see src/components/GithubNavbarItem.
           type: 'custom-githubLink',
           label: 'GitHub',
@@ -254,16 +245,6 @@ const config: Config = {
             },
             {
               html: `<a href="https://www.nuget.org/packages/Mockolate" class="footer__nuget-badge"><img src="https://img.shields.io/nuget/v/Mockolate?label=NuGet&logo=nuget" alt="Mockolate on NuGet"/></a>`,
-            },
-          ],
-        },
-        {
-          items: [
-            {
-              html: `<a href="https://github.com/Testably/Awaiten" class="footer__library-name">Awaiten</a>`,
-            },
-            {
-              html: `<a href="https://www.nuget.org/packages/Awaiten" class="footer__nuget-badge"><img src="https://img.shields.io/nuget/v/Awaiten?label=NuGet&logo=nuget" alt="Awaiten on NuGet"/></a>`,
             },
           ],
         },

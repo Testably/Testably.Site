@@ -11,10 +11,9 @@ const SECTION_REPOSITORIES: Record<string, string> = {
   abstractions: 'Testably.Abstractions',
   awexpect: 'aweXpect',
   mockolate: 'Mockolate',
-  awaiten: 'Awaiten',
 };
 
-const SECTION_PATTERN = /^\/(abstractions|awexpect|mockolate|awaiten)(?:\/|$)/i;
+const SECTION_PATTERN = /^\/(abstractions|awexpect|mockolate)(?:\/|$)/i;
 
 export default function GithubNavbarItem(props: Props): ReactNode {
   const section = useLocation().pathname.match(SECTION_PATTERN)?.[1].toLowerCase();
