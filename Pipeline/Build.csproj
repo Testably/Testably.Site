@@ -11,8 +11,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Fallout.Common" Version="10.4.0" />
-		<PackageReference Include="NuGet.Frameworks" Version="7.9.0" />
+		<PackageReference Include="Fallout.Common" />
+		<PackageReference Include="NuGet.Frameworks" />
 	</ItemGroup>
 
 </Project>

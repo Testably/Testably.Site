@@ -1,7 +1,6 @@
 using System.Net;
 using System.Text;
-using Moq;
-using Moq.Protected;
+using Mockolate;
 
 namespace Testably.Site.Tests;
 
@@ -33,7 +32,7 @@ public class WebhookTests
 					sentStatusCheck = c;
 					return "";
 				}));
-		await using var factory = new TestFactory(httpClientFactoryMock.Object,
+		await using var factory = new TestFactory(httpClientFactoryMock,
 			c => c.Add("testablyToken", "foo"));
 		using var client = factory.CreateClient();
 		client.DefaultRequestHeaders.Add("x-github-event", "pull_request");
@@ -59,28 +58,23 @@ public class WebhookTests
 		return bodyStream.ReadToEnd();
 	}
 
-	private static Mock<IHttpClientFactory> MockHttpClientFactory(
+	private static IHttpClientFactory MockHttpClientFactory(
 		params (Func<HttpRequestMessage, bool>, Func<string?, string>)[] responses)
 	{
-		var mockHttpMessageHandler = new Mock<HttpMessageHandler>();
+		var mockHttpMessageHandler = HttpMessageHandler.CreateMock();
 		foreach (var response in responses)
 		{
-			mockHttpMessageHandler.Protected()
-				.Setup<Task<HttpResponseMessage>>(
-					"SendAsync",
-					ItExpr.Is<HttpRequestMessage>(r => response.Item1(r)),
-					ItExpr.IsAny<CancellationToken>()
-				)
-				.ReturnsAsync((HttpRequestMessage m, CancellationToken _)
-					=> new HttpResponseMessage(HttpStatusCode.OK)
-					{
-						Content = new StringContent(response.Item2(GetRequestBody(m)))
-					});
+			mockHttpMessageHandler.Mock.SetupProtected
+				.SendAsync(It.Satisfies<HttpRequestMessage>(r => response.Item1(r)), It.IsAny<CancellationToken>())
+				.ReturnsAsync((m, _) => new HttpResponseMessage(HttpStatusCode.OK)
+				{
+					Content = new StringContent(response.Item2(GetRequestBody(m)))
+				});
 		}
 
-		var httpClientFactoryMock = new Mock<IHttpClientFactory>();
-		httpClientFactoryMock.Setup(m => m.CreateClient(It.IsAny<string>()))
-			.Returns(new HttpClient(mockHttpMessageHandler.Object));
+		var httpClientFactoryMock = IHttpClientFactory.CreateMock();
+		httpClientFactoryMock.Mock.Setup.CreateClient(It.IsAny<string>())
+			.Returns(() => new HttpClient(mockHttpMessageHandler, disposeHandler: false));
 		return httpClientFactoryMock;
 	}
 
