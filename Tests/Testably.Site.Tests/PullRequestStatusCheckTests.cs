@@ -1,8 +1,7 @@
 using System.Net;
 using System.Text;
 using System.Text.Json;
-using Moq;
-using Moq.Protected;
+using Mockolate;
 
 namespace Testably.Site.Tests;
 
@@ -26,7 +25,7 @@ public class PullRequestStatusCheckTests
 		string? sentStatusCheck = null;
 		var httpClientFactoryMock = MockGitHub(title,
 			onStatusPosted: (_, body) => sentStatusCheck = body);
-		await using var factory = new TestFactory(httpClientFactoryMock.Object,
+		await using var factory = new TestFactory(httpClientFactoryMock,
 			c => c.Add("testablyToken", "foo"));
 
 		var response = await PostWebhook(factory);
@@ -41,7 +40,7 @@ public class PullRequestStatusCheckTests
 		string? sentStatusCheck = null;
 		var httpClientFactoryMock = MockGitHub("fix:",
 			onStatusPosted: (_, body) => sentStatusCheck = body);
-		await using var factory = new TestFactory(httpClientFactoryMock.Object,
+		await using var factory = new TestFactory(httpClientFactoryMock,
 			c => c.Add("testablyToken", "foo"));
 
 		var response = await PostWebhook(factory);
@@ -56,7 +55,7 @@ public class PullRequestStatusCheckTests
 		string? sentMediaType = null;
 		var httpClientFactoryMock = MockGitHub("feat: description",
 			onStatusPosted: (request, _) => sentMediaType = request.Content?.Headers.ContentType?.MediaType);
-		await using var factory = new TestFactory(httpClientFactoryMock.Object,
+		await using var factory = new TestFactory(httpClientFactoryMock,
 			c => c.Add("testablyToken", "foo"));
 
 		var response = await PostWebhook(factory);
@@ -70,7 +69,7 @@ public class PullRequestStatusCheckTests
 	{
 		var httpClientFactoryMock = MockGitHub("feat: description",
 			statusResult: HttpStatusCode.UnprocessableEntity);
-		await using var factory = new TestFactory(httpClientFactoryMock.Object,
+		await using var factory = new TestFactory(httpClientFactoryMock,
 			c => c.Add("testablyToken", "foo"));
 
 		var response = await PostWebhook(factory);
@@ -86,7 +85,7 @@ public class PullRequestStatusCheckTests
 	{
 		var requests = 0;
 		var httpClientFactoryMock = MockGitHub("feat: description", onAnyRequest: () => requests++);
-		await using var factory = new TestFactory(httpClientFactoryMock.Object,
+		await using var factory = new TestFactory(httpClientFactoryMock,
 			c => c.Add("testablyToken", "foo"));
 
 		var response = await PostWebhook(factory, action);
@@ -106,7 +105,7 @@ public class PullRequestStatusCheckTests
 		string? sentStatusCheck = null;
 		var httpClientFactoryMock = MockGitHub("feat: description",
 			onStatusPosted: (_, body) => sentStatusCheck = body);
-		await using var factory = new TestFactory(httpClientFactoryMock.Object,
+		await using var factory = new TestFactory(httpClientFactoryMock,
 			c => c.Add("testablyToken", "foo"));
 
 		var response = await PostWebhook(factory, action);
@@ -130,7 +129,7 @@ public class PullRequestStatusCheckTests
 				sentAuthorization = request.Headers.Authorization?.ToString();
 				sentStatusUri = request.RequestUri;
 			});
-		await using var factory = new TestFactory(httpClientFactoryMock.Object,
+		await using var factory = new TestFactory(httpClientFactoryMock,
 			c => c.Add(tokenKey, "foo"));
 
 		var response = await PostWebhook(factory, owner: owner);
@@ -164,19 +163,16 @@ public class PullRequestStatusCheckTests
 		     }
 		     """;
 
-	private static Mock<IHttpClientFactory> MockGitHub(
+	private static IHttpClientFactory MockGitHub(
 		string title,
 		HttpStatusCode statusResult = HttpStatusCode.Created,
 		Action<HttpRequestMessage, string?>? onStatusPosted = null,
 		Action? onAnyRequest = null)
 	{
-		var mockHttpMessageHandler = new Mock<HttpMessageHandler>();
-		mockHttpMessageHandler.Protected()
-			.Setup<Task<HttpResponseMessage>>(
-				"SendAsync",
-				ItExpr.IsAny<HttpRequestMessage>(),
-				ItExpr.IsAny<CancellationToken>())
-			.ReturnsAsync((HttpRequestMessage request, CancellationToken _) =>
+		var mockHttpMessageHandler = HttpMessageHandler.CreateMock();
+		mockHttpMessageHandler.Mock.SetupProtected
+			.SendAsync(It.IsAny<HttpRequestMessage>(), It.IsAny<CancellationToken>())
+			.ReturnsAsync((request, _) =>
 			{
 				onAnyRequest?.Invoke();
 				if (request.Method == HttpMethod.Get)
@@ -196,9 +192,9 @@ public class PullRequestStatusCheckTests
 				};
 			});
 
-		var httpClientFactoryMock = new Mock<IHttpClientFactory>();
-		httpClientFactoryMock.Setup(m => m.CreateClient(It.IsAny<string>()))
-			.Returns(new HttpClient(mockHttpMessageHandler.Object));
+		var httpClientFactoryMock = IHttpClientFactory.CreateMock();
+		httpClientFactoryMock.Mock.Setup.CreateClient(It.IsAny<string>())
+			.Returns(() => new HttpClient(mockHttpMessageHandler, disposeHandler: false));
 		return httpClientFactoryMock;
 	}
 
