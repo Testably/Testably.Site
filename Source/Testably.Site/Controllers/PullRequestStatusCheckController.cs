@@ -13,7 +13,7 @@ namespace Testably.Site.Controllers;
 [AllowAnonymous]
 public class PullRequestStatusCheckController : ControllerBase
 {
-	private static readonly string[] RepositoryOwners = ["Testably", "aweXpect", "TestableIO"];
+	private static readonly string[] RepositoryOwners = ["Testably", "aweXpect", "TestableIO", "awaiten-dev"];
 
 	/// <summary>
 	///     The actions that can introduce a title this check has not seen yet. Every other action - closing, labelling,
@@ -85,6 +85,7 @@ public class PullRequestStatusCheckController : ControllerBase
 			"Testably" => _configuration.GetValue<string>("testablyToken"),
 			"aweXpect" => _configuration.GetValue<string>("aweXpectToken"),
 			"TestableIO" => _configuration.GetValue<string>("TestableIOToken"),
+			"awaiten-dev" => _configuration.GetValue<string>("awaitenDevToken"),
 			_ => ""
 		};
 		if (string.IsNullOrEmpty(bearerToken))
