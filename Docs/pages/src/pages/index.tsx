@@ -45,15 +45,6 @@ const libraries: Library[] = [
     iconLight: 'img/mockolate-light.svg',
     iconDark: 'img/mockolate-dark.svg',
   },
-  {
-    label: 'Awaiten',
-    href: '/Awaiten/',
-    tagline: 'The async-first DI container.',
-    description:
-      'A source-generator dependency injection container. No runtime reflection, compile-time-verified wiring, and first-class async initialization. Native-AOT clean.',
-    iconLight: 'img/awaiten.png',
-    iconDark: 'img/awaiten.png',
-  },
 ];
 
 function HomepageHeader() {
@@ -74,7 +65,7 @@ function LibraryCard({library}: {library: Library}) {
   const lightSrc = useBaseUrl(library.iconLight);
   const darkSrc = useBaseUrl(library.iconDark);
   return (
-    <div className="col col--3" style={{marginBottom: '1.5rem'}}>
+    <div className="col col--4" style={{marginBottom: '1.5rem'}}>
       <div
         style={{
           padding: '1.5rem',
@@ -134,7 +125,7 @@ export default function Home(): ReactNode {
   return (
     <Layout
       title={siteConfig.title}
-      description="Documentation for the Testably family of testing libraries: Testably.Abstractions, aweXpect, Mockolate and Awaiten."
+      description="Documentation for the Testably family of testing libraries: Testably.Abstractions, aweXpect and Mockolate."
     >
       <HomepageHeader />
       <main>

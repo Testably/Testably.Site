@@ -120,7 +120,7 @@ import PackageInstall from '@site/src/components/PackageInstall';
 
 - Use the language tags `csharp`, `xml`, `json`, `text` and `shell` (for commands).
 - Use explicit types instead of `var`, as in the libraries' code.
-- Each library keeps one running example, e.g. the `IChocolateDispenser` for Mockolate and the coffee shop for Awaiten. Reuse its types instead of inventing new ones, and declare added members next to the example.
+- Each library keeps one running example, e.g. the `IChocolateDispenser` for Mockolate. Reuse its types instead of inventing new ones, and declare added members next to the example.
 - `sut` is the system under test, never the mock.
 - Add a `title` only when it names a file (`Directory.Packages.props`) or a role (`Production code`).
 
