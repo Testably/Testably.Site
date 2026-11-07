@@ -210,7 +210,8 @@ partial class Build
 	}
 
 	/// <summary>
-	///     Reads the published releases with at least one user-facing change, newest first.
+	///     Reads the published releases newest first. A release without user-facing changes is kept, so that the version
+	///     numbers have no gaps; the releases before 1.0 are left out once there is a stable release.
 	/// </summary>
 	static async Task<List<ChangelogRelease>> ReadReleases(HttpClient client, string repository)
 	{
@@ -227,7 +228,9 @@ partial class Build
 			}
 		}
 
+		bool isStable = releases.Any(release => !release.Prerelease && MajorOf(release.TagName) > 0);
 		return releases
+			.Where(release => !isStable || MajorOf(release.TagName) > 0)
 			.OrderByDescending(release => release.PublishedAt)
 			.Select(release => new ChangelogRelease(
 				release.TagName.TrimStart('v'),
@@ -236,8 +239,16 @@ partial class Build
 				$"https://github.com/Testably/{repository}/releases/tag/{release.TagName}",
 				CountCommits(release.Body ?? ""),
 				ReadChangelogItems(release.Body ?? "")))
-			.Where(release => release.Items.Count > 0)
 			.ToList();
+	}
+
+	/// <summary>
+	///     The first number in the tag, because some tags name a package before the version (e.g. <c>core/v0.19.0</c>).
+	/// </summary>
+	static int MajorOf(string tagName)
+	{
+		Match match = Regex.Match(tagName, @"\d+");
+		return match.Success ? int.Parse(match.Value) : 0;
 	}
 
 	/// <summary>
