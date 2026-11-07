@@ -23,25 +23,25 @@ const libraries: Library[] = [
     href: '/Abstractions/',
     tagline: 'Mock the unmockable.',
     description:
-      'IFileSystem, ITimeSystem and IRandomSystem abstractions with feature-complete in-memory mocks for deterministic, cross-platform unit tests.',
+      'Injectable interfaces for the static parts of .NET (System.IO, DateTime and Random) with in-memory mocks tested against the real implementations on Windows, Linux and macOS.',
     iconLight: 'img/testably-abstractions-light.svg',
     iconDark: 'img/testably-abstractions-dark.svg',
   },
   {
     label: 'aweXpect',
     href: '/aweXpect/',
-    tagline: 'Fluent expectations for .NET.',
+    tagline: 'Readable, AOT-ready assertions.',
     description:
-      'A modern, async-first assertion library with a natural-language API. Plays well with xUnit, NUnit, MSTest and TUnit.',
+      'Async-first expectations that read like sentences and give clear failure messages, with extension packages for JSON, XML, HTTP, reflection and snapshots.',
     iconLight: 'img/awexpect-light.svg',
     iconDark: 'img/awexpect-dark.svg',
   },
   {
     label: 'Mockolate',
     href: '/Mockolate/',
-    tagline: 'AOT-friendly mocking via source generators.',
+    tagline: 'AOT-ready mocking for .NET.',
     description:
-      'Strongly-typed, source-generator-based mocking for .NET. No runtime proxies, no reflection, native-AOT compatible.',
+      'Source-generated, strongly-typed mocks set up with regular method calls, so mistakes show up as compile errors instead of runtime exceptions. No reflection, no runtime proxies.',
     iconLight: 'img/mockolate-light.svg',
     iconDark: 'img/mockolate-dark.svg',
   },
