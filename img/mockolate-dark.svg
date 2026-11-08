@@ -3,7 +3,7 @@
     <mask id="m-theater" maskContentUnits="userSpaceOnUse">
       <rect x="0" y="0" width="128" height="128" fill="white"/>
       <ellipse cx="55" cy="56" rx="5" ry="4" fill="black"/>
-      <ellipse cx="73" cy="56" rx="5" ry="4" fill="black"/>
+      <path d="M 68 56.6 Q 73 54.2 78 56.6 A 5 3.6 0 0 1 68 56.6 Z" fill="black"/>
       <path d="M 48 72 Q 64 84 80 72 Q 64 79 48 72 Z" fill="black"/>
     </mask>
   </defs>
