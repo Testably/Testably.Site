@@ -69,7 +69,7 @@ partial class Build
 		new("Testably", "aweXpect.Testably",     "Docs/pages",      "aweXpect/extensions/aweXpect.Testably"),
 		new("Testably", "aweXpect",              "Docs/extensions/aweXpect.Web",        "aweXpect/extensions/aweXpect.Web"),
 		new("Testably", "aweXpect",              "Docs/extensions/aweXpect.Xml",        "aweXpect/extensions/aweXpect.Xml"),
-		new("Testably", "aweXpect.Chronology",   "Docs/pages",      "aweXpect/extensions/aweXpect.Chronology"),
+		new("Testably", "aweXpect.Chronology",   "Docs/pages",      "aweXpect/chronology"),
 		new("Testably", "Mockolate",             "Docs/pages",      "Mockolate"),
 		new("Testably", "Mockolate.Migration",   "Docs/pages",      "Mockolate/migration",
 			CleanTarget: false),

@@ -48,7 +48,7 @@ $Sources = @(
     [pscustomobject]@{ Repo="aweXpect.Testably";     SourcePath="Docs/pages";      Target="aweXpect/07-extensions/aweXpect.Testably";   InlineReadme=$true;  ExtraReadmes=@() }
     [pscustomobject]@{ Repo="aweXpect";              SourcePath="Docs/extensions/aweXpect.Web";        Target="aweXpect/07-extensions/aweXpect.Web";        InlineReadme=$false; ExtraReadmes=@() }
     [pscustomobject]@{ Repo="aweXpect";              SourcePath="Docs/extensions/aweXpect.Xml";        Target="aweXpect/07-extensions/aweXpect.Xml";        InlineReadme=$false; ExtraReadmes=@() }
-    [pscustomobject]@{ Repo="aweXpect.Chronology";   SourcePath="Docs/pages";      Target="Chronology";                     InlineReadme=$true;  ExtraReadmes=@() }
+    [pscustomobject]@{ Repo="aweXpect.Chronology";   SourcePath="Docs/pages";      Target="aweXpect/chronology";            InlineReadme=$true;  ExtraReadmes=@() }
     [pscustomobject]@{ Repo="Mockolate";             SourcePath="Docs/pages";      Target="Mockolate";                      InlineReadme=$false; ExtraReadmes=@(
         [pscustomobject]@{ Repo="Mockolate.Migration"; TargetFile="11-migration.md" }
     ) }
@@ -58,6 +58,7 @@ $Sources = @(
 # see, so filter it out.
 $ExcludeDirs = @("node_modules", ".docusaurus", "build", ".git")
 $IndexRegex = [regex]'^(\d+)-index(\.mdx?)$'
+$IndexLinkRegex = [regex]'(?<=\]\((?:[^)\s]*/)?)\d+-index(\.mdx?)(?=[)#])'
 $TextExt = @(".md", ".mdx", ".json", ".yml", ".yaml", ".txt", ".css", ".js", ".tsx", ".ts", ".svg")
 $Utf8NoBom = New-Object System.Text.UTF8Encoding($false)
 
@@ -205,7 +206,9 @@ foreach ($source in $Sources) {
                 }
             }
 
-            if ($null -ne $sidebarPosition) {
+            $content = $IndexLinkRegex.Replace($content, 'index$1')
+
+            if ($null -ne $sidebarPosition -and [string]::IsNullOrEmpty($relDir) -and -not $source.Target.Contains('/')) {
                 $content = Ensure-SidebarPosition $content $sidebarPosition
             }
 
