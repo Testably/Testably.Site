@@ -128,7 +128,7 @@ const config: Config = {
           {from: '/aweXpect/advanced/cancellation', to: '/aweXpect/how-it-works/time-and-cancellation'},
           {from: '/aweXpect/advanced/ref-struct', to: '/aweXpect/how-it-works/'},
           {from: '/category/common-types', to: '/aweXpect/values/'},
-          {from: '/Chronology', to: '/aweXpect/extensions/aweXpect.Chronology/'},
+          {from: ['/Chronology', '/aweXpect/extensions/aweXpect.Chronology', '/Extensions/aweXpect.Chronology'], to: '/aweXpect/chronology/'},
           {from: '/aweXpect/behaviour', to: '/aweXpect/behavior/'},
           {from: '/aweXpect/behaviour/delegates', to: '/aweXpect/behavior/delegates'},
           {from: '/aweXpect/behaviour/tasks', to: '/aweXpect/behavior/tasks'},

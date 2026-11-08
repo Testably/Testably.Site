@@ -319,7 +319,30 @@ b.mockolate,
   border: 1px solid var(--ifm-color-emphasis-300);
   border-radius: 999px;
   font-size: 0.9rem;
+  font-family: inherit;
   color: var(--ifm-font-color-base);
+  background: none;
+  cursor: pointer;
+}
+
+.chip[aria-selected='true'] {
+  border-color: var(--ifm-color-emphasis-700);
+  background: var(--ifm-color-emphasis-200);
+  font-weight: var(--ifm-font-weight-semibold);
+}
+
+.extensionCard {
+  max-width: 42rem;
+}
+
+.extensionTitle {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+
+.extensionTitle .cardMeta {
+  margin-top: 0;
 }
 
 .chip.abstractions,

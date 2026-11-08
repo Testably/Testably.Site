@@ -1,4 +1,4 @@
-import type {ReactNode} from 'react';
+import {useRef, useState, type KeyboardEvent, type ReactNode} from 'react';
 import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import useBaseUrl from '@docusaurus/useBaseUrl';
@@ -97,7 +97,124 @@ const libraries: Library[] = [
   },
 ];
 
-const extensions = ['Json', 'Xml', 'Web', 'Reflection', 'Snapshots', 'Logging', 'Chronology'];
+type Extension = {
+  name: string;
+  family?: LibraryKey;
+  intro: ReactNode;
+  sample: ReactNode;
+};
+
+const extensions: Extension[] = [
+  {
+    name: 'Json',
+    intro: (
+      <>
+        Compare JSON by its structure instead of its formatting, and check single properties of <code>JsonElement</code>{' '}
+        and <code>JsonNode</code>.
+      </>
+    ),
+    sample: (
+      <>
+        <Kw>await</Kw> That(json).IsEqualTo(expected).AsJson();{'\n'}
+        <Kw>await</Kw> That(json).IsValidJsonMatching(<Kw>new</Kw> {'{'} title = <Str>"Let It Be"</Str> {'}'});
+      </>
+    ),
+  },
+  {
+    name: 'Xml',
+    intro: (
+      <>
+        Compare XML by its content, and check single attributes and child elements of <code>XElement</code> and{' '}
+        <code>XDocument</code>.
+      </>
+    ),
+    sample: (
+      <>
+        <Kw>await</Kw> That(xml).IsEqualTo(expected).AsXml();{'\n'}
+        <Kw>await</Kw> That(track).HasAttribute(<Str>"artist"</Str>).EqualTo(<Str>"The Beatles"</Str>);
+      </>
+    ),
+  },
+  {
+    name: 'Web',
+    intro: (
+      <>
+        Check the status code, headers and content of an <code>HttpResponseMessage</code>; a failure shows the whole
+        request and response.
+      </>
+    ),
+    sample: (
+      <>
+        <Kw>await</Kw> That(response).HasStatusCode().Success();{'\n'}
+        <Kw>await</Kw> That(response).HasContent(<Str>"*Let It Be*"</Str>).AsWildcard();
+      </>
+    ),
+  },
+  {
+    name: 'Reflection',
+    intro: <>Write architecture and convention tests for assemblies, types and members as plain expectations.</>,
+    sample: (
+      <>
+        <Kw>await</Kw> That(In.AssemblyContaining&lt;<Ty>PlaylistService</Ty>&gt;(){'\n'}
+        {'        '}.Methods().WhichAreAsync()){'\n'}
+        {'    '}.HaveName(<Str>"Async"</Str>).AsSuffix();
+      </>
+    ),
+  },
+  {
+    name: 'Snapshots',
+    intro: (
+      <>Compare strings, objects and public APIs with a reviewed snapshot that is stored next to the test.</>
+    ),
+    sample: (
+      <>
+        <Kw>await</Kw> That(album).MatchesSnapshot();{'\n'}
+        <Kw>await</Kw> That(<Kw>typeof</Kw>(<Ty>Album</Ty>).Assembly).MatchesPublicApiSnapshot();
+      </>
+    ),
+  },
+  {
+    name: 'Logging',
+    intro: (
+      <>
+        Check the log records that a <code>FakeLogger</code> or <code>FakeLogCollector</code> collected.
+      </>
+    ),
+    sample: (
+      <>
+        logger.LogWarning(<Str>"Retry limit reached"</Str>);{'\n'}
+        <Kw>await</Kw> That(collector).LoggedWarning();
+      </>
+    ),
+  },
+  {
+    name: 'Testably',
+    family: 'abstractions',
+    intro: (
+      <>
+        Check the files, directories, notifications and timers of the{' '}
+        <code>MockFileSystem</code> and <code>MockTimeSystem</code> from Testably.Abstractions.
+      </>
+    ),
+    sample: (
+      <>
+        <Kw>await</Kw> That(fileSystem).HasFile(<Str>"let-it-be.txt"</Str>){'\n'}
+        {'    '}.WithContent(<Str>"let it be"</Str>);
+      </>
+    ),
+  },
+  {
+    name: 'Mockolate',
+    family: 'mockolate',
+    intro: <>Verify how often and in which order the methods of a Mockolate mock were invoked.</>,
+    sample: (
+      <>
+        <Kw>await</Kw> That(player.Mock.Verify.Play(<Str>"Let It Be"</Str>)).Once();{'\n'}
+        <Kw>await</Kw> That(player.Mock.Verify).AllInteractionsAreVerified();
+      </>
+    ),
+  },
+];
 
 function Hero() {
   return (
@@ -254,27 +371,73 @@ function Libraries() {
 }
 
 function Extensions() {
+  const versions = usePluginData('nuget-versions') as PackageVersions;
+  const [selected, setSelected] = useState(0);
+  const tabs = useRef<(HTMLButtonElement | null)[]>([]);
+  const extension = extensions[selected];
+  const packageId = `aweXpect.${extension.name}`;
+  const found = versions[packageId];
+
+  function onKeyDown(event: KeyboardEvent) {
+    const step = {ArrowRight: 1, ArrowLeft: -1}[event.key];
+    if (step) {
+      const next = (selected + step + extensions.length) % extensions.length;
+      setSelected(next);
+      tabs.current[next]?.focus();
+    }
+  }
+
   return (
     <section className={styles.section}>
       <div className={clsx(styles.container, styles.stack)}>
         <Heading as="h2" className={styles.smallHeading}>
           aweXpect extensions
         </Heading>
-        <div className={styles.chips}>
-          {extensions.map((name) => (
-            <Link key={name} className={styles.chip} to={`/aweXpect/extensions/aweXpect.${name}/`}>
-              {name}
-            </Link>
+        <div className={styles.chips} role="tablist" aria-label="aweXpect extensions" onKeyDown={onKeyDown}>
+          {extensions.map((e, index) => (
+            <button
+              key={e.name}
+              ref={(tab) => {
+                tabs.current[index] = tab;
+              }}
+              type="button"
+              role="tab"
+              id={`extension-tab-${e.name}`}
+              aria-selected={index === selected}
+              aria-controls="extension-panel"
+              tabIndex={index === selected ? 0 : -1}
+              className={clsx(styles.chip, e.family && styles[e.family])}
+              onClick={() => setSelected(index)}
+            >
+              {e.name}
+            </button>
           ))}
-          <Link className={clsx(styles.chip, styles.abstractions)} to="/aweXpect/extensions/aweXpect.Testably/">
-            Testably
-          </Link>
-          <Link className={clsx(styles.chip, styles.mockolate)} to="/aweXpect/extensions/aweXpect.Mockolate/">
-            Mockolate
-          </Link>
         </div>
+        <Link
+          to={`/aweXpect/extensions/${packageId}/`}
+          role="tabpanel"
+          id="extension-panel"
+          aria-labelledby={`extension-tab-${extension.name}`}
+          className={clsx(styles.card, styles.extensionCard, styles[extension.family ?? 'awexpect'])}
+        >
+          <div className={styles.extensionTitle}>
+            <span className={styles.cardTitle}>{packageId}</span>
+            {found && <span className={styles.cardMeta}>v{found.stable ?? found.latest}</span>}
+          </div>
+          <p className={styles.cardText}>{extension.intro}</p>
+          <pre className={styles.snippet}>
+            <code>{extension.sample}</code>
+          </pre>
+          <span className={clsx(styles.cardLink, styles.libColor)}>Read the {packageId} docs →</span>
+        </Link>
         <p className={styles.muted}>
-          The last two bridge the family: assertions on a <code>MockFileSystem</code> and on Mockolate interactions.
+          Testably and Mockolate bridge the family: assertions on a <code>MockFileSystem</code> and on Mockolate
+          interactions.
+        </p>
+        <p className={styles.muted}>
+          Writing durations? <Link to="/aweXpect/chronology/">aweXpect.Chronology</Link> turns{' '}
+          <code>5.Seconds()</code> and <code>24.December(2024)</code> into <code>TimeSpan</code> and{' '}
+          <code>DateTime</code> values, no aweXpect needed.
         </p>
       </div>
     </section>
