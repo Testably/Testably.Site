@@ -80,7 +80,6 @@
 - [Events](https://docs.testably.org/aweXpect/behavior/events): Record the events of an object and verify how often they were triggered, with which parameters, and PropertyChanged notifications.
 - [Callbacks](https://docs.testably.org/aweXpect/behavior/callbacks): Verify with a Signaler that a callback was called, how often and with which parameters, or wait for it without an expectation.
 - [Extension packages](https://docs.testably.org/aweXpect/extensions/): The extension packages that add expectations for JSON, XML, HTTP, reflection, snapshots, logging, file systems and mocks.
-- [aweXpect.Chronology](https://docs.testably.org/aweXpect/extensions/aweXpect.Chronology/): Extension methods that create TimeSpan, DateTime, DateTimeOffset, DateOnly and TimeOnly values in a readable way, e.g. 5.Seconds() or 24.December(2024).
 - [aweXpect.Json](https://docs.testably.org/aweXpect/extensions/aweXpect.Json/): Verify JSON strings, JsonElement and JsonNode values and the System.Text.Json serialization of objects with aweXpect.
 - [JSON strings](https://docs.testably.org/aweXpect/extensions/aweXpect.Json/strings): Compare strings as JSON by their structure and verify that a string is valid JSON.
 - [Matching JSON](https://docs.testably.org/aweXpect/extensions/aweXpect.Json/matching): Match a JsonElement or JsonNode with an expected value and relax the comparison with the JSON options.
@@ -165,6 +164,7 @@
 - [aweXpect.Xml](https://docs.testably.org/aweXpect/changelog/aweXpect.Xml): The user-facing changes in each release of aweXpect.Xml, generated from the GitHub releases.
 - [What's new in v3](https://docs.testably.org/aweXpect/changelog/migration-to-v3): What changed in aweXpect v3 and how to upgrade from aweXpect 2.x.
 - [What's new in v4](https://docs.testably.org/aweXpect/changelog/migration-to-v4): What changed in aweXpect v4 and how to upgrade from aweXpect 3.x.
+- [aweXpect.Chronology](https://docs.testably.org/aweXpect/chronology/): Extension methods that create TimeSpan, DateTime, DateTimeOffset, DateOnly and TimeOnly values in a readable way, e.g. 5.Seconds() or 24.December(2024).
 - [Migration](https://docs.testably.org/aweXpect/migration/): Migrate the assertions of FluentAssertions and xUnit to aweXpect with the analyzers and code fixes of aweXpect.Migration.
 - [FluentAssertions](https://docs.testably.org/aweXpect/migration/fluentassertions): The FluentAssertions assertions that aweXpect.Migration rewrites to aweXpect, and the cases in which the rewrite behaves differently.
 - [xUnit](https://docs.testably.org/aweXpect/migration/xunit): The xUnit assertions that aweXpect.Migration rewrites to aweXpect, and the cases in which the rewrite behaves differently.
