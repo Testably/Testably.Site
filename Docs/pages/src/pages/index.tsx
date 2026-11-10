@@ -296,9 +296,9 @@ function OneTest() {
             <span className={clsx(styles.lineLabel, styles.awexpect)}>← aweXpect.Testably</span>
             <span>
               {'    '}
-              notifier.Mock.Verify.Send(<Str>"Report Q3 exported"</Str>).Once();
+              <Kw>await</Kw> That(notifier.Mock.Verify.Send(<Str>"Report Q3 exported"</Str>)).Once();
             </span>
-            <span />
+            <span className={clsx(styles.lineLabel, styles.awexpect)}>← aweXpect.Mockolate</span>
             <span>{'}'}</span>
             <span />
           </code>
