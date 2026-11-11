@@ -24,12 +24,42 @@ async function fetchWithRetry(url: string, attempts = 3): Promise<Response> {
   }
 }
 
-async function readVersions(id: string): Promise<PackageVersion> {
-  const response = await fetchWithRetry(`https://api.nuget.org/v3-flatcontainer/${id.toLowerCase()}/index.json`);
+async function readJson<T>(id: string, url: string): Promise<T> {
+  const response = await fetchWithRetry(url);
   if (!response.ok) {
     throw new Error(`Could not read the versions of '${id}' from NuGet (HTTP ${response.status}).`);
   }
-  const {versions} = (await response.json()) as {versions: string[]};
+  return (await response.json()) as T;
+}
+
+type RegistrationPage = {'@id': string; items?: {catalogEntry: {version: string; listed?: boolean}}[]};
+
+/**
+ * Only the registration knows which versions are unlisted, but it can lag behind the flat container, so a fresh
+ * release missing from it still counts as listed.
+ */
+async function readUnlistedVersions(id: string): Promise<Set<string>> {
+  const index = await readJson<{items: RegistrationPage[]}>(
+    id,
+    `https://api.nuget.org/v3/registration5-gz-semver2/${id.toLowerCase()}/index.json`,
+  );
+  const pages = await Promise.all(
+    index.items.map((page) => (page.items ? page : readJson<RegistrationPage>(id, page['@id']))),
+  );
+  return new Set(
+    pages
+      .flatMap((page) => page.items ?? [])
+      .filter((item) => item.catalogEntry.listed === false)
+      .map((item) => item.catalogEntry.version.toLowerCase()),
+  );
+}
+
+async function readVersions(id: string): Promise<PackageVersion> {
+  const [{versions: all}, unlisted] = await Promise.all([
+    readJson<{versions: string[]}>(id, `https://api.nuget.org/v3-flatcontainer/${id.toLowerCase()}/index.json`),
+    readUnlistedVersions(id),
+  ]);
+  const versions = all.filter((version) => !unlisted.has(version));
   return {
     stable: versions.filter((version) => !version.includes('-')).at(-1),
     latest: versions.at(-1)!,
