@@ -230,7 +230,7 @@ const config: Config = {
               html: `<a href="https://github.com/Testably/Testably.Abstractions" class="footer__library-name">Testably.Abstractions</a>`,
             },
             {
-              html: `<a href="https://www.nuget.org/packages/Testably.Abstractions" class="footer__nuget-badge"><img src="https://img.shields.io/nuget/v/Testably.Abstractions?label=NuGet&logo=nuget" alt="Testably.Abstractions on NuGet"/></a>`,
+              html: `<a href="https://www.nuget.org/packages/Testably.Abstractions.Testing" class="footer__nuget-badge"><img src="https://img.shields.io/nuget/v/Testably.Abstractions.Testing?label=NuGet&logo=nuget" alt="Testably.Abstractions.Testing on NuGet"/></a>`,
             },
           ],
         },

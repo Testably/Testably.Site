@@ -35,7 +35,7 @@ const libraries: Library[] = [
   {
     key: 'abstractions',
     label: 'Testably.Abstractions',
-    packageId: 'Testably.Abstractions',
+    packageId: 'Testably.Abstractions.Testing',
     href: '/Abstractions/',
     problem: 'It reads files, checks the date or rolls a dice.',
     tagline: 'Mock the unmockable.',
