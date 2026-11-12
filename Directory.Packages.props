@@ -9,7 +9,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<PackageVersion Include="Fallout.Common" Version="10.5.0"/>
-		<PackageVersion Include="NuGet.Frameworks" Version="7.9.0"/>
+		<PackageVersion Include="NuGet.Frameworks" Version="8.0.0"/>
 	</ItemGroup>
 	<ItemGroup>
 		<PackageVersion Include="TUnit.Engine" Version="1.84.0"/>
