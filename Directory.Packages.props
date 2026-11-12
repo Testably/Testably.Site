@@ -14,7 +14,7 @@
 	<ItemGroup>
 		<PackageVersion Include="TUnit.Engine" Version="1.80.0"/>
 		<PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.12.0"/>
-		<PackageVersion Include="aweXpect" Version="3.4.0"/>
+		<PackageVersion Include="aweXpect" Version="4.0.0"/>
 		<PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.14"/>
 		<PackageVersion Include="Mockolate" Version="3.6.0"/>
 	</ItemGroup>
