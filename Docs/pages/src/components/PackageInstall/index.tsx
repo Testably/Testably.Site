@@ -9,7 +9,6 @@ import CodeBlock from '@theme/CodeBlock';
 import TabItem from '@theme/TabItem';
 import Tabs from '@theme/Tabs';
 import type {PackageVersions} from '@site/src/plugins/nuget-versions';
-import styles from './styles.module.css';
 
 type Props = {
   package: string | string[];
@@ -53,30 +52,17 @@ export default function PackageInstall({
     .join('\n');
 
   return (
-    <>
-      <Tabs groupId="install">
-        <TabItem value="cli" label=".NET CLI" default>
-          <CodeBlock language="bash">{cli}</CodeBlock>
-        </TabItem>
-        <TabItem value="packagereference" label="PackageReference">
-          <CodeBlock language="xml">{packageReferences}</CodeBlock>
-        </TabItem>
-        <TabItem value="cpm" label="Central Package Management">
-          <CodeBlock language="xml" title="Directory.Packages.props">{packageVersions}</CodeBlock>
-          <CodeBlock language="xml" title="Project file">{centralReferences}</CodeBlock>
-        </TabItem>
-      </Tabs>
-      <p className={styles.versions}>
-        Latest version:{' '}
-        {packages.map((p, index) => (
-          <React.Fragment key={p.id}>
-            {index > 0 && ', '}
-            <a href={`https://www.nuget.org/packages/${p.id}/${p.version}`}>
-              {packages.length > 1 ? `${p.id} ${p.version}` : p.version}
-            </a>
-          </React.Fragment>
-        ))}
-      </p>
-    </>
+    <Tabs groupId="install">
+      <TabItem value="cli" label=".NET CLI" default>
+        <CodeBlock language="bash">{cli}</CodeBlock>
+      </TabItem>
+      <TabItem value="packagereference" label="PackageReference">
+        <CodeBlock language="xml">{packageReferences}</CodeBlock>
+      </TabItem>
+      <TabItem value="cpm" label="Central Package Management">
+        <CodeBlock language="xml" title="Directory.Packages.props">{packageVersions}</CodeBlock>
+        <CodeBlock language="xml" title="Project file">{centralReferences}</CodeBlock>
+      </TabItem>
+    </Tabs>
   );
 }
