@@ -41,11 +41,11 @@ Two workflows publish the docs:
 - **`.github/workflows/build.yml`** (`name: Build`) - the main CI workflow runs on every push to `main` and on release tags. Its `build-pages` job (`needs: [ pack ]`) builds and deploys the docs after tests, static analysis and packaging have all succeeded. This is the normal channel for in-repo doc changes.
 - **`.github/workflows/pages.yml`** (`name: Pages`) - triggered by `repository_dispatch` events of type `extension-documentation-updated-event`. Extension repos use this to ask the site to rebuild after their own docs change, without going through the full CI build.
 
-Both workflows run the same deploy steps: setup .NET → `./build.sh Pages` (shallow-clones every repository listed in `AggregatedSources` in `Pipeline/Build.Pages.cs` and copies the configured folder of each into its target directory under `Docs/pages/docs/`) → npm install → docusaurus build → publish to the `gh-pages` branch via [`peaceiris/actions-gh-pages`](https://github.com/peaceiris/actions-gh-pages).
+Both workflows run the same deploy steps: setup .NET → `./build.sh Pages` (shallow-clones every repository listed in `AggregatedSources` in `Pipeline/Build.Pages.cs` and copies the configured folder of each into its target directory under `Docs/pages/docs/`) → npm install → docusaurus build → deploy via [`actions/upload-pages-artifact`](https://github.com/actions/upload-pages-artifact) and [`actions/deploy-pages`](https://github.com/actions/deploy-pages).
 
-In repository settings, GitHub Pages source must be set to **Deploy from a branch** → `gh-pages` / `(root)`.
+In repository settings, GitHub Pages source must be set to **GitHub Actions**.
 
-The custom domain `docs.testably.org` is configured via the `static/CNAME` file. DNS for that subdomain must point to `testably.github.io` (CNAME record) for the custom domain to resolve.
+The custom domain `docs.testably.org` is configured under *Settings → Pages → Custom domain*. DNS for that subdomain must point to `testably.github.io` (CNAME record) for the custom domain to resolve.
 
 ### Adding an extension project
 
