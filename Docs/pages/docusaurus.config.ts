@@ -203,13 +203,13 @@ const config: Config = {
           label: 'Mockolate',
         },
         {
-          // Links the test package of the current section; see src/components/NugetNavbarItem.
+          // Links the package of the current section, extension or migration package; see src/components/NavbarModule.
           type: 'custom-nugetLink',
           label: 'NuGet',
           position: 'right',
         },
         {
-          // Links the repository of the current section; see src/components/GithubNavbarItem.
+          // Links the repository of the current section, extension or migration package; see src/components/NavbarModule.
           type: 'custom-githubLink',
           label: 'GitHub',
           position: 'right',
