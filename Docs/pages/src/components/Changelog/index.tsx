@@ -63,12 +63,12 @@ function summarize(releases: ChangelogRelease[]): Summary {
   return {commits, counts};
 }
 
-function Bar({summary, thick}: {summary: Summary; thick?: boolean}): ReactElement {
+function Bar({summary}: {summary: Summary}): ReactElement {
   const present = categories.filter(({category}) => summary.counts[category] > 0);
   const total = present.reduce((sum, {category}) => sum + summary.counts[category], 0);
   return (
     <div
-      className={clsx(styles.bar, thick && styles.thick)}
+      className={styles.bar}
       role="img"
       aria-label={present.map(({category, many}) => `${summary.counts[category]} ${many}`).join(', ')}>
       {present.map(({category}) => (
@@ -213,7 +213,6 @@ export default function Changelog({changelog: {migrationGuides, mergedPackages, 
         ))}
         {majors.map((major, index) => {
           const majorReleases = releases.filter((release) => majorOf(release) === major);
-          const summary = summarize(majorReleases);
           const first = majorReleases[majorReleases.length - 1];
           const last = majorReleases[0];
           const guide = migrationGuides.find((migrationGuide) => migrationGuide.major === major);
@@ -228,8 +227,6 @@ export default function Changelog({changelog: {migrationGuides, mergedPackages, 
                 <p className={styles.span}>
                   {plural(majorReleases.length, 'release', 'releases')} · {from === to ? from : `${from} to ${to}`}
                 </p>
-                <Bar summary={summary} thick />
-                <Stats summary={summary} />
                 {guide && <MigrationLink guide={guide} />}
               </div>
               {index === 0 || expanded.includes(major) ? (
