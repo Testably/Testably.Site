@@ -138,6 +138,8 @@ const config: Config = {
             'boolean', 'string', 'char', 'number', 'enum', 'object', 'timespan',
             'datetime-offset', 'date-time-only', 'guid', 'version', 'stream',
           ].map((page) => ({from: `/aweXpect/common-types/${page}`, to: `/aweXpect/values/${page}`})),
+          // The help link of the Testably.Abstractions.Migration analyzer and its NuGet project URL.
+          {from: '/Abstractions/Migration', to: '/Abstractions/migration-from-testableio/Migration/'},
         ],
         createRedirects(existingPath: string) {
           // Derived from the existing path, so they hold whether the upgrade guides are still in the migration section or already in the changelog.
