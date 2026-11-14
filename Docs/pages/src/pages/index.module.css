@@ -351,6 +351,10 @@ b.mockolate,
   color: var(--lib);
 }
 
+.chip.core {
+  border-color: var(--lib);
+}
+
 .chip:hover {
   border-color: var(--ifm-color-primary);
   text-decoration: none;
