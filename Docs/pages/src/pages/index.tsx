@@ -412,7 +412,7 @@ function Extensions() {
               aria-selected={index === selected}
               aria-controls="extension-panel"
               tabIndex={index === selected ? 0 : -1}
-              className={clsx(styles.chip, styles[e.family ?? 'awexpect'], e.core && styles.core)}
+              className={clsx(styles.chip, styles[e.family ?? 'awexpect'], e.core ? styles.core : styles.separate)}
               onClick={() => setSelected(index)}
             >
               {e.name}

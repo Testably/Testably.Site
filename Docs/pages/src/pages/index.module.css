@@ -326,8 +326,6 @@ b.mockolate,
 }
 
 .chip[aria-selected='true'] {
-  border-color: var(--ifm-color-emphasis-700);
-  background: var(--ifm-color-emphasis-200);
   font-weight: var(--ifm-font-weight-semibold);
 }
 
@@ -345,14 +343,23 @@ b.mockolate,
   margin-top: 0;
 }
 
-.chip.abstractions,
-.chip.mockolate {
+.chip.core {
+  border-color: var(--lib);
+}
+
+.chip.separate {
   border-color: var(--lib);
   color: var(--lib);
 }
 
-.chip.core {
+.chip.awexpect.separate {
+  border-style: dashed;
+}
+
+.chip[aria-selected='true'] {
   border-color: var(--lib);
+  background: var(--lib);
+  color: var(--ifm-background-surface-color);
 }
 
 .chip:hover {
