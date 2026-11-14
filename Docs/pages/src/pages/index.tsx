@@ -100,6 +100,7 @@ const libraries: Library[] = [
 type Extension = {
   name: string;
   family?: LibraryKey;
+  core?: boolean;
   intro: ReactNode;
   sample: ReactNode;
 };
@@ -107,6 +108,7 @@ type Extension = {
 const extensions: Extension[] = [
   {
     name: 'Json',
+    core: true,
     intro: (
       <>
         Compare JSON by its structure instead of its formatting, and check single properties of <code>JsonElement</code>{' '}
@@ -121,37 +123,33 @@ const extensions: Extension[] = [
     ),
   },
   {
-    name: 'Xml',
+    name: 'Logging',
     intro: (
       <>
-        Compare XML by its content, and check single attributes and child elements of <code>XElement</code> and{' '}
-        <code>XDocument</code>.
+        Check the log records that a <code>FakeLogger</code> or <code>FakeLogCollector</code> collected.
       </>
     ),
     sample: (
       <>
-        <Kw>await</Kw> That(xml).IsEqualTo(expected).AsXml();{'\n'}
-        <Kw>await</Kw> That(track).HasAttribute(<Str>"artist"</Str>).EqualTo(<Str>"The Beatles"</Str>);
+        logger.LogWarning(<Str>"Retry limit reached"</Str>);{'\n'}
+        <Kw>await</Kw> That(collector).LoggedWarning();
       </>
     ),
   },
   {
-    name: 'Web',
-    intro: (
-      <>
-        Check the status code, headers and content of an <code>HttpResponseMessage</code>; a failure shows the whole
-        request and response.
-      </>
-    ),
+    name: 'Mockolate',
+    family: 'mockolate',
+    intro: <>Verify how often and in which order the methods of a Mockolate mock were invoked.</>,
     sample: (
       <>
-        <Kw>await</Kw> That(response).HasStatusCode().Success();{'\n'}
-        <Kw>await</Kw> That(response).HasContent(<Str>"*Let It Be*"</Str>).AsWildcard();
+        <Kw>await</Kw> That(player.Mock.Verify.Play(<Str>"Let It Be"</Str>)).Once();{'\n'}
+        <Kw>await</Kw> That(player.Mock.Verify).AllInteractionsAreVerified();
       </>
     ),
   },
   {
     name: 'Reflection',
+    core: true,
     intro: <>Write architecture and convention tests for assemblies, types and members as plain expectations.</>,
     sample: (
       <>
@@ -163,6 +161,7 @@ const extensions: Extension[] = [
   },
   {
     name: 'Snapshots',
+    core: true,
     intro: (
       <>Compare strings, objects and public APIs with a reviewed snapshot that is stored next to the test.</>
     ),
@@ -170,20 +169,6 @@ const extensions: Extension[] = [
       <>
         <Kw>await</Kw> That(album).MatchesSnapshot();{'\n'}
         <Kw>await</Kw> That(<Kw>typeof</Kw>(<Ty>Album</Ty>).Assembly).MatchesPublicApiSnapshot();
-      </>
-    ),
-  },
-  {
-    name: 'Logging',
-    intro: (
-      <>
-        Check the log records that a <code>FakeLogger</code> or <code>FakeLogCollector</code> collected.
-      </>
-    ),
-    sample: (
-      <>
-        logger.LogWarning(<Str>"Retry limit reached"</Str>);{'\n'}
-        <Kw>await</Kw> That(collector).LoggedWarning();
       </>
     ),
   },
@@ -204,13 +189,34 @@ const extensions: Extension[] = [
     ),
   },
   {
-    name: 'Mockolate',
-    family: 'mockolate',
-    intro: <>Verify how often and in which order the methods of a Mockolate mock were invoked.</>,
+    name: 'Web',
+    core: true,
+    intro: (
+      <>
+        Check the status code, headers and content of an <code>HttpResponseMessage</code>; a failure shows the whole
+        request and response.
+      </>
+    ),
     sample: (
       <>
-        <Kw>await</Kw> That(player.Mock.Verify.Play(<Str>"Let It Be"</Str>)).Once();{'\n'}
-        <Kw>await</Kw> That(player.Mock.Verify).AllInteractionsAreVerified();
+        <Kw>await</Kw> That(response).HasStatusCode().Success();{'\n'}
+        <Kw>await</Kw> That(response).HasContent(<Str>"*Let It Be*"</Str>).AsWildcard();
+      </>
+    ),
+  },
+  {
+    name: 'Xml',
+    core: true,
+    intro: (
+      <>
+        Compare XML by its content, and check single attributes and child elements of <code>XElement</code> and{' '}
+        <code>XDocument</code>.
+      </>
+    ),
+    sample: (
+      <>
+        <Kw>await</Kw> That(xml).IsEqualTo(expected).AsXml();{'\n'}
+        <Kw>await</Kw> That(track).HasAttribute(<Str>"artist"</Str>).EqualTo(<Str>"The Beatles"</Str>);
       </>
     ),
   },
@@ -406,7 +412,7 @@ function Extensions() {
               aria-selected={index === selected}
               aria-controls="extension-panel"
               tabIndex={index === selected ? 0 : -1}
-              className={clsx(styles.chip, e.family && styles[e.family])}
+              className={clsx(styles.chip, styles[e.family ?? 'awexpect'], e.core && styles.core)}
               onClick={() => setSelected(index)}
             >
               {e.name}
