@@ -8,7 +8,7 @@ type NormalizedSidebarItem = Awaited<ReturnType<PluginOptions['sidebarItemsGener
 const config: Config = {
   title: 'Testably',
   tagline: 'Testing libraries that get out of your way.',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/testably-light.svg',
 
   future: {
     v4: true,
