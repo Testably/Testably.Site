@@ -98,7 +98,7 @@ partial class Build
 			if (packages.Length == 0 && mergedPackages.Length == 0 && guides.Count == 0)
 			{
 				await WriteChangelog(directory, "99-changelog", new ChangelogData([], [], releases),
-					CreateChangelogPage(source.Repository, "99-changelog", []));
+					CreateChangelogPage(source.Repository, "99-changelog"));
 				continue;
 			}
 
@@ -127,7 +127,7 @@ partial class Build
 			}
 
 			await WriteChangelog(directory, "index", new ChangelogData(WriteMigrationGuides(directory, source.TargetSubDirectory, "", guides), merged, releases),
-				CreateChangelogPage(source.Repository, "index", packages));
+				CreateChangelogPage(source.Repository, "index"));
 		}
 	}
 
@@ -285,14 +285,11 @@ partial class Build
 	}
 
 	/// <summary>
-	///     The page that renders the <c>&lt;name&gt;.changelog.json</c> next to it with the <c>Changelog</c> component
-	///     and links the changelogs of the packages.
+	///     The page that renders the <c>&lt;name&gt;.changelog.json</c> next to it with the <c>Changelog</c> component.
+	///     The changelogs of the packages are not linked, as the sidebar lists them below this page.
 	/// </summary>
-	static string CreateChangelogPage(string repository, string name, string[] packages)
+	static string CreateChangelogPage(string repository, string name)
 	{
-		string packageLinks = packages.Length == 0
-			? ""
-			: $"\nThe packages have their own changelogs: {string.Join(", ", packages.Select(package => $"[{package}](./{package}.mdx)"))}.\n";
 		return $$"""
 		         ---
 		         description: The user-facing changes in each release of {{repository}}, generated from the GitHub releases.
@@ -304,7 +301,7 @@ partial class Build
 		         # Changelog
 
 		         The breaking changes, features, bug fixes and performance improvements of each release, generated from the [GitHub releases](https://github.com/Testably/{{repository}}/releases). Dependency updates and internal changes are left out.
-		         {{packageLinks}}
+
 		         <Changelog changelog={changelog} />
 
 		         """;

@@ -113,7 +113,7 @@ function Release({release, latest}: {release: ChangelogRelease; latest: boolean}
       <div className={styles.when}>
         <b>{formatDate(release.date, {month: 'short', day: 'numeric'})}</b> {release.date.substring(0, 4)}
       </div>
-      <div className={styles.body}>
+      <div className={styles.body} id={`release-${release.version}`}>
         <span className={clsx(styles.dot, summary.counts.breaking > 0 && styles.breakingDot)} aria-hidden="true" />
         <div className={styles.head}>
           <a className={styles.version} href={release.url}>{release.version}</a>
@@ -149,6 +149,62 @@ function Release({release, latest}: {release: ChangelogRelease; latest: boolean}
         )}
       </div>
     </>
+  );
+}
+
+function Pills({summary}: {summary: Summary}): ReactElement {
+  return (
+    <span className={styles.pills}>
+      {categories
+        .filter(({category}) => summary.counts[category] > 0)
+        .map(({category, one, many}) => (
+          <span key={category} className={clsx(styles.pill, styles[`${category}Pill`])}>
+            {plural(summary.counts[category], one, many)}
+          </span>
+        ))}
+    </span>
+  );
+}
+
+/**
+ * The latest release on top of the page and, when it has no user-facing changes, the last release that has some.
+ * Only the releases of the latest major version are expanded, so the jump link is left out for an older one.
+ */
+function Latest({releases}: {releases: ChangelogRelease[]}): ReactElement {
+  const latest = releases[0];
+  const withChanges = releases.find((release) => release.items.length > 0);
+  return (
+    <div className={styles.latestCard}>
+      <div className={styles.latestTop}>
+        <div className={styles.latestTitle}>
+          <span className={styles.eyebrow}>Latest release</span>
+          <span>
+            <a className={styles.latestVersion} href={`#release-${latest.version}`}>{latest.version}</a>{' '}
+            <span className={styles.span}>{formatDate(latest.date, {month: 'short', day: 'numeric', year: 'numeric'})}</span>
+          </span>
+          {latest.items.length === 0 ? (
+            <span className={styles.span}>A maintenance release without user-facing changes.</span>
+          ) : (
+            <Pills summary={summarize([latest])} />
+          )}
+        </div>
+        <div className={styles.actions}>
+          <a className={styles.primaryAction} href={latest.url}>Release notes on GitHub</a>
+        </div>
+      </div>
+      {withChanges && withChanges !== latest && (
+        <div className={styles.latestChanges}>
+          <span className={styles.span}>Last release with changes</span>
+          <b>
+            {withChanges.version} · {formatDate(withChanges.date, {month: 'short', day: 'numeric', year: 'numeric'})}
+          </b>
+          <Pills summary={summarize([withChanges])} />
+          {majorOf(withChanges) === majorOf(latest) && (
+            <a className={styles.jump} href={`#release-${withChanges.version}`}>Jump to {withChanges.version} ↓</a>
+          )}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -194,6 +250,7 @@ export default function Changelog({changelog: {migrationGuides, mergedPackages, 
 
   return (
     <>
+      {releases.length > 0 && <Latest releases={releases} />}
       <div className={styles.legend}>
         {categories.map(({category, label}) => (
           <span key={category} className={styles[`${category}Text`]}>{label}</span>
