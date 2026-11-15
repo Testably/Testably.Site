@@ -125,3 +125,35 @@ html[data-theme='dark'][data-section='mockolate'] {
   display: inline-block;
   vertical-align: middle;
 }
+
+/* Benchmark pages have many tabs, which as underlined tabs wrap their labels and scroll sideways. */
+.tabs.benchmark-tabs {
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  overflow: visible;
+}
+.benchmark-tabs .tabs__item {
+  margin: 0;
+  padding: 0.35rem 0.9rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 999px;
+  color: var(--ifm-font-color-base);
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.benchmark-tabs .tabs__item:hover {
+  background: transparent;
+  border-color: var(--ifm-color-primary);
+}
+.benchmark-tabs .tabs__item--active,
+.benchmark-tabs .tabs__item--active:hover {
+  background: var(--ifm-color-primary);
+  border-color: var(--ifm-color-primary);
+  color: #ffffff;
+  font-weight: 600;
+}
+[data-theme='dark'] .benchmark-tabs .tabs__item--active,
+[data-theme='dark'] .benchmark-tabs .tabs__item--active:hover {
+  color: #1b1b1d;
+}
