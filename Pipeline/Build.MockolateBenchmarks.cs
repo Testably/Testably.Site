@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Xml.Linq;
 using Fallout.Common;
 using Fallout.Common.IO;
 using Serilog;
@@ -60,6 +61,14 @@ partial class Build
 
 			MockolateSnapshot snapshot = ReduceToMockolateSnapshot(rawData, BenchmarkHistoryLength);
 
+			// The versions of the compared libraries at the measured commit, so that they always match the numbers.
+			string props = await client.GetStringAsync(
+				$"https://raw.githubusercontent.com/{MockolateBenchmarksRepo}/{snapshot.CapturedAt.Sha}/Directory.Packages.props");
+			snapshot.Versions = XDocument.Parse(props).Descendants("PackageVersion")
+				.Where(p => MockolatePackageLibraries.ContainsKey((string?)p.Attribute("Include") ?? ""))
+				.ToDictionary(p => MockolatePackageLibraries[(string)p.Attribute("Include")!],
+					p => (string?)p.Attribute("Version") ?? "");
+
 			string pretty = JsonSerializer.Serialize(snapshot, OutputJsonOptions);
 			await File.WriteAllTextAsync(outputPath, pretty + Environment.NewLine);
 
@@ -72,6 +81,18 @@ partial class Build
 
 	static readonly string[] MockolateLibraries =
 		["Mockolate", "Moq", "NSubstitute", "FakeItEasy", "TUnitMocks", "Imposter",];
+
+	/// <summary>
+	///     The NuGet package of each compared library in <c>Directory.Packages.props</c>, keyed to its library name.
+	/// </summary>
+	static readonly Dictionary<string, string> MockolatePackageLibraries = new()
+	{
+		["Moq"] = "Moq",
+		["NSubstitute"] = "NSubstitute",
+		["FakeItEasy"] = "FakeItEasy",
+		["TUnit.Mocks"] = "TUnitMocks",
+		["Imposter"] = "Imposter",
+	};
 
 	static MockolateSnapshot ReduceToMockolateSnapshot(Dictionary<string, RawBenchmark> rawData, int historyLength)
 	{
@@ -174,6 +195,7 @@ partial class Build
 		[JsonPropertyName("capturedAt")]  public SnapshotCommit       CapturedAt  { get; init; } = new();
 		[JsonPropertyName("environment")] public SnapshotEnvironment? Environment { get; init; }
 		[JsonPropertyName("benchmarks")]  public Dictionary<string, MockolateScenario> Benchmarks { get; init; } = new();
+		[JsonPropertyName("versions")]    public Dictionary<string, string>? Versions { get; set; }
 	}
 
 	sealed class MockolateScenario
