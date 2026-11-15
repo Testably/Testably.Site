@@ -179,7 +179,7 @@ function Latest({releases}: {releases: ChangelogRelease[]}): ReactElement {
         <div className={styles.latestTitle}>
           <span className={styles.eyebrow}>Latest release</span>
           <span>
-            <span className={styles.latestVersion}>{latest.version}</span>{' '}
+            <a className={styles.latestVersion} href={`#release-${latest.version}`}>{latest.version}</a>{' '}
             <span className={styles.span}>{formatDate(latest.date, {month: 'short', day: 'numeric', year: 'numeric'})}</span>
           </span>
           {latest.items.length === 0 ? (

@@ -358,6 +358,7 @@
   font-size: 2.2rem;
   font-weight: var(--ifm-font-weight-bold);
   line-height: 1;
+  color: inherit;
 }
 
 .actions {
