@@ -33,6 +33,14 @@ h1, h2, h3, h4, h5, h6 {
 code, pre, kbd, samp {
   font-variant-ligatures: none;
 }
+/* Geist Mono has a much taller x-height than Instrument Serif, so code in a heading is scaled down to match it. */
+:is(h1, h2, h3, h4, h5, h6) code {
+  font-size: 0.78em;
+  letter-spacing: normal;
+}
+.theme-admonition [class^='admonitionHeading'] {
+  letter-spacing: 0.12em;
+}
 
 /* ───── Default (landing page) ─────
  * Light mode: darker warm neutral (the bracket beige #c8c0b4 has poor
