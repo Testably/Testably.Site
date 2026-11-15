@@ -59,6 +59,26 @@
   background: #8ee08e;
 }
 
+.isMigration:not(.isFixed) .bar {
+  background: var(--ifm-color-emphasis-100);
+  color: var(--ifm-color-emphasis-800);
+}
+
+.isMigration:not(.isFixed) .badge {
+  color: var(--ifm-color-emphasis-0);
+  background: var(--ifm-color-emphasis-700);
+}
+
+.isMigration.isFixed .bar {
+  background: color-mix(in srgb, var(--ifm-color-primary) 14%, var(--ifm-color-emphasis-0));
+  color: var(--ifm-font-color-base);
+}
+
+.isMigration.isFixed .badge {
+  color: var(--ifm-color-emphasis-0);
+  background: var(--ifm-color-primary);
+}
+
 .status {
   flex: 1;
   min-width: 0;
