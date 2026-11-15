@@ -270,7 +270,8 @@ function Headline({rows, baseline}: {rows: Row[]; baseline: Row}): ReactElement 
   } else if (fastest.sample.timeNs < baselineTime) {
     sentence = (
       <>
-        {fastest.name} is the fastest here at {formatNs(fastest.sample.timeNs)}; {baseline.name} takes{' '}
+        {fastest.name} is {others.length === 1 ? 'faster' : 'the fastest'} here at {formatNs(fastest.sample.timeNs)};{' '}
+        {baseline.name} takes{' '}
         <strong>{formatFactor(baselineTime / fastest.sample.timeNs)}</strong> as long.
       </>
     );
@@ -279,7 +280,8 @@ function Headline({rows, baseline}: {rows: Row[]; baseline: Row}): ReactElement 
   } else {
     sentence = (
       <>
-        The next fastest library, {fastest.name}, takes <strong>{factor(fastest)}</strong> as long
+        {others.length === 1 ? fastest.name : <>The next fastest library, {fastest.name},</>} takes{' '}
+        <strong>{factor(fastest)}</strong> as long
         {slowest !== fastest && (
           <>
             , and {slowest.name} takes <strong>{factor(slowest)}</strong> as long
