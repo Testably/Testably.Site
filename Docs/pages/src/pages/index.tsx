@@ -336,8 +336,8 @@ function LibraryCard({library, versions}: {library: Library; versions: PackageVe
         <ThemedImage
           sources={{light: useBaseUrl(library.iconLight), dark: useBaseUrl(library.iconDark)}}
           alt=""
-          width={44}
-          height={44}
+          width={53}
+          height={53}
         />
         <div>
           <div className={styles.cardTitle}>{library.label}</div>
