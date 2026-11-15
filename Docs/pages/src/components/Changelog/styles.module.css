@@ -284,6 +284,113 @@
   text-decoration: underline;
 }
 
+.body[id] {
+  scroll-margin-top: calc(var(--ifm-navbar-height) + 1rem);
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.pill {
+  border-radius: 999px;
+  padding: 0.05rem 0.6rem;
+  font-size: 0.8rem;
+  background: var(--ifm-color-emphasis-100);
+  color: var(--ifm-color-emphasis-800);
+}
+
+.breakingPill {
+  background: var(--ifm-color-danger-contrast-background);
+  color: var(--ifm-color-danger-contrast-foreground);
+  font-weight: var(--ifm-font-weight-semibold);
+}
+
+.featurePill {
+  background: var(--ifm-color-success-contrast-background);
+  color: var(--ifm-color-success-contrast-foreground);
+}
+
+.performancePill {
+  background: var(--ifm-color-info-contrast-background);
+  color: var(--ifm-color-info-contrast-foreground);
+}
+
+.latestCard {
+  margin-bottom: 1.25rem;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+/* Derived from the primary color, as each library section of the site has its own. */
+.latestTop {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 2.5rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  background: color-mix(in srgb, var(--ifm-color-primary) 10%, transparent);
+}
+
+.latestTitle {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.eyebrow {
+  font-size: 0.75rem;
+  font-weight: var(--ifm-font-weight-semibold);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ifm-color-primary-darkest);
+}
+
+:global([data-theme='dark']) .eyebrow {
+  color: var(--ifm-color-primary-lightest);
+}
+
+.latestVersion {
+  font-size: 2.2rem;
+  font-weight: var(--ifm-font-weight-bold);
+  line-height: 1;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+/* The dark theme has light primary colors; `--ifm-color-emphasis-0` is white in the light and dark in the dark theme. */
+.primaryAction,
+.primaryAction:hover {
+  padding: 0.55rem 1rem;
+  border-radius: 8px;
+  background: var(--ifm-color-primary);
+  color: var(--ifm-color-emphasis-0);
+  font-weight: var(--ifm-font-weight-semibold);
+  text-decoration: none;
+}
+
+.latestChanges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.25rem;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.jump {
+  margin-left: auto;
+  font-weight: var(--ifm-font-weight-semibold);
+}
+
 @media (max-width: 600px) {
   .timeline {
     grid-template-columns: minmax(0, 1fr);
