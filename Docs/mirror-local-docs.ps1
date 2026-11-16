@@ -36,7 +36,7 @@ $DocsRoot = Join-Path $RepoRoot "Docs/pages/docs"
 
 # Mirrors AggregatedSources in Pipeline/Build.Pages.cs.
 $Sources = @(
-    [pscustomobject]@{ Repo="Testably.Abstractions";           SourcePath="Docs/pages/docs"; Target="Abstractions";           InlineReadme=$false; ExtraReadmes=@(); ExcludedFiles=@("07-migration-from-testableio/00-index.mdx", "07-migration-from-testableio/_category_.json") }
+    [pscustomobject]@{ Repo="Testably.Abstractions";           SourcePath="Docs/pages/docs"; Target="Abstractions";           InlineReadme=$false; ExtraReadmes=@() }
     [pscustomobject]@{ Repo="Testably.Abstractions.Migration"; SourcePath="Docs/pages";      Target="Abstractions/07-migration-from-testableio"; InlineReadme=$true;  ExtraReadmes=@(); CleanTarget=$false }
     [pscustomobject]@{ Repo="aweXpect";                        SourcePath="Docs/pages";      Target="aweXpect";               InlineReadme=$false; ExtraReadmes=@(); ExcludedFiles=@("10-migration.md") }
     [pscustomobject]@{ Repo="aweXpect.Migration";              SourcePath="Docs/pages";      Target="aweXpect/10-migration";  InlineReadme=$true;  ExtraReadmes=@(); CleanTarget=$false }
@@ -49,7 +49,7 @@ $Sources = @(
     [pscustomobject]@{ Repo="aweXpect";              SourcePath="Docs/extensions/aweXpect.Web";        Target="aweXpect/07-extensions/aweXpect.Web";        InlineReadme=$false; ExtraReadmes=@() }
     [pscustomobject]@{ Repo="aweXpect";              SourcePath="Docs/extensions/aweXpect.Xml";        Target="aweXpect/07-extensions/aweXpect.Xml";        InlineReadme=$false; ExtraReadmes=@() }
     [pscustomobject]@{ Repo="aweXpect.Chronology";   SourcePath="Docs/pages";      Target="aweXpect/chronology";            InlineReadme=$true;  ExtraReadmes=@() }
-    [pscustomobject]@{ Repo="Mockolate";             SourcePath="Docs/pages";      Target="Mockolate";                      InlineReadme=$false; ExtraReadmes=@(); ExcludedFiles=@("11-migration/00-index.mdx", "11-migration/_category_.json") }
+    [pscustomobject]@{ Repo="Mockolate";             SourcePath="Docs/pages";      Target="Mockolate";                      InlineReadme=$false; ExtraReadmes=@() }
     [pscustomobject]@{ Repo="Mockolate.Migration";   SourcePath="Docs/pages";      Target="Mockolate/11-migration";         InlineReadme=$true;  ExtraReadmes=@(); CleanTarget=$false }
 )
 
