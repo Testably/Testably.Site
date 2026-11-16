@@ -55,8 +55,7 @@ partial class Build
 	/// </summary>
 	static readonly DocsSource[] AggregatedSources =
 	[
-		new("Testably", "Testably.Abstractions",           "Docs/pages/docs", "Abstractions",
-			ExcludedFiles: ["07-migration-from-testableio/00-index.mdx", "07-migration-from-testableio/_category_.json"]),
+		new("Testably", "Testably.Abstractions",           "Docs/pages/docs", "Abstractions"),
 		new("Testably", "Testably.Abstractions.Migration", "Docs/pages",      "Abstractions/migration-from-testableio",
 			CleanTarget: false),
 		new("Testably", "aweXpect",                        "Docs/pages",      "aweXpect",
@@ -72,8 +71,7 @@ partial class Build
 		new("Testably", "aweXpect",              "Docs/extensions/aweXpect.Web",        "aweXpect/extensions/aweXpect.Web"),
 		new("Testably", "aweXpect",              "Docs/extensions/aweXpect.Xml",        "aweXpect/extensions/aweXpect.Xml"),
 		new("Testably", "aweXpect.Chronology",   "Docs/pages",      "aweXpect/chronology"),
-		new("Testably", "Mockolate",             "Docs/pages",      "Mockolate",
-			ExcludedFiles: ["11-migration/00-index.mdx", "11-migration/_category_.json"]),
+		new("Testably", "Mockolate",             "Docs/pages",      "Mockolate"),
 		new("Testably", "Mockolate.Migration",   "Docs/pages",      "Mockolate/migration",
 			CleanTarget: false),
 	];
