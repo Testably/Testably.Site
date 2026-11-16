@@ -139,13 +139,15 @@ const config: Config = {
             'datetime-offset', 'date-time-only', 'guid', 'version', 'stream',
           ].map((page) => ({from: `/aweXpect/common-types/${page}`, to: `/aweXpect/values/${page}`})),
           // The migration packages own their whole migration section instead of a nested category.
-          {from: '/Abstractions/migration-from-testableio/Migration', to: '/Abstractions/migration-from-testableio/'},
-          {from: '/Abstractions/migration-from-testableio/Migration/testableio', to: '/Abstractions/migration-from-testableio/testableio'},
+          {from: ['/Abstractions/migration-from-testableio', '/Abstractions/migration-from-testableio/Migration'], to: '/Abstractions/migration/'},
+          {from: ['/Abstractions/migration-from-testableio/testableio', '/Abstractions/migration-from-testableio/Migration/testableio'], to: '/Abstractions/migration/from-testableio'},
           {from: '/Mockolate/migration/automated', to: '/Mockolate/migration/'},
           {from: '/Mockolate/migration/automated/moq', to: '/Mockolate/migration/moq'},
           {from: '/Mockolate/migration/automated/nsubstitute', to: '/Mockolate/migration/nsubstitute'},
-          // The help link of the Testably.Abstractions.Migration analyzer and its NuGet project URL.
-          {from: '/Abstractions/Migration', to: '/Abstractions/migration-from-testableio/'},
+          // The help link and NuGet project URL of Testably.Abstractions.Migration up to v0.5.0. GitHub Pages serves paths
+          // case-sensitively, so it needs its own redirect file, which a case-insensitive file system (Windows, macOS)
+          // cannot hold next to /Abstractions/migration.
+          ...(process.platform === 'linux' ? [{from: '/Abstractions/Migration', to: '/Abstractions/migration/'}] : []),
         ],
         createRedirects(existingPath: string) {
           // Derived from the existing path, so they hold whether the upgrade guides are still in the migration section or already in the changelog.

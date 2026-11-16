@@ -29,7 +29,7 @@ const PACKAGE_ROUTES: [RegExp, NavbarModule][] = [
   [/^\/awexpect\/chronology(?:\/|$)/i, {repository: 'aweXpect.Chronology', package: 'aweXpect.Chronology'}],
   [/^\/awexpect\/migration(?:\/|$)/i, {repository: 'aweXpect.Migration', package: 'aweXpect.Migration'}],
   [/^\/mockolate\/migration(?:\/|$)/i, {repository: 'Mockolate.Migration', package: 'Mockolate.Migration'}],
-  [/^\/abstractions\/migration-from-testableio(?:\/|$)/i, {repository: 'Testably.Abstractions.Migration', package: 'Testably.Abstractions.Migration'}],
+  [/^\/abstractions\/migration(?:\/|$)/i, {repository: 'Testably.Abstractions.Migration', package: 'Testably.Abstractions.Migration'}],
 ];
 
 export function getNavbarModule(pathname: string): NavbarModule | null {

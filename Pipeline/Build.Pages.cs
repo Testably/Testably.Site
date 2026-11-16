@@ -56,7 +56,7 @@ partial class Build
 	static readonly DocsSource[] AggregatedSources =
 	[
 		new("Testably", "Testably.Abstractions",           "Docs/pages/docs", "Abstractions"),
-		new("Testably", "Testably.Abstractions.Migration", "Docs/pages",      "Abstractions/migration-from-testableio",
+		new("Testably", "Testably.Abstractions.Migration", "Docs/pages",      "Abstractions/migration",
 			CleanTarget: false),
 		new("Testably", "aweXpect",                        "Docs/pages",      "aweXpect",
 			ExcludedFiles: ["10-migration.md"]),
