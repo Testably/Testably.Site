@@ -37,7 +37,7 @@ $DocsRoot = Join-Path $RepoRoot "Docs/pages/docs"
 # Mirrors AggregatedSources in Pipeline/Build.Pages.cs.
 $Sources = @(
     [pscustomobject]@{ Repo="Testably.Abstractions";           SourcePath="Docs/pages/docs"; Target="Abstractions";           InlineReadme=$false; ExtraReadmes=@() }
-    [pscustomobject]@{ Repo="Testably.Abstractions.Migration"; SourcePath="Docs/pages";      Target="Abstractions/07-migration-from-testableio"; InlineReadme=$true;  ExtraReadmes=@(); CleanTarget=$false }
+    [pscustomobject]@{ Repo="Testably.Abstractions.Migration"; SourcePath="Docs/pages";      Target="Abstractions/migration"; InlineReadme=$true;  ExtraReadmes=@(); CleanTarget=$false }
     [pscustomobject]@{ Repo="aweXpect";                        SourcePath="Docs/pages";      Target="aweXpect";               InlineReadme=$false; ExtraReadmes=@(); ExcludedFiles=@("10-migration.md") }
     [pscustomobject]@{ Repo="aweXpect.Migration";              SourcePath="Docs/pages";      Target="aweXpect/10-migration";  InlineReadme=$true;  ExtraReadmes=@(); CleanTarget=$false }
     [pscustomobject]@{ Repo="aweXpect";              SourcePath="Docs/extensions/aweXpect.Json";       Target="aweXpect/07-extensions/aweXpect.Json";       InlineReadme=$false; ExtraReadmes=@() }
