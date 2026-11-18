@@ -12,17 +12,18 @@
 @import '@fontsource-variable/geist/wght.css';
 @import '@fontsource-variable/geist/wght-italic.css';
 @import '@fontsource-variable/geist-mono/wght.css';
-@import '@fontsource/instrument-serif/400.css';
-@import '@fontsource/instrument-serif/400-italic.css';
+@import '@fontsource-variable/newsreader/opsz.css';
+@import '@fontsource-variable/newsreader/opsz-italic.css';
 
 :root {
   --ifm-font-family-base: 'Geist Variable', system-ui, -apple-system, 'Segoe UI', Roboto, Ubuntu, Cantarell, 'Noto Sans', sans-serif;
-  --ifm-heading-font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --ifm-heading-font-family: 'Newsreader Variable', Georgia, 'Times New Roman', serif;
   --ifm-font-family-monospace: 'Geist Mono Variable', SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --ifm-heading-font-weight: 400;
+  --ifm-h4-font-size: 1.2rem;
 }
-h1, h2, h3, h4, h5, h6 {
-  letter-spacing: 0.08em;
+h4 {
+  font-weight: 500;
 }
 .markdown h1:first-child {
   --ifm-h1-font-size: 3.45rem;
@@ -33,10 +34,10 @@ h1, h2, h3, h4, h5, h6 {
 code, pre, kbd, samp {
   font-variant-ligatures: none;
 }
-/* Geist Mono has a much taller x-height than Instrument Serif, so code in a heading is scaled down to match it. */
+/* Geist Mono has a taller x-height than Newsreader, so code in a heading is scaled down to match it. */
 :is(h1, h2, h3, h4, h5, h6) code {
-  font-size: 0.78em;
-  letter-spacing: normal;
+  font-size: 0.8em;
+  vertical-align: baseline;
 }
 .theme-admonition [class^='admonitionHeading'] {
   letter-spacing: 0.12em;
