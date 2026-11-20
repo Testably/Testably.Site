@@ -6,6 +6,7 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import {usePluginData} from '@docusaurus/useGlobalData';
 import Layout from '@theme/Layout';
 import Heading from '@theme/Heading';
+import Admonition from '@theme/Admonition';
 import ThemedImage from '@theme/ThemedImage';
 import type {PackageVersions} from '@site/src/plugins/nuget-versions';
 import styles from './index.module.css';
@@ -111,13 +112,20 @@ const extensions: Extension[] = [
     core: true,
     intro: (
       <>
-        Compare JSON by its structure instead of its formatting, and check single properties of <code>JsonElement</code>{' '}
-        and <code>JsonNode</code>.
+        Compare JSON strings by their structure, so whitespace and property order no longer break a test. Check single
+        properties of a <code>JsonElement</code> or <code>JsonNode</code>, or match JSON against an anonymous object. A
+        failure names the path of the first difference, e.g. <code>$.durationSeconds</code>.
       </>
     ),
     sample: (
       <>
-        <Kw>await</Kw> That(json).IsEqualTo(expected).AsJson();{'\n'}
+        <Ty>string</Ty> json = <Str>{'"""{"title": "Let It Be", "year": 1970}"""'}</Str>;{'\n'}
+        {'\n'}
+        <Cm>// equal, although formatted differently</Cm>
+        {'\n'}
+        <Kw>await</Kw> That(json).IsEqualTo(<Str>{'"""{ "year": 1970, "title": "Let It Be" }"""'}</Str>).AsJson();{'\n'}
+        <Cm>// only checks the properties you care about</Cm>
+        {'\n'}
         <Kw>await</Kw> That(json).IsValidJsonMatching(<Kw>new</Kw> {'{'} title = <Str>"Let It Be"</Str> {'}'});
       </>
     ),
@@ -126,23 +134,38 @@ const extensions: Extension[] = [
     name: 'Logging',
     intro: (
       <>
-        Check the log records that a <code>FakeLogger</code> or <code>FakeLogCollector</code> collected.
+        Verify what your code logged with <code>Microsoft.Extensions.Logging</code>. Collect the records with a{' '}
+        <code>FakeLogger</code> and check their level, message, exception and properties. A failure lists the records
+        that were actually logged.
       </>
     ),
     sample: (
       <>
-        logger.LogWarning(<Str>"Retry limit reached"</Str>);{'\n'}
-        <Kw>await</Kw> That(collector).LoggedWarning();
+        <Ty>FakeLogger</Ty>&lt;<Ty>OrderService</Ty>&gt; logger = <Kw>new</Kw>();{'\n'}
+        <Kw>new</Kw> <Ty>OrderService</Ty>(logger).Submit(order);{'\n'}
+        {'\n'}
+        <Kw>await</Kw> That(logger).LoggedWarning(){'\n'}
+        {'    '}.WithMessage(<Str>"Retry limit * reached"</Str>).AsWildcard();{'\n'}
+        <Kw>await</Kw> That(logger).DidNotLogError();
       </>
     ),
   },
   {
     name: 'Mockolate',
     family: 'mockolate',
-    intro: <>Verify how often and in which order the methods of a Mockolate mock were invoked.</>,
+    intro: (
+      <>
+        Verify the interactions with a Mockolate mock as regular aweXpect expectations: how often a method was called,
+        in which order, and that no call went unchecked. A failure lists all recorded interactions.
+      </>
+    ),
     sample: (
       <>
+        <Ty>IPlayer</Ty> player = <Ty>IPlayer</Ty>.CreateMock();{'\n'}
+        <Kw>new</Kw> <Ty>Jukebox</Ty>(player).PlayOnce(<Str>"Let It Be"</Str>);{'\n'}
+        {'\n'}
         <Kw>await</Kw> That(player.Mock.Verify.Play(<Str>"Let It Be"</Str>)).Once();{'\n'}
+        <Kw>await</Kw> That(player.Mock.Verify.Play(<Str>"Let It Be"</Str>)).Then(m =&gt; m.Stop());{'\n'}
         <Kw>await</Kw> That(player.Mock.Verify).AllInteractionsAreVerified();
       </>
     ),
@@ -150,9 +173,22 @@ const extensions: Extension[] = [
   {
     name: 'Reflection',
     core: true,
-    intro: <>Write architecture and convention tests for assemblies, types and members as plain expectations.</>,
+    intro: (
+      <>
+        Guard your architecture and naming conventions with tests. Select assemblies, types or members, filter them, and
+        state a rule, e.g. which layer must not reference which. A failure names every type or member that breaks the
+        rule.
+      </>
+    ),
     sample: (
       <>
+        <Cm>// the API layer must not reference the data layer</Cm>
+        {'\n'}
+        <Kw>await</Kw> That(Types.InNamespace(<Str>"MusicStore.Api"</Str>)){'\n'}
+        {'    '}.DoNotDependOn(<Str>"MusicStore.Data"</Str>);{'\n'}
+        {'\n'}
+        <Cm>// every async method ends in "Async"</Cm>
+        {'\n'}
         <Kw>await</Kw> That(In.AssemblyContaining&lt;<Ty>PlaylistService</Ty>&gt;(){'\n'}
         {'        '}.Methods().WhichAreAsync()){'\n'}
         {'    '}.HaveName(<Str>"Async"</Str>).AsSuffix();
@@ -163,11 +199,20 @@ const extensions: Extension[] = [
     name: 'Snapshots',
     core: true,
     intro: (
-      <>Compare strings, objects and public APIs with a reviewed snapshot that is stored next to the test.</>
+      <>
+        Verify large or generated output without writing out the expected value. The first run stores the result in a
+        file next to the test; once you accepted it, later runs fail as soon as the output changes. It also catches
+        unintended changes to the public API of an assembly.
+      </>
     ),
     sample: (
       <>
+        <Cm>// compared with AlbumTests.Describes.awexpect-snapshot.txt</Cm>
+        {'\n'}
         <Kw>await</Kw> That(album).MatchesSnapshot();{'\n'}
+        {'\n'}
+        <Cm>// fails when a public type or member was added, changed or removed</Cm>
+        {'\n'}
         <Kw>await</Kw> That(<Kw>typeof</Kw>(<Ty>Album</Ty>).Assembly).MatchesPublicApiSnapshot();
       </>
     ),
@@ -177,14 +222,21 @@ const extensions: Extension[] = [
     family: 'abstractions',
     intro: (
       <>
-        Check the files, directories, notifications and timers of the{' '}
-        <code>MockFileSystem</code> and <code>MockTimeSystem</code> from Testably.Abstractions.
+        Verify the state of the <code>MockFileSystem</code> and <code>MockTimeSystem</code> from Testably.Abstractions
+        after your code ran: which files and directories exist, what they contain, and which timers and notifications
+        were triggered.
       </>
     ),
     sample: (
       <>
+        <Ty>MockFileSystem</Ty> fileSystem = <Kw>new</Kw>();{'\n'}
+        <Ty>MockTimeSystem</Ty> timeSystem = <Kw>new</Kw>();{'\n'}
+        <Kw>new</Kw> <Ty>AutoSaver</Ty>(fileSystem, timeSystem).Start(<Str>"Let It Be"</Str>);{'\n'}
+        {'\n'}
         <Kw>await</Kw> That(fileSystem).HasFile(<Str>"let-it-be.txt"</Str>){'\n'}
-        {'    '}.WithContent(<Str>"let it be"</Str>);
+        {'    '}.WithContent(<Str>"let it be"</Str>).IgnoringCase();{'\n'}
+        <Kw>await</Kw> That(timeSystem.TimerHandler[<Str>0</Str>]){'\n'}
+        {'    '}.Executed().AtLeast(<Str>3</Str>.Times()).Within(<Str>5</Str>.Seconds());
       </>
     ),
   },
@@ -193,13 +245,17 @@ const extensions: Extension[] = [
     core: true,
     intro: (
       <>
-        Check the status code, headers and content of an <code>HttpResponseMessage</code>; a failure shows the whole
-        request and response.
+        Verify HTTP requests and responses, e.g. in integration tests with an <code>HttpClient</code>: status code,
+        headers, content and problem details. A failure shows the whole request and response, so you see what the server
+        actually returned.
       </>
     ),
     sample: (
       <>
+        <Ty>HttpResponseMessage</Ty> response = <Kw>await</Kw> client.GetAsync(<Str>"/tracks/1"</Str>);{'\n'}
+        {'\n'}
         <Kw>await</Kw> That(response).HasStatusCode().Success();{'\n'}
+        <Kw>await</Kw> That(response).HasContentType(<Str>"application/json"</Str>);{'\n'}
         <Kw>await</Kw> That(response).HasContent(<Str>"*Let It Be*"</Str>).AsWildcard();
       </>
     ),
@@ -209,14 +265,19 @@ const extensions: Extension[] = [
     core: true,
     intro: (
       <>
-        Compare XML by its content, and check single attributes and child elements of <code>XElement</code> and{' '}
-        <code>XDocument</code>.
+        Compare XML by its content, so attribute order, whitespace and comments no longer break a test. Check single
+        attributes and child elements of an <code>XElement</code> or <code>XDocument</code>. A failure names the path of
+        the difference, e.g. <code>/album/track/@title</code>.
       </>
     ),
     sample: (
       <>
-        <Kw>await</Kw> That(xml).IsEqualTo(expected).AsXml();{'\n'}
-        <Kw>await</Kw> That(track).HasAttribute(<Str>"artist"</Str>).EqualTo(<Str>"The Beatles"</Str>);
+        <Ty>string</Ty> xml = <Str>{'"""<track title="Let It Be" artist="The Beatles"/>"""'}</Str>;{'\n'}
+        {'\n'}
+        <Cm>// equal, although the attributes are in a different order</Cm>
+        {'\n'}
+        <Kw>await</Kw> That(xml).IsEqualTo(<Str>{'"""<track artist="The Beatles" title="Let It Be"/>"""'}</Str>){'\n'}
+        {'    '}.AsXml();
       </>
     ),
   },
@@ -440,11 +501,11 @@ function Extensions() {
           Testably and Mockolate bridge the family: assertions on a <code>MockFileSystem</code> and on Mockolate
           interactions.
         </p>
-        <p className={styles.muted}>
-          Writing durations? <Link to="/aweXpect/chronology/">aweXpect.Chronology</Link> turns{' '}
-          <code>5.Seconds()</code> and <code>24.December(2024)</code> into <code>TimeSpan</code> and{' '}
-          <code>DateTime</code> values, no aweXpect needed.
-        </p>
+        <Admonition type="tip">
+          Use <Link to="/aweXpect/chronology/">aweXpect.Chronology</Link> to write durations and dates as{' '}
+          <code>5.Seconds()</code> or <code>24.December(2024)</code> instead of <code>TimeSpan.FromSeconds(5)</code>{' '}
+          or <code>new DateTime(2024, 12, 24)</code>. It works on its own, also without aweXpect.
+        </Admonition>
       </div>
     </section>
   );
