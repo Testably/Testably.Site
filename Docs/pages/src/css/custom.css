@@ -132,6 +132,14 @@ html[data-theme='dark'][data-section='mockolate'] {
   --ifm-color-primary-lightest: #d8b696;
 }
 
+/* Newsreader's capitals sit 0.1em above the middle of the line box (Geist's are centered), so shift them back down. */
+.navbar__title,
+.navbar__link {
+  position: relative;
+  top: 0.1em;
+  font-family: var(--ifm-heading-font-family);
+}
+
 /* Footer: each library is its own column with the project name on top
    (linking to GitHub) and the NuGet badge below (linking to NuGet).
    Both rows are centered horizontally within the column. */
