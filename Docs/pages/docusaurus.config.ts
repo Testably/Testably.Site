@@ -231,42 +231,6 @@ const config: Config = {
         },
       ],
     },
-    footer: {
-      style: 'dark',
-      links: [
-        {
-          items: [
-            {
-              html: `<a href="https://github.com/Testably/Testably.Abstractions" class="footer__library-name">Testably.Abstractions</a>`,
-            },
-            {
-              html: `<a href="https://www.nuget.org/packages/Testably.Abstractions.Testing" class="footer__nuget-badge"><img src="https://img.shields.io/nuget/v/Testably.Abstractions.Testing?label=NuGet&logo=nuget" alt="Testably.Abstractions.Testing on NuGet"/></a>`,
-            },
-          ],
-        },
-        {
-          items: [
-            {
-              html: `<a href="https://github.com/Testably/aweXpect" class="footer__library-name">aweXpect</a>`,
-            },
-            {
-              html: `<a href="https://www.nuget.org/packages/aweXpect" class="footer__nuget-badge"><img src="https://img.shields.io/nuget/v/aweXpect?label=NuGet&logo=nuget" alt="aweXpect on NuGet"/></a>`,
-            },
-          ],
-        },
-        {
-          items: [
-            {
-              html: `<a href="https://github.com/Testably/Mockolate" class="footer__library-name">Mockolate</a>`,
-            },
-            {
-              html: `<a href="https://www.nuget.org/packages/Mockolate" class="footer__nuget-badge"><img src="https://img.shields.io/nuget/v/Mockolate?label=NuGet&logo=nuget" alt="Mockolate on NuGet"/></a>`,
-            },
-          ],
-        },
-      ],
-      copyright: `Copyright © ${new Date().getFullYear()} Testably.`,
-    },
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,

@@ -138,34 +138,45 @@ html[data-theme='dark'][data-section='mockolate'] {
   position: relative;
   top: 0.1em;
   font-family: var(--ifm-heading-font-family);
+  font-size: 1.125rem;
 }
 
-/* Footer: each library is its own column with the project name on top
-   (linking to GitHub) and the NuGet badge below (linking to NuGet).
-   Both rows are centered horizontally within the column. */
 .footer {
-  padding-top: 1rem;
+  font-size: 0.875rem;
 }
-.footer__col {
-  text-align: center;
-}
-.footer__items {
-  margin-top: 0;
-}
-.footer__library-name {
-  display: inline-block;
-  color: var(--ifm-footer-title-color);
-  font-size: var(--ifm-h4-font-size);
+.footer__title {
+  font-family: var(--ifm-heading-font-family);
+  font-size: 1.125rem;
   font-weight: var(--ifm-heading-font-weight);
-  margin-bottom: 0.25rem;
 }
-.footer__library-name:hover {
-  color: var(--ifm-link-hover-color);
-  text-decoration: underline;
+.footer__title > a {
+  color: inherit;
 }
-.footer__nuget-badge img {
-  display: inline-block;
-  vertical-align: middle;
+.footer__version {
+  margin-left: 0.4em;
+  font-size: 0.75em;
+}
+.footer__version a {
+  color: var(--ifm-footer-link-color);
+}
+.footer__brand-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  text-align: left;
+}
+.footer__brand-row a {
+  color: inherit;
+}
+.footer__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 /* Benchmark pages have many tabs, which as underlined tabs wrap their labels and scroll sideways. */
