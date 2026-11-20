@@ -122,6 +122,15 @@ b.mockolate,
   color: #8a847c;
 }
 
+.license a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.license a:hover {
+  color: #c8c0b4;
+}
+
 .heroLogo {
   flex: none;
   width: 15rem;

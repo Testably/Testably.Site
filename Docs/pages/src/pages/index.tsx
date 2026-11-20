@@ -304,7 +304,9 @@ function Hero() {
               View on GitHub
             </Link>
           </div>
-          <p className={styles.license}>Free and open source under the MIT license.</p>
+          <p className={styles.license}>
+            Free and open source under the <Link href="https://opensource.org/license/mit">MIT license</Link>.
+          </p>
         </div>
         <img className={styles.heroLogo} src={useBaseUrl('img/testably-dark.svg')} alt="" width={240} height={240} />
       </div>
