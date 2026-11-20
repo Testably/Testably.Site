@@ -116,6 +116,8 @@ import PackageInstall from '@site/src/components/PackageInstall';
 - A new package id must be added to the `nuget-versions` plugin in `Docs/pages/docusaurus.config.ts`; the build fails otherwise.
 - Do not add NuGet badges to docs pages; the component already shows the version and links to NuGet.
 
+To show only the version, e.g. in a table of packages with their own release cycle, use `<PackageVersion package="aweXpect.Logging" />` from `@site/src/components/PackageVersion`. It renders the latest version linked to NuGet and takes `prerelease` like `PackageInstall`.
+
 ## Code examples
 
 - Use the language tags `csharp`, `xml`, `json`, `text` and `shell` (for commands).
