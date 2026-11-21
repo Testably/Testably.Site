@@ -43,13 +43,6 @@
   color: var(--ifm-font-color-base);
 }
 
-/* Clears the medal on the line and centers the text on the chapter headline. */
-.chapterWhen {
-  padding-top: 0.25rem;
-  padding-right: 2rem;
-  line-height: 2.5rem;
-}
-
 .body {
   position: relative;
   display: grid;
@@ -154,7 +147,7 @@
 .breakingBadge {
   border-color: var(--ifm-color-danger);
   color: var(--ifm-color-danger);
-  background: var(--ifm-color-danger-contrast-background);
+  background: color-mix(in srgb, var(--ifm-color-danger) 10%, transparent);
 }
 
 .upcomingBadge {
@@ -302,20 +295,21 @@
   color: var(--ifm-color-emphasis-800);
 }
 
+/* A faint tint like the callouts, as Infima's contrast backgrounds are saturated in the dark theme. */
 .breakingPill {
-  background: var(--ifm-color-danger-contrast-background);
-  color: var(--ifm-color-danger-contrast-foreground);
+  background: color-mix(in srgb, var(--ifm-color-danger) 14%, transparent);
+  color: var(--ifm-font-color-base);
   font-weight: var(--ifm-font-weight-semibold);
 }
 
 .featurePill {
-  background: var(--ifm-color-success-contrast-background);
-  color: var(--ifm-color-success-contrast-foreground);
+  background: color-mix(in srgb, var(--ifm-color-success) 14%, transparent);
+  color: var(--ifm-font-color-base);
 }
 
 .performancePill {
-  background: var(--ifm-color-info-contrast-background);
-  color: var(--ifm-color-info-contrast-foreground);
+  background: color-mix(in srgb, var(--ifm-color-info) 14%, transparent);
+  color: var(--ifm-font-color-base);
 }
 
 .latestCard {
@@ -406,11 +400,5 @@
   .when b {
     display: inline;
     margin-right: 0.35rem;
-  }
-
-  .chapterWhen {
-    padding-top: 0;
-    padding-left: 2rem;
-    line-height: 1.3;
   }
 }
