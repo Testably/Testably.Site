@@ -1,4 +1,4 @@
-import {themes as prismThemes} from 'prism-react-renderer';
+import {darkCodeTheme, lightCodeTheme} from './src/prismTheme';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 import type {PluginOptions} from '@docusaurus/plugin-content-docs';
@@ -232,8 +232,8 @@ const config: Config = {
       ],
     },
     prism: {
-      theme: prismThemes.github,
-      darkTheme: prismThemes.dracula,
+      theme: lightCodeTheme,
+      darkTheme: darkCodeTheme,
       additionalLanguages: ['csharp', 'powershell', 'bash'],
     },
   } satisfies Preset.ThemeConfig,

@@ -69,7 +69,7 @@ code, pre, kbd, samp {
   --ifm-color-primary-light: #cfc8be;
   --ifm-color-primary-lighter: #d4cdc4;
   --ifm-color-primary-lightest: #e0dad3;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+  --docusaurus-highlighted-code-line-bg: rgba(255, 255, 255, 0.08);
 }
 
 /* ───── Abstractions: #c2185b raspberry / #ec407a ───── */
