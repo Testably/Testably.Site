@@ -71,6 +71,8 @@ const config: Config = {
         indexBlog: false,
         highlightSearchTermsOnTargetPage: true,
         explicitSearchResultPath: true,
+        // The cards of a category page repeat its child pages, which have their own hits.
+        ignoreCssSelectors: ['.theme-doc-card-container'],
         searchContextByPaths: [
           {label: 'Abstractions', path: 'Abstractions'},
           {label: 'aweXpect', path: 'aweXpect'},
