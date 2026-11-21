@@ -49,6 +49,25 @@ code {
 th {
   text-align: start;
 }
+/* Hairlines between rows and columns, instead of a box around every cell, striped rows and a grey header; the columns
+   keep a line, because cells that wrap need it to be read across. */
+.markdown table {
+  --ifm-table-stripe-background: transparent;
+  --ifm-table-border-color: var(--ifm-color-emphasis-200);
+}
+.markdown :is(th, td) {
+  border-left: 0;
+  border-right: 0;
+}
+.markdown :is(th, td) + :is(th, td) {
+  border-left: 1px solid var(--ifm-table-border-color);
+}
+.markdown thead tr {
+  border-bottom: 1px solid var(--ifm-color-emphasis-400);
+}
+.markdown thead th {
+  border-top: 0;
+}
 /* Geist Mono has a taller x-height than Newsreader, so code in a heading is scaled down to match it. */
 :is(h1, h2, h3, h4, h5, h6) code {
   font-size: 0.8em;
