@@ -148,6 +148,11 @@ html[data-theme='dark'][data-section='mockolate'] {
   padding-top: 3.5rem;
   font-size: 0.875rem;
 }
+/* Infima's blue-grey clashes with the warm palette; this is the dark of the start page hero. */
+.footer--dark {
+  --ifm-footer-background-color: #151517;
+  border-top: 1px solid #2e2d2b;
+}
 .footer > .container {
   max-width: 1140px;
 }
