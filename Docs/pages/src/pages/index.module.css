@@ -413,6 +413,11 @@ b.mockolate,
     display: flex;
   }
 
+  /* In the column the sample has to span the card, so a long one scrolls inside it instead of widening past it. */
+  .extensionCard > .snippet {
+    align-self: stretch;
+  }
+
   /* Beside the code the labels would scroll out of view, so each goes on its own line below the line it names. */
   .oneTestGrid {
     grid-template-columns: max-content;
