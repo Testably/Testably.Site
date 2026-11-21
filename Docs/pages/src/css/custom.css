@@ -163,20 +163,10 @@ html[data-theme='dark'][data-section='mockolate'] {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-  text-align: left;
-}
-.footer__brand-row a {
-  color: inherit;
-}
-.footer__brand {
-  display: flex;
-  align-items: center;
+  justify-content: center;
   gap: 0.75rem;
+  margin-top: 2rem;
+  text-align: center;
 }
 
 /* Benchmark pages have many tabs, which as underlined tabs wrap their labels and scroll sideways. */
