@@ -41,7 +41,8 @@ b.mockolate,
 /* The hero stays dark in both themes, so the beige brackets of the logo read well. */
 .hero {
   padding: 5.5rem 0 4.5rem;
-  background: #151517;
+  /* The glow behind the logo keeps the hero distinct from the dark page in dark mode. */
+  background: radial-gradient(50rem 28rem at 78% 50%, rgba(200, 192, 180, 0.09), transparent 70%), #151517;
   border-bottom: 1px solid #2e2d2b;
 }
 
@@ -150,8 +151,7 @@ b.mockolate,
   font-size: 1.9rem;
 }
 
-.sectionHead p,
-.muted {
+.sectionHead p {
   margin: 0;
   color: var(--ifm-color-emphasis-700);
 }
@@ -315,11 +315,6 @@ b.mockolate,
   color: var(--ifm-color-emphasis-600);
 }
 
-.smallHeading {
-  margin: 0;
-  font-size: 1.4rem;
-}
-
 .chips {
   display: flex;
   flex-wrap: wrap;
@@ -328,7 +323,7 @@ b.mockolate,
 
 .chip {
   padding: 0.3rem 0.9rem;
-  border: 1px solid var(--ifm-color-emphasis-300);
+  border: 1px solid var(--lib);
   border-radius: 999px;
   font-size: 0.9rem;
   font-family: inherit;
@@ -341,8 +336,32 @@ b.mockolate,
   font-weight: var(--ifm-font-weight-semibold);
 }
 
+/* Text on the left and the sample on the right, so the card spans the section like the cards above it. */
 .extensionCard {
-  max-width: 42rem;
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    'title code'
+    'text code'
+    'link code';
+  gap: 0.9rem 2rem;
+}
+
+.extensionCard > .extensionTitle {
+  grid-area: title;
+}
+
+.extensionCard > .cardText {
+  grid-area: text;
+}
+
+.extensionCard > .snippet {
+  grid-area: code;
+}
+
+.extensionCard > .cardLink {
+  grid-area: link;
 }
 
 .extensionTitle {
@@ -353,19 +372,6 @@ b.mockolate,
 
 .extensionTitle .cardMeta {
   margin-top: 0;
-}
-
-.chip.core {
-  border-color: var(--lib);
-}
-
-.chip.separate {
-  border-color: var(--lib);
-  color: var(--lib);
-}
-
-.chip.awexpect.separate {
-  border-style: dashed;
 }
 
 .chip[aria-selected='true'] {
@@ -395,5 +401,9 @@ b.mockolate,
   .notes,
   .cards {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .extensionCard {
+    display: flex;
   }
 }

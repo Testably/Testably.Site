@@ -101,7 +101,6 @@ const libraries: Library[] = [
 type Extension = {
   name: string;
   family?: LibraryKey;
-  core?: boolean;
   intro: ReactNode;
   sample: ReactNode;
 };
@@ -109,7 +108,6 @@ type Extension = {
 const extensions: Extension[] = [
   {
     name: 'Json',
-    core: true,
     intro: (
       <>
         Compare JSON strings by their structure, so whitespace and property order no longer break a test. Check single
@@ -174,7 +172,6 @@ const extensions: Extension[] = [
   },
   {
     name: 'Reflection',
-    core: true,
     intro: (
       <>
         Guard your architecture and naming conventions with tests. Select assemblies, types or members, filter them, and
@@ -199,7 +196,6 @@ const extensions: Extension[] = [
   },
   {
     name: 'Snapshots',
-    core: true,
     intro: (
       <>
         Verify large or generated output without writing out the expected value. The first run stores the result in a
@@ -244,7 +240,6 @@ const extensions: Extension[] = [
   },
   {
     name: 'Web',
-    core: true,
     intro: (
       <>
         Verify HTTP requests and responses, e.g. in integration tests with an <code>HttpClient</code>: status code,
@@ -264,7 +259,6 @@ const extensions: Extension[] = [
   },
   {
     name: 'Xml',
-    core: true,
     intro: (
       <>
         Compare XML by its content, so attribute order, whitespace and comments no longer break a test. Check single
@@ -462,9 +456,13 @@ function Extensions() {
   return (
     <section className={styles.section}>
       <div className={clsx(styles.container, styles.stack)}>
-        <Heading as="h2" className={styles.smallHeading}>
-          aweXpect extensions
-        </Heading>
+        <div className={styles.sectionHead}>
+          <Heading as="h2">aweXpect extensions</Heading>
+          <p>
+            Testably and Mockolate bridge the family: assertions on a <code>MockFileSystem</code> and on Mockolate
+            interactions.
+          </p>
+        </div>
         <div className={styles.chips} role="tablist" aria-label="aweXpect extensions" onKeyDown={onKeyDown}>
           {extensions.map((e, index) => (
             <button
@@ -478,7 +476,7 @@ function Extensions() {
               aria-selected={index === selected}
               aria-controls="extension-panel"
               tabIndex={index === selected ? 0 : -1}
-              className={clsx(styles.chip, styles[e.family ?? 'awexpect'], e.core ? styles.core : styles.separate)}
+              className={clsx(styles.chip, styles[e.family ?? 'awexpect'])}
               onClick={() => setSelected(index)}
             >
               {e.name}
@@ -502,10 +500,6 @@ function Extensions() {
           </pre>
           <span className={clsx(styles.cardLink, styles.libColor)}>Read the {packageId} docs →</span>
         </Link>
-        <p className={styles.muted}>
-          Testably and Mockolate bridge the family: assertions on a <code>MockFileSystem</code> and on Mockolate
-          interactions.
-        </p>
         <Admonition type="tip">
           Use <Link to="/aweXpect/chronology/">aweXpect.Chronology</Link> to write durations and dates as{' '}
           <code>5.Seconds()</code> or <code>24.December(2024)</code> instead of <code>TimeSpan.FromSeconds(5)</code>{' '}
