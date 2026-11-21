@@ -259,7 +259,7 @@ export default function Changelog({changelog: {migrationGuides, mergedPackages, 
       <div className={styles.timeline}>
         {upcoming.map((guide) => (
           <React.Fragment key={guide.major}>
-            <div className={clsx(styles.when, styles.chapterWhen)}>upcoming</div>
+            <div className={styles.when} />
             <div className={clsx(styles.body, styles.chapter)}>
               <span className={clsx(styles.medal, styles.upcomingMedal)} aria-hidden="true">v{guide.major}</span>
               <h2 id={`version-${guide.major}`}>
@@ -279,7 +279,7 @@ export default function Changelog({changelog: {migrationGuides, mergedPackages, 
           const to = formatDate(last.date, {month: 'short', year: 'numeric'});
           return (
             <React.Fragment key={major}>
-              <div className={clsx(styles.when, styles.chapterWhen)}>{last.date.substring(0, 4)}</div>
+              <div className={styles.when} />
               <div className={clsx(styles.body, styles.chapter)}>
                 <span className={styles.medal} aria-hidden="true">v{major}</span>
                 <h2 id={`version-${major}`}>Version {major}</h2>
