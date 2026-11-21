@@ -220,6 +220,10 @@ b.mockolate,
   font-weight: var(--ifm-font-weight-semibold);
 }
 
+.lineLabel::before {
+  content: '← ';
+}
+
 .notes {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -405,5 +409,23 @@ b.mockolate,
 
   .extensionCard {
     display: flex;
+  }
+
+  /* Beside the code the labels would scroll out of view, so each goes on its own line below the line it names. */
+  .oneTestGrid {
+    grid-template-columns: max-content;
+  }
+
+  .oneTestGrid > :empty {
+    display: none;
+  }
+
+  .lineLabel {
+    padding-left: 4ch;
+    font-size: 0.85em;
+  }
+
+  .lineLabel::before {
+    content: '↑ ';
   }
 }
