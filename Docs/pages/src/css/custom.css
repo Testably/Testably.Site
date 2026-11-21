@@ -308,14 +308,11 @@ html[data-theme='dark'][data-section='mockolate'] {
   background: transparent;
   border-color: var(--ifm-color-primary);
 }
+/* A tint instead of a solid fill, so the selected tab does not outweigh the results below it. */
 .benchmark-tabs .tabs__item--active,
 .benchmark-tabs .tabs__item--active:hover {
-  background: var(--ifm-color-primary);
+  background: color-mix(in srgb, var(--ifm-color-primary) 14%, transparent);
   border-color: var(--ifm-color-primary);
-  color: #ffffff;
+  color: var(--ifm-color-primary);
   font-weight: 600;
-}
-[data-theme='dark'] .benchmark-tabs .tabs__item--active,
-[data-theme='dark'] .benchmark-tabs .tabs__item--active:hover {
-  color: #1b1b1d;
 }
