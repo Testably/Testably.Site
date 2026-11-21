@@ -142,8 +142,9 @@ b.mockolate,
   padding: 4.5rem 0 0;
 }
 
+/* The footer adds its own margin above it. */
 .section:last-child {
-  padding-bottom: 4.5rem;
+  padding-bottom: 1.5rem;
 }
 
 .sectionHead h2 {
@@ -362,6 +363,7 @@ b.mockolate,
 
 .extensionCard > .snippet {
   grid-area: code;
+  align-self: start;
 }
 
 .extensionCard > .cardLink {
@@ -409,6 +411,11 @@ b.mockolate,
 
   .extensionCard {
     display: flex;
+  }
+
+  /* In the column the sample has to span the card, so a long one scrolls inside it instead of widening past it. */
+  .extensionCard > .snippet {
+    align-self: stretch;
   }
 
   /* Beside the code the labels would scroll out of view, so each goes on its own line below the line it names. */
