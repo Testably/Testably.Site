@@ -68,8 +68,8 @@ const libraries: Library[] = [
     description: <>Every expectation is awaited, for values, tasks, streams and exceptions alike.</>,
     sample: (
       <>
-        <Kw>await</Kw> That(message){'\n'}
-        {'    '}.IsEqualTo(<Str>"It's a compliment"</Str>);{'\n'}
+        <Kw>await</Kw> That(message).IsEqualTo({'\n'}
+        {'    '}<Str>"It's a compliment"</Str>);{'\n'}
         <Cm>// but it was "It's a complement"</Cm>
       </>
     ),
@@ -87,8 +87,8 @@ const libraries: Library[] = [
     description: <>Source-generated mocks, set up with regular method calls. No reflection, no proxies.</>,
     sample: (
       <>
-        dispenser.Mock.Setup{'\n'}
-        {'    '}.Dispense(<Str>"Dark"</Str>, It.IsAny&lt;<Kw>int</Kw>&gt;()){'\n'}
+        dispenser.Mock.Setup.Dispense({'\n'}
+        {'        '}<Str>"Dark"</Str>, It.IsAny&lt;<Kw>int</Kw>&gt;()){'\n'}
         {'    '}.Returns(<Kw>true</Kw>);
       </>
     ),
@@ -123,7 +123,9 @@ const extensions: Extension[] = [
         {'\n'}
         <Cm>// equal, although formatted differently</Cm>
         {'\n'}
-        <Kw>await</Kw> That(json).IsEqualTo(<Str>{'"""{ "year": 1970, "title": "Let It Be" }"""'}</Str>).AsJson();{'\n'}
+        <Kw>await</Kw> That(json){'\n'}
+        {'    '}.IsEqualTo(<Str>{'"""{ "year": 1970, "title": "Let It Be" }"""'}</Str>){'\n'}
+        {'    '}.AsJson();{'\n'}
         <Cm>// only checks the properties you care about</Cm>
         {'\n'}
         <Kw>await</Kw> That(json).IsValidJsonMatching(<Kw>new</Kw> {'{'} title = <Str>"Let It Be"</Str> {'}'});
@@ -276,7 +278,8 @@ const extensions: Extension[] = [
         {'\n'}
         <Cm>// equal, although the attributes are in a different order</Cm>
         {'\n'}
-        <Kw>await</Kw> That(xml).IsEqualTo(<Str>{'"""<track artist="The Beatles" title="Let It Be"/>"""'}</Str>){'\n'}
+        <Kw>await</Kw> That(xml){'\n'}
+        {'    '}.IsEqualTo(<Str>{'"""<track artist="The Beatles" title="Let It Be"/>"""'}</Str>){'\n'}
         {'    '}.AsXml();
       </>
     ),
