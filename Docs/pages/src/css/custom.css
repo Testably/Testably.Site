@@ -145,6 +145,29 @@ html[data-theme='dark'][data-section='mockolate'] {
   --ifm-color-primary-lightest: #d8b696;
 }
 
+.table-of-contents {
+  font-size: 0.875rem;
+}
+.table-of-contents__link--active {
+  font-weight: 500;
+}
+
+.pagination-nav__link {
+  border-color: var(--ifm-color-emphasis-200);
+  transition: border-color 0.15s ease;
+}
+.pagination-nav__label {
+  font-family: var(--ifm-heading-font-family);
+  font-size: 1.2rem;
+  font-weight: var(--ifm-heading-font-weight);
+}
+.pagination-nav__link--prev .pagination-nav__label::before {
+  content: '← ';
+}
+.pagination-nav__link--next .pagination-nav__label::after {
+  content: ' →';
+}
+
 /* Newsreader's capitals sit 0.1em above the middle of the line box (Geist's are centered), so shift them back down. */
 .navbar__title,
 .navbar__link {
