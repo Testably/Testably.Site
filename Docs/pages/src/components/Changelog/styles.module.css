@@ -370,14 +370,17 @@
   gap: 0.6rem;
 }
 
-/* The dark theme has light primary colors; `--ifm-color-emphasis-0` is white in the light and dark in the dark theme. */
-.primaryAction,
-.primaryAction:hover {
-  padding: 0.55rem 1rem;
+.primaryAction {
+  padding: 0.45rem 0.9rem;
+  border: 1px solid color-mix(in srgb, var(--ifm-color-primary) 45%, transparent);
   border-radius: 8px;
-  background: var(--ifm-color-primary);
-  color: var(--ifm-color-emphasis-0);
+  font-size: 0.9rem;
   font-weight: var(--ifm-font-weight-semibold);
+  text-decoration: none;
+}
+
+.primaryAction:hover {
+  background: color-mix(in srgb, var(--ifm-color-primary) 10%, transparent);
   text-decoration: none;
 }
 
