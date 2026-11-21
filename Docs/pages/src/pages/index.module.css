@@ -380,10 +380,11 @@ b.mockolate,
   margin-top: 0;
 }
 
+/* A tint like the selected benchmark tab, instead of a solid fill. */
 .chip[aria-selected='true'] {
   border-color: var(--lib);
-  background: var(--lib);
-  color: var(--ifm-background-surface-color);
+  background: color-mix(in srgb, var(--lib) 14%, transparent);
+  color: var(--lib);
 }
 
 .chip:hover {

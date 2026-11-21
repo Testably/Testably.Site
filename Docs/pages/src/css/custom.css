@@ -184,6 +184,12 @@ html[data-theme='dark'][data-section='mockolate'] {
 .table-of-contents__link--active {
   font-weight: 500;
 }
+/* An outline like the search box instead of the stock grey fill. */
+:root .theme-doc-toc-mobile {
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 8px;
+  background-color: transparent;
+}
 
 .pagination-nav__link {
   border-color: var(--ifm-color-emphasis-200);
@@ -331,10 +337,11 @@ html[data-theme='dark'][data-section='mockolate'] {
 .footer > .container {
   max-width: 1080px;
 }
+/* Columns as wide as their links, so the last one ends at the right edge of the content. */
 .footer__links {
   display: grid;
-  grid-template-columns: 1fr repeat(3, 10rem);
-  gap: 2rem;
+  grid-template-columns: 1fr repeat(3, max-content);
+  gap: 2rem 4rem;
   margin-bottom: 2.5rem;
 }
 .footer__links .footer__col {
