@@ -42,6 +42,19 @@ code, pre, kbd, samp {
 .theme-admonition [class^='admonitionHeading'] {
   letter-spacing: 0.12em;
 }
+/* Infima fills callouts with saturated colors that shout in dark mode; a faint tint of the border keeps them calm. */
+.alert:is(.alert--secondary, .alert--success, .alert--info, .alert--warning, .alert--danger) {
+  --ifm-alert-background-color: color-mix(in srgb, var(--ifm-alert-border-color) 8%, transparent);
+  --ifm-alert-background-color-highlight: color-mix(in srgb, var(--ifm-alert-border-color) 14%, transparent);
+  --ifm-alert-foreground-color: var(--ifm-font-color-base);
+}
+.alert:is(.alert--success, .alert--info) {
+  --ifm-alert-border-color: var(--ifm-color-primary);
+}
+details.alert.alert--info {
+  --ifm-alert-border-color: var(--ifm-color-emphasis-300);
+  --docusaurus-details-decoration-color: var(--ifm-color-emphasis-600);
+}
 
 /* ───── Default (landing page) ─────
  * Light mode: darker warm neutral (the bracket beige #c8c0b4 has poor
