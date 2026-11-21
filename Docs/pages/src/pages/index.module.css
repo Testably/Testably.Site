@@ -142,8 +142,9 @@ b.mockolate,
   padding: 4.5rem 0 0;
 }
 
+/* The footer adds its own margin above it. */
 .section:last-child {
-  padding-bottom: 4.5rem;
+  padding-bottom: 1.5rem;
 }
 
 .sectionHead h2 {
@@ -362,6 +363,7 @@ b.mockolate,
 
 .extensionCard > .snippet {
   grid-area: code;
+  align-self: start;
 }
 
 .extensionCard > .cardLink {

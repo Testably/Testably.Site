@@ -204,6 +204,15 @@
   color: var(--ifm-color-info-dark);
 }
 
+/* The dark shades lack contrast on the dark background. */
+:global([data-theme='dark']) .featureText {
+  color: var(--ifm-color-success-lightest);
+}
+
+:global([data-theme='dark']) .performanceText {
+  color: var(--ifm-color-info-lightest);
+}
+
 .stats {
   display: flex;
   flex-wrap: wrap;
@@ -387,8 +396,10 @@
 }
 
 @media (max-width: 600px) {
+  /* Room for the medals, which stick out to the left of the line. */
   .timeline {
     grid-template-columns: minmax(0, 1fr);
+    padding-left: 1.3rem;
   }
 
   .when {
