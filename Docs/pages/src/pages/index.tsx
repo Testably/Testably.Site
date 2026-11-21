@@ -335,12 +335,12 @@ function OneTest() {
               {'    '}
               <Ty>MockFileSystem</Ty> fileSystem = <Kw>new</Kw>();
             </span>
-            <span className={clsx(styles.lineLabel, styles.abstractions)}>← Testably.Abstractions</span>
+            <span className={clsx(styles.lineLabel, styles.abstractions)}>Testably.Abstractions</span>
             <span>
               {'    '}
               <Ty>INotifier</Ty> notifier = <Ty>INotifier</Ty>.CreateMock();
             </span>
-            <span className={clsx(styles.lineLabel, styles.mockolate)}>← Mockolate</span>
+            <span className={clsx(styles.lineLabel, styles.mockolate)}>Mockolate</span>
             <span>
               {'    '}
               <Ty>ReportService</Ty> sut = <Kw>new</Kw>(fileSystem, notifier);
@@ -359,12 +359,12 @@ function OneTest() {
               {'    '}
               <Kw>await</Kw> That(fileSystem).HasFile(<Str>"reports/Q3.json"</Str>);
             </span>
-            <span className={clsx(styles.lineLabel, styles.awexpect)}>← aweXpect.Testably</span>
+            <span className={clsx(styles.lineLabel, styles.awexpect)}>aweXpect.Testably</span>
             <span>
               {'    '}
               <Kw>await</Kw> That(notifier.Mock.Verify.Send(<Str>"Report Q3 exported"</Str>)).Once();
             </span>
-            <span className={clsx(styles.lineLabel, styles.awexpect)}>← aweXpect.Mockolate</span>
+            <span className={clsx(styles.lineLabel, styles.awexpect)}>aweXpect.Mockolate</span>
             <span>{'}'}</span>
             <span />
           </code>

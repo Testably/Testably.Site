@@ -167,6 +167,15 @@ html[data-theme='dark'][data-section='mockolate'] {
 .pagination-nav__link--next .pagination-nav__label::after {
   content: ' →';
 }
+/* Side by side, the headline-sized labels wrap to several lines on phones. */
+@media (max-width: 600px) {
+  .pagination-nav {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .pagination-nav__link--next {
+    grid-column: auto;
+  }
+}
 
 /* Newsreader's capitals sit 0.1em above the middle of the line box (Geist's are centered), so shift them back down. */
 .navbar__title,
