@@ -1,6 +1,6 @@
 /**
- * Swizzled (ejected) footer: a sitemap with a column for Testably and one per library, above a row with the logo,
- * the tagline and the copyright.
+ * Swizzled (ejected) footer: a brand column with the logo and tagline and one sitemap column per library, above a
+ * row with the copyright and license.
  */
 import React, {type ReactElement, type ReactNode} from 'react';
 import Link from '@docusaurus/Link';
@@ -19,7 +19,7 @@ function Column({
   children: ReactNode;
 }): ReactElement {
   return (
-    <div className="col footer__col">
+    <div className="footer__col">
       <div className="footer__title">
         <Link href={`https://github.com/${repository}`}>{title}</Link>
         {nuget && (
@@ -46,12 +46,17 @@ function Item({href, children}: {href: string; children: ReactNode}): ReactEleme
 export default function Footer(): ReactElement {
   return (
     <footer className="footer footer--dark">
-      <div className="container container-fluid">
-        <div className="row footer__links">
-          <Column title="Testably" repository="Testably">
-            <Item href="/">Home</Item>
-            <Item href="https://github.com/sponsors/Testably">Sponsor</Item>
-          </Column>
+      <div className="container">
+        <div className="footer__links">
+          <div className="footer__col footer__brand">
+            <Link href="/" className="footer__brand-logo">
+              <img src={useBaseUrl('img/testably-dark.svg')} alt="" width={76} height={76} />
+              <span>
+                <span className="footer__brand-name">Testably</span>
+                <span className="footer__tagline">Open-source testing libraries for .NET</span>
+              </span>
+            </Link>
+          </div>
           <Column title="Abstractions" repository="Testably/Testably.Abstractions" nuget="Testably.Abstractions.Testing">
             <Item href="/Abstractions/getting-started">Getting started</Item>
             <Item href="/Abstractions/migration">Migration</Item>
@@ -70,10 +75,15 @@ export default function Footer(): ReactElement {
             <Item href="/Mockolate/changelog">Changelog</Item>
           </Column>
         </div>
-        <div className="footer__bottom footer__brand-row">
+        <div className="footer__bottom">
           <span>© {new Date().getFullYear()} Testably</span>
-          <img src={useBaseUrl('img/testably-dark.svg')} alt="" width={32} height={32} />
-          <span>Open-source testing libraries for .NET</span>
+          <span>
+            Released under the <Link href="https://opensource.org/license/mit">MIT license</Link>
+          </span>
+          <span>
+            <Link href="https://github.com/Testably">GitHub</Link> ·{' '}
+            <Link href="https://github.com/sponsors/Testably">Sponsor</Link>
+          </span>
         </div>
       </div>
     </footer>
