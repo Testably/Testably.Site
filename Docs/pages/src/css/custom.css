@@ -62,11 +62,10 @@ th {
 .markdown :is(th, td) + :is(th, td) {
   border-left: 1px solid var(--ifm-table-border-color);
 }
-.markdown thead tr {
-  border-bottom: 1px solid var(--ifm-color-emphasis-400);
-}
+/* On the cells, as their own borders win over the row's in a collapsed table. */
 .markdown thead th {
   border-top: 0;
+  border-bottom: 1px solid var(--ifm-color-emphasis-400);
 }
 /* Geist Mono has a taller x-height than Newsreader, so code in a heading is scaled down to match it. */
 :is(h1, h2, h3, h4, h5, h6) code {
