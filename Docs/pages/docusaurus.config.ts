@@ -20,7 +20,7 @@ const config: Config = {
   organizationName: 'Testably',
   projectName: 'Testably.Site',
 
-  clientModules: ['./src/clientModules/sectionTheme.ts'],
+  clientModules: ['./src/clientModules/sectionTheme.ts', './src/clientModules/searchHitPath.ts'],
 
   onBrokenLinks: 'throw',
   onBrokenAnchors: 'throw',

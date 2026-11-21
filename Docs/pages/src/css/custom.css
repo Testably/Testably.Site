@@ -177,6 +177,97 @@ html[data-theme='dark'][data-section='mockolate'] {
   }
 }
 
+/* A quiet outline instead of a filled pill, so the search does not outweigh the navigation beside it; Ctrl+K still
+   focuses it without the hint. */
+.navbar__search-input {
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 8px;
+  /* Room for the clear button, which the plugin places over the right edge of the input. */
+  padding-right: 2rem;
+  background-color: transparent;
+  font-size: 0.875rem;
+}
+/* On phones the plugin collapses the input to its icon until it is focused. */
+@media (max-width: 576px) {
+  .navbar__search-input:not(:focus) {
+    padding-right: 0;
+  }
+}
+@media (min-width: 577px) {
+  .navbar__search-input {
+    width: 9rem;
+    transition: width 0.2s ease;
+  }
+  .navbar__search-input:focus {
+    width: 14rem;
+  }
+}
+:root [class*='searchHintContainer_'] {
+  display: none;
+}
+
+/* The search plugin's defaults are blue-grey with a solid primary bar on the selected hit. */
+:root {
+  --search-local-modal-background: #f6f5f2;
+  --search-local-modal-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+  --search-local-hit-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --search-local-muted-color: var(--ifm-color-emphasis-600);
+  --search-local-hit-active-color: var(--ifm-font-color-base);
+}
+[data-theme='dark'] {
+  --search-local-modal-background: #242526;
+  --search-local-modal-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+/* Its module classes are hashed, so they are matched by prefix; the selected hit needs its own background, because the
+   plugin uses the highlight color for it and for the matched words alike. */
+:root .navbar [class*='dropdownMenu_'] [class*='suggestion_'][class*='cursor_'] {
+  background: color-mix(in srgb, var(--ifm-color-primary) 14%, var(--search-local-modal-background));
+}
+/* The page a hit belongs to comes first, after the icon of its library (see src/clientModules/searchHitPath.ts); the
+   matched text follows. Hits grouped below a row for their page do not repeat it. */
+:root .navbar [class*='hitWrapper_'] {
+  flex-direction: column-reverse;
+}
+:root .navbar [class*='hitPath_'] {
+  color: var(--ifm-color-emphasis-600);
+  font-size: 0.8em;
+  font-weight: 400;
+}
+:root .navbar [class*='hitPath_'] b {
+  color: var(--ifm-font-color-base);
+  font-weight: 600;
+}
+.search-hit-library {
+  margin-right: 0.35rem;
+  vertical-align: -0.3em;
+}
+[data-theme='dark'] .search-hit-library--light,
+[data-theme='light'] .search-hit-library--dark {
+  display: none;
+}
+:root .navbar [class*='hitTitle_']:not(:only-child) {
+  color: var(--ifm-color-emphasis-700);
+  font-weight: 400;
+}
+:root .navbar [class*='hitTree_'] ~ [class*='hitWrapper_'] [class*='hitPath_'] {
+  display: none;
+}
+/* The whole hit is the link, so neither the document icon nor the enter icon adds anything. */
+.navbar [class*='dropdownMenu_'] :is([class*='hitIcon_'], [class*='hitAction_']) {
+  display: none;
+}
+/* The search page separates its results with a fixed light grey that glares in the dark theme. */
+:root [class*='searchResultItem_'] {
+  border-bottom-color: var(--ifm-color-emphasis-200);
+}
+:root [class*='searchResultItemPath_'] {
+  margin-top: 0.125rem;
+}
+:root [class*='searchResultItem_'] mark {
+  background: color-mix(in srgb, var(--ifm-color-primary) 22%, transparent);
+  color: inherit;
+}
+
 /* Newsreader's capitals sit 0.1em above the middle of the line box (Geist's are centered), so shift them back down. */
 .navbar__title,
 .navbar__link {
