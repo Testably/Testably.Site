@@ -71,13 +71,9 @@ export default function Footer(): ReactElement {
           </Column>
         </div>
         <div className="footer__bottom footer__brand-row">
-          <span className="footer__brand">
-            <img src={useBaseUrl('img/testably-dark.svg')} alt="" width={32} height={32} />
-            Open-source testing libraries for .NET
-          </span>
-          <span>
-            © {new Date().getFullYear()} Testably · <Link href="https://opensource.org/license/mit">MIT license</Link>
-          </span>
+          <span>© {new Date().getFullYear()} Testably</span>
+          <img src={useBaseUrl('img/testably-dark.svg')} alt="" width={32} height={32} />
+          <span>Open-source testing libraries for .NET</span>
         </div>
       </div>
     </footer>
