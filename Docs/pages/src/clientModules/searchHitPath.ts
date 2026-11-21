@@ -17,7 +17,7 @@ function libraryIcons(library: string): HTMLImageElement[] {
   return (['light', 'dark'] as const).map((theme) => {
     const icon = document.createElement('img');
     icon.src = `/img/${LIBRARY_ICONS[library]}-${theme}.svg`;
-    icon.alt = theme === 'light' ? library : '';
+    icon.alt = library;
     icon.width = 16;
     icon.height = 16;
     icon.className = `search-hit-library search-hit-library--${theme}`;
