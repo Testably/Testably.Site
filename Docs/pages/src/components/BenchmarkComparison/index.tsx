@@ -179,8 +179,10 @@ function useRaceClock(running: boolean, end: number): number {
     const start = performance.now();
     let frame = 0;
     const tick = (now: number) => {
-      setElapsed(now - start);
-      if (now - start < end) frame = requestAnimationFrame(tick);
+      // The first frame's timestamp can lie before `start`, which would count the values below zero.
+      const time = Math.max(0, now - start);
+      setElapsed(time);
+      if (time < end) frame = requestAnimationFrame(tick);
     };
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
