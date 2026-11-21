@@ -241,6 +241,10 @@ html[data-theme='dark'][data-section='mockolate'] {
   margin-right: 0.35rem;
   vertical-align: -0.3em;
 }
+[data-theme='dark'] .search-hit-library--light,
+[data-theme='light'] .search-hit-library--dark {
+  display: none;
+}
 :root .navbar [class*='hitTitle_']:not(:only-child) {
   color: var(--ifm-color-emphasis-700);
   font-weight: 400;

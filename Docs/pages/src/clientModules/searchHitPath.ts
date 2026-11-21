@@ -12,26 +12,28 @@ const LIBRARY_ICONS: Record<string, string> = {
   Mockolate: 'mockolate',
 };
 
-function libraryIcon(library: string): HTMLImageElement {
-  const theme = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
-  const icon = document.createElement('img');
-  icon.src = `/img/${LIBRARY_ICONS[library]}-${theme}.svg`;
-  icon.alt = library;
-  icon.width = 16;
-  icon.height = 16;
-  icon.className = 'search-hit-library';
-  return icon;
+/** Both variants, so CSS shows the one of the current color mode, also after it is switched with hits on screen. */
+function libraryIcons(library: string): HTMLImageElement[] {
+  return (['light', 'dark'] as const).map((theme) => {
+    const icon = document.createElement('img');
+    icon.src = `/img/${LIBRARY_ICONS[library]}-${theme}.svg`;
+    icon.alt = theme === 'light' ? library : '';
+    icon.width = 16;
+    icon.height = 16;
+    icon.className = `search-hit-library search-hit-library--${theme}`;
+    return icon;
+  });
 }
 
 function decorate(path: HTMLElement, emphasizePage: boolean): void {
   path.dataset.decorated = '';
   const segments = (path.textContent ?? '').split(SEPARATOR);
   if (!(segments[0] in LIBRARY_ICONS)) return;
-  const icon = libraryIcon(segments[0]);
+  const icons = libraryIcons(segments[0]);
   if (segments.length > 1) segments.shift();
   const page = segments.pop() ?? '';
   path.textContent = segments.map((segment) => segment + SEPARATOR).join('');
-  path.prepend(icon);
+  path.prepend(...icons);
   path.append(emphasizePage ? Object.assign(document.createElement('b'), {textContent: page}) : page);
 }
 
