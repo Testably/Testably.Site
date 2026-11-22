@@ -251,11 +251,6 @@
   box-shadow: inset 0 0 0 1px var(--bar-color);
 }
 
-.barHatched.barCut::after {
-  width: 6px;
-  box-shadow: -1px 0 0 var(--bar-color), 1px 0 0 var(--bar-color);
-}
-
 .swatch {
   display: none;
   width: 14px;
@@ -283,8 +278,9 @@
   position: absolute;
   top: -3px;
   right: 14px;
-  width: 4px;
+  width: 6px;
   height: 20px;
+  box-shadow: -1px 0 0 var(--bar-color), 1px 0 0 var(--bar-color);
   /* Infima's light --ifm-background-color is transparent, which would hide the cut. */
   background: #ffffff;
   transform: skewX(-20deg);
