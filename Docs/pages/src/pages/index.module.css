@@ -38,6 +38,11 @@ b.mockolate,
   color: var(--lib);
 }
 
+/* Outranks the primary color that custom.css gives every tip. */
+.awexpect:global(.alert.alert--success) {
+  --ifm-alert-border-color: var(--lib);
+}
+
 /* The hero stays dark in both themes, so the beige brackets of the logo read well. */
 .hero {
   padding: 5.5rem 0 4.5rem;
