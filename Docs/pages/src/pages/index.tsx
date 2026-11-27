@@ -500,7 +500,7 @@ function Extensions() {
           </pre>
           <span className={clsx(styles.cardLink, styles.libColor)}>Read the {packageId} docs →</span>
         </Link>
-        <Admonition type="tip">
+        <Admonition type="tip" className={styles.awexpect}>
           Use <Link to="/aweXpect/chronology/">aweXpect.Chronology</Link> to write durations and dates as{' '}
           <code>5.Seconds()</code> or <code>24.December(2024)</code> instead of <code>TimeSpan.FromSeconds(5)</code>{' '}
           or <code>new DateTime(2024, 12, 24)</code>. It works on its own, also without aweXpect.
