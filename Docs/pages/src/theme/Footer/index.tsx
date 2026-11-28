@@ -60,18 +60,20 @@ export default function Footer(): ReactElement {
           <Column title="Abstractions" repository="Testably/Testably.Abstractions" nuget="Testably.Abstractions.Testing">
             <Item href="/Abstractions/getting-started">Getting started</Item>
             <Item href="/Abstractions/migration">Migration</Item>
+            <Item href="/Abstractions/benchmarks">Benchmarks</Item>
             <Item href="/Abstractions/changelog">Changelog</Item>
           </Column>
           <Column title="aweXpect" repository="Testably/aweXpect" nuget="aweXpect">
             <Item href="/aweXpect/getting-started">Getting started</Item>
             <Item href="/aweXpect/extensions">Extensions</Item>
             <Item href="/aweXpect/migration">Migration</Item>
+            <Item href="/aweXpect/benchmarks">Benchmarks</Item>
             <Item href="/aweXpect/changelog">Changelog</Item>
           </Column>
           <Column title="Mockolate" repository="Testably/Mockolate" nuget="Mockolate">
             <Item href="/Mockolate/getting-started">Getting started</Item>
-            <Item href="/Mockolate/benchmarks">Benchmarks</Item>
             <Item href="/Mockolate/migration">Migration</Item>
+            <Item href="/Mockolate/benchmarks">Benchmarks</Item>
             <Item href="/Mockolate/changelog">Changelog</Item>
           </Column>
         </div>
