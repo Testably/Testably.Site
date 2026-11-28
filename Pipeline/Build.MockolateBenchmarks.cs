@@ -59,7 +59,7 @@ partial class Build
 				JsonSerializer.Deserialize<Dictionary<string, RawBenchmark>>(json, RawJsonOptions)
 				?? throw new NotSupportedException($"Could not deserialize {BenchmarksFile}");
 
-			MockolateSnapshot snapshot = ReduceToMockolateSnapshot(rawData, BenchmarkHistoryLength);
+			MockolateSnapshot snapshot = ReduceToMockolateSnapshot(rawData, MockolateLibraries, BenchmarkHistoryLength);
 
 			// The versions of the compared libraries at the measured commit, so that they always match the numbers.
 			string props = await client.GetStringAsync(
@@ -94,7 +94,8 @@ partial class Build
 		["Imposter"] = "Imposter",
 	};
 
-	static MockolateSnapshot ReduceToMockolateSnapshot(Dictionary<string, RawBenchmark> rawData, int historyLength)
+	static MockolateSnapshot ReduceToMockolateSnapshot(Dictionary<string, RawBenchmark> rawData,
+		IReadOnlyList<string> libraries, int historyLength)
 	{
 		// All benchmark groups share the same commit list (the `BenchmarkReport` target in Mockolate
 		// appends one new entry per push to main, in lockstep across every chart). Pick the first
@@ -117,7 +118,7 @@ partial class Build
 
 			(string scenario, string parameter) = SplitChartKey(chartKey);
 			Dictionary<string, MockolateLibrarySample> samples = new();
-			foreach (string library in MockolateLibraries)
+			foreach (string library in libraries)
 			{
 				MockolateLibrarySample? sample = BuildMockolateSample(benchmark, library, historyLength);
 				if (sample is not null)
